@@ -1,0 +1,136 @@
+/*
+ * MergeIQ theme tokens — source of truth for `apps/desktop/src/theme/tokens.css`.
+ * Values come from the approved design canvas (ui/Tokens.dc.html, merge-editor-ui/ui/MergeEditor.dc.html).
+ * Theme is selected by `data-theme` on <html>: "dark" | "light". In `system` mode the theme hook
+ * sets it from `prefers-color-scheme` and updates it live.
+ * UI code must use these variables only — no hard-coded colours.
+ */
+
+:root {
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', ui-monospace, monospace;
+  --code-size: 13px;
+  --code-line: 22px;
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 10px;
+}
+
+:root[data-theme='dark'] {
+  /* surfaces & text */
+  --bg: #16181C;
+  --bar: #1B1E22;
+  --surface: #262A30;
+  --surface-2: #2E333A;
+  --card: #1E2126;
+  --border: #2A2E35;
+  --border-2: #3A3F48;
+  --border-3: #4A505A;
+  --text: #E4E6EA;
+  --text-2: #C9CDD3;
+  --muted: #A0A7B2;
+  --faint: #7D8592;
+  --code: #D5D8DD;
+  --code-bg: #121417;
+
+  /* accent */
+  --accent: #E8A33D;
+  --accent-hover: #F0B252;
+  --on-accent: #16181C;
+  --accent-soft: #2E2718; /* selected option / recommended card fill */
+  --link: #7FB8E6;
+  --link-hover: #A9D0F0;
+
+  /* status */
+  --danger-bg: #3A1F22;
+  --danger-border: #6A2E34;
+  --danger-fg: #FF9F9F;
+  --warn-bg: #2E2718;
+  --warn-border: #5C4618;
+  --warn-fg: #E8A33D;
+  --ok-bg: #1C2A22;
+  --ok-border: #2F5A3D;
+  --ok-fg: #7FD69C;
+  --info-fg: #8FB8FF;
+  --ai-bg: #251F38;
+  --ai-border: #5B4A8A;
+  --ai-fg: #DCCFFF;
+  --ai-accent: #A68BF0;
+  --pill-bg: #2A1E22;
+  --pill-border: #5A2A33;
+  --pill-fg: #F2C1C1;
+  --chip-bg: #3A2E18;
+  --chip-fg: #F0C47A;
+
+  /* chunks: line bg, token emphasis, gutter band, icon/outline */
+  --ins-bg: #1C3626;  --ins-em: #2D6A43;  --ins-band: rgba(63,185,107,.22);  --ins-fg: #5FCB86;
+  --mod-bg: #1A2C46;  --mod-em: #2C4F80;  --mod-band: rgba(76,141,255,.24);  --mod-fg: #8FB8FF;
+  --con-bg: #43202A;  --con-em: #7A2F3B;  --con-band: rgba(240,96,96,.28);   --con-fg: #FF8A8A;
+  --res-bg: #22262B;  --res-em: #30353D;  --res-band: rgba(160,167,178,.10); --res-fg: #8A929E;
+  --hatch: #23272D;
+
+  /* syntax */
+  --kw: #E0A262;
+  --type: #7FC4D9;
+  --str: #9CCB86;
+  --num: #D7A0E8;
+
+  --shadow: rgba(0,0,0,.45);
+}
+
+:root[data-theme='light'] {
+  --bg: #FFFFFF;
+  --bar: #F3F4F6;
+  --surface: #FFFFFF;
+  --surface-2: #E9EBEE;
+  --card: #F7F8F9;
+  --border: #DDE0E4;
+  --border-2: #C6CBD2;
+  --border-3: #B3B9C1;
+  --text: #1E2228;
+  --text-2: #363C45;
+  --muted: #59616C;
+  --faint: #6B7380;
+  --code: #1E2228;
+  --code-bg: #F5F6F8;
+
+  --accent: #E8A33D;
+  --accent-hover: #F0B252;
+  --on-accent: #16181C;
+  --accent-soft: #FCF1DC;
+  --link: #1D5FB0;
+  --link-hover: #174C8C;
+
+  --danger-bg: #FCE8EA;
+  --danger-border: #F1B5BC;
+  --danger-fg: #B42330;
+  --warn-bg: #FDF3DF;
+  --warn-border: #EBCB8B;
+  --warn-fg: #8A5A0C;
+  --ok-bg: #E6F5EB;
+  --ok-border: #A9DDB9;
+  --ok-fg: #1F7A3F;
+  --info-fg: #2459B8;
+  --ai-bg: #F1ECFD;
+  --ai-border: #C9B8F2;
+  --ai-fg: #4B2F99;
+  --ai-accent: #6E4FD1;
+  --pill-bg: #FCE8EA;
+  --pill-border: #F1B5BC;
+  --pill-fg: #8C1D27;
+  --chip-bg: #FCEFD6;
+  --chip-fg: #8A5A0C;
+
+  --ins-bg: #E1F4E7;  --ins-em: #AEE2BF;  --ins-band: rgba(46,160,90,.22);   --ins-fg: #1F7A3F;
+  --mod-bg: #E0EAFB;  --mod-em: #B6CDF4;  --mod-band: rgba(50,110,220,.20);  --mod-fg: #2459B8;
+  --con-bg: #FBE0E3;  --con-em: #F2AEB6;  --con-band: rgba(210,50,60,.20);   --con-fg: #B42330;
+  --res-bg: #EFF0F2;  --res-em: #DCDFE3;  --res-band: rgba(100,110,125,.10); --res-fg: #6B7380;
+  --hatch: #E3E5E9;
+
+  --kw: #9A4D00;
+  --type: #1F6F8B;
+  --str: #2E7D32;
+  --num: #7A3E9D;
+
+  --shadow: rgba(20,30,50,.18);
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>go.sum union merge</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:38px;padding:0 16px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:8px;cursor:pointer;box-sizing:border-box;white-space:nowrap;text-decoration:none}
+.btn:hover{background:#2E333A;color:#E4E6EA}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 24px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <a href="RepoWindow.dc.html" style="font-size: 13px; text-decoration: none">← Conflicts</a>
+    <span style="font: 600 14px 'JetBrains Mono', monospace"><span style="color: #7D8592; font-weight: 400">services/edge/</span>go.sum</span>
+    <span style="font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 4px; background: #1C3626; color: #8FDCA8">go.sum</span>
+  </header>
+
+  <main style="flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; box-sizing: border-box; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 4px; max-width: 680px">
+        <h1 style="margin: 0; font-size: 20px; font-weight: 600">Auto-merge checksums</h1>
+        <p style="margin: 0; font-size: 14px; color: #A0A7B2; line-height: 1.5">Keeps every checksum either side added, drops ones a side removed when the other didn't touch them, and sorts the result.</p>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <a class="btn" href="MergeEditor.dc.html">Merge by hand</a>
+        <button class="btn pri" type="button">Auto-merge (union) and stage</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: #A0A7B2">
+      <span><span style="font-family: 'JetBrains Mono', monospace; color: #8FB8FF">L+</span> 2 added by main</span>
+      <span><span style="font-family: 'JetBrains Mono', monospace; color: #7FD69C">R+</span> 4 added by feature/checkout-v2</span>
+      <span><span style="font-family: 'JetBrains Mono', monospace; color: #FF9F9F">−</span> 2 removed</span>
+      <span>118 unchanged</span>
+    </div>
+
+    <section aria-label="Merged result preview" style="border: 1px solid #2A2E35; border-radius: 10px; overflow: hidden; background: #1A1D21">
+      <div style="padding: 10px 14px; border-bottom: 1px solid #2A2E35; font-size: 13px; font-weight: 600">Result preview</div>
+      <div style="padding: 6px 0; overflow-x: auto">
+        <sc-for list="{{lines}}" as="ln" hint-placeholder-count="12">
+          <div style="{{ln.s}}"><span style="{{ln.tagS}}">{{ln.tag}}</span><span style="{{ln.textS}}">{{ln.text}}</span></div>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const raw = [
+      ['', 'github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0='],
+      ['', 'github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo='],
+      ['L', 'github.com/jackc/pgx/v5 v5.7.1 h1:x7SYsPBYDkHDksogeSmZZ5xzThcTgRz++I5E+ePFUcs='],
+      ['L', 'github.com/jackc/pgx/v5 v5.7.1/go.mod h1:e7O26IywZZ+naJtWWos6i6fvWK+29etgITqrqHLfoZA='],
+      ['-', 'github.com/jackc/pgx/v5 v5.6.0 h1:SWJzexBzPL5jb0GEsrPMLIsi/3jOo7RHlzTjcAeDrPY='],
+      ['', 'github.com/prometheus/client_golang v1.20.4 h1:Tgh3Yr67PaOv/uTqloMsCEdeuFTatm5zIq5+qNN23vI='],
+      ['R', 'github.com/redis/go-redis/v9 v9.6.1 h1:HHDteefn6ZkTtY5fGUE8tj8uy85AHk6zP7CpzIAM0y4='],
+      ['R', 'github.com/redis/go-redis/v9 v9.6.1/go.mod h1:0C0c6ycQsdpVNQpxb1njEQIqkx5UcsM8FJCQLgE9+RA='],
+      ['R', 'github.com/stripe/stripe-go/v79 v79.12.0 h1:HQs/kxNEB3gYA7FnkSFkp0kSOeez0fsmCWev6SxftYs='],
+      ['R', 'github.com/stripe/stripe-go/v79 v79.12.0/go.mod h1:cuH6X0zC8peY6f1AubHwgJ/fJSn2dh5pfiCr6CjyKVU='],
+      ['-', 'golang.org/x/net v0.28.0 h1:a9JDOJc5GMUJ0+UDqmLT86WiEy7iWyIhz8gz8E4e5hE='],
+      ['', 'golang.org/x/net v0.30.0 h1:AcW1SDZMkb8IpzCdQUaIq2sP4sZ4zw+55h6ynffypl4='],
+    ];
+    const C = { L: ['L+', '#8FB8FF', '#1A2C46'], R: ['R+', '#7FD69C', '#1C3626'], '-': ['−', '#FF9F9F', '#3A1F24'], '': ['', '#7D8592', 'transparent'] };
+    const lines = raw.map(([k, text]) => ({
+      tag: C[k][0], text,
+      s: 'display:grid;grid-template-columns:40px minmax(0,1fr);font:12.5px/22px JetBrains Mono,monospace;white-space:pre;background:' + C[k][2],
+      tagS: 'text-align:center;font-weight:600;color:' + C[k][1],
+      textS: k === '-' ? 'color:#A0A7B2;text-decoration:line-through' : 'color:#D5D8DD',
+    }));
+    return { lines };
+  }
+}
+</script>
+</body>
+</html>

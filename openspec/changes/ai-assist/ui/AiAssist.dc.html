@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI suggestion</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}a:hover{color:#A9D0F0}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:32px;padding:0 12px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:7px;cursor:pointer;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn.q{background:transparent;border-color:transparent;color:#C9CDD3}
+.btn.ai{border-color:#5B4A8A;background:#251F38;color:#DCCFFF}
+.tabb{font:500 13px 'IBM Plex Sans',sans-serif;height:40px;padding:0 14px;border:0;background:transparent;color:#A0A7B2;cursor:pointer}
+.btn:focus-visible,.tabb:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+.l{display:grid;grid-template-columns:48px minmax(0,1fr);font:13px/22px 'JetBrains Mono',monospace;white-space:pre;color:#D5D8DD}
+.l>span:first-child{color:#7D8592;text-align:right;padding-right:10px;font-size:12px}
+.dl{display:grid;grid-template-columns:24px minmax(0,1fr);font:12.5px/21px 'JetBrains Mono',monospace;white-space:pre;color:#D5D8DD}
+.dl>span:first-child{text-align:center}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 10px 16px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <span style="font-weight: 600; font-size: 14px">CartService.kt</span>
+    <span style="font-size: 13px; color: #A0A7B2">Merging <span style="font-family: 'JetBrains Mono', monospace; color: #C9CDD3">feature/checkout-v2</span> into <span style="font-family: 'JetBrains Mono', monospace; color: #C9CDD3">main</span></span>
+    <span style="flex: 1"></span>
+    <span role="status" style="font-size: 13px; padding: 6px 12px; border-radius: 999px; background: #2A1E22; border: 1px solid #5A2A33; color: #F2C1C1">3 conflicts left</span>
+  </header>
+  <div role="toolbar" aria-label="Merge actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid #2A2E35">
+    <button class="btn q" type="button">Apply non-conflicting</button>
+    <button class="btn q" type="button">Resolve structurally (0)</button>
+    <span style="width: 1px; height: 20px; background: #30353D; margin: 0 4px"></span>
+    <button class="btn ai" type="button">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"></path></svg>
+      AI: suggest remaining (3)
+    </button>
+    <span style="font-size: 12px; color: #7D8592">≈ 18k input tokens</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch">
+    <section aria-label="Result pane" style="flex: 999 1 560px; min-width: 0; border-right: 1px solid #2A2E35; display: flex; flex-direction: column">
+      <div style="padding: 10px 14px; border-bottom: 1px solid #2A2E35; font-size: 13px; display: flex; gap: 10px; align-items: baseline"><span style="font-weight: 600">Result</span><span style="font: 12px 'JetBrains Mono', monospace; color: #A0A7B2">src/main/kotlin/com/shop/cart/CartService.kt</span></div>
+      <div style="padding: 8px 0; overflow-x: auto">
+        <div class="l"><span>7</span><span><span style="color: #E0A262">class</span> <span style="color: #7FC4D9">CartService</span>(<span style="color: #E0A262">private val</span> tax: <span style="color: #7FC4D9">TaxRules</span>) {</span></div>
+        <div class="l"><span>8</span><span>    <span style="color: #E0A262">fun</span> subtotal(items: <span style="color: #7FC4D9">List</span>&lt;<span style="color: #7FC4D9">LineItem</span>&gt;): <span style="color: #7FC4D9">Money</span> =</span></div>
+        <div class="l"><span>9</span><span>        items.fold(<span style="color: #7FC4D9">Money</span>.ZERO) { acc, i -&gt; acc + i.price * i.qty }</span></div>
+        <div class="l"><span>10</span><span></span></div>
+        <div class="l" style="background: #43202A; box-shadow: inset 1px 0 0 #A68BF0, inset -1px 0 0 #A68BF0, inset 0 1px 0 #A68BF0"><span style="color: #FF8A8A; font-weight: 600">! 11</span><span>    <span style="color: #E0A262">fun</span> applyDiscount(total: <span style="color: #7FC4D9">Money</span>, pct: <span style="color: #7FC4D9">Int</span>): <span style="color: #7FC4D9">Money</span> {</span></div>
+        <div class="l" style="background: #43202A; box-shadow: inset 1px 0 0 #A68BF0, inset -1px 0 0 #A68BF0, inset 0 -1px 0 #A68BF0"><span>12</span><span>        <span style="color: #E0A262">return</span> total - total * pct / 100</span></div>
+        <div class="l"><span>13</span><span>    }</span></div>
+        <div class="l"><span>14</span><span></span></div>
+        <div class="l"><span>15</span><span>    <span style="color: #E0A262">fun</span> total(items: <span style="color: #7FC4D9">List</span>&lt;<span style="color: #7FC4D9">LineItem</span>&gt;): <span style="color: #7FC4D9">Money</span> {</span></div>
+        <div class="l"><span>16</span><span>        <span style="color: #E0A262">val</span> net = subtotal(items)</span></div>
+        <div class="l" style="background: #43202A"><span style="color: #FF8A8A; font-weight: 600">! 17</span><span>        <span style="color: #E0A262">return</span> net + tax.on(net)</span></div>
+        <div class="l"><span>18</span><span>    }</span></div>
+      </div>
+    </section>
+
+    <aside aria-label="AI assistant" style="flex: 1 1 420px; max-width: 520px; min-width: 0; background: #1B1E22; display: flex; flex-direction: column">
+      <div role="tablist" style="display: flex; border-bottom: 1px solid #2A2E35; padding: 0 8px">
+        <button class="tabb" type="button" role="tab" aria-selected="false">Explain</button>
+        <button class="tabb" type="button" role="tab" aria-selected="true" style="color: #E4E6EA; box-shadow: inset 0 -2px 0 #A68BF0">Suggestion</button>
+        <span style="flex: 1"></span>
+        <span style="align-self: center; font-size: 12px; color: #A0A7B2">1 of 3</span>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+          <span style="font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: #1C3626; color: #8FDCA8">High confidence</span>
+          <span style="font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 4px; background: #262A30; color: #C9CDD3">Strategy: combined</span>
+          <span style="font-size: 12px; color: #A0A7B2">applyDiscount · line 11</span>
+        </div>
+
+        <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #D5D8DD"><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">main</span> added banker's rounding to the discounted total. <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">feature/checkout-v2</span> replaced the single percentage with stacked promo codes capped at 50%. This keeps the new signature and applies the rounding to the stacked result.</p>
+
+        <div style="border: 1px solid #2A2E35; border-radius: 8px; overflow: hidden; background: #16181C">
+          <div style="padding: 8px 12px; font-size: 12px; color: #A0A7B2; border-bottom: 1px solid #2A2E35">Current result → suggestion</div>
+          <div style="padding: 6px 0; overflow-x: auto">
+            <div class="dl" style="background: #3A1F24"><span style="color: #FF9F9F">−</span><span>    fun applyDiscount(total: Money, <span style="background: #7A2F3B">pct: Int</span>): Money {</span></div>
+            <div class="dl" style="background: #3A1F24"><span style="color: #FF9F9F">−</span><span>        return total - total * pct / 100</span></div>
+            <div class="dl" style="background: #1C3626"><span style="color: #7FD69C">+</span><span>    fun applyDiscount(total: Money, <span style="background: #2D6A43">codes: List&lt;PromoCode&gt;</span>): Money {</span></div>
+            <div class="dl" style="background: #1C3626"><span style="color: #7FD69C">+</span><span>        val pct = codes.sumOf { it.percent }.coerceAtMost(MAX_DISCOUNT)</span></div>
+            <div class="dl" style="background: #1C3626"><span style="color: #7FD69C">+</span><span>        val off = total * pct / 100</span></div>
+            <div class="dl" style="background: #1C3626"><span style="color: #7FD69C">+</span><span>        return (total - off).setScale(2, RoundingMode.HALF_EVEN)</span></div>
+          </div>
+        </div>
+
+        <sc-if value="{{syntaxWarning}}" hint-placeholder-val="{{false}}">
+          <div role="alert" style="display: flex; gap: 10px; padding: 10px 12px; background: #2E2718; border: 1px solid #5C4618; border-radius: 8px; font-size: 13px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3 2 21h20z"></path><path d="M12 10v5"></path><path d="M12 18v.5"></path></svg>
+            <span><strong style="font-weight: 600">Suggestion may not compile.</strong> The file has more syntax errors with this applied than any of base, left or right.</span>
+          </div>
+        </sc-if>
+
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h3 style="margin: 0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Risks</h3>
+          <ul style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: #C9CDD3">
+            <li>Callers on <span style="font-family: 'JetBrains Mono', monospace">main</span> still pass <span style="font-family: 'JetBrains Mono', monospace">pct: Int</span> and will need updating.</li>
+            <li>Rounding now happens after stacking, which can shift totals by one cent.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="padding: 12px 16px; border-top: 1px solid #2A2E35; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+        <button class="btn pri" type="button">Apply</button>
+        <button class="btn" type="button">Dismiss</button>
+        <button class="btn" type="button">Regenerate</button>
+        <span style="flex: 1"></span>
+        <a href="#" style="font-size: 13px">Preview request</a>
+      </div>
+      <div style="padding: 10px 16px; border-top: 1px solid #2A2E35; font: 12px 'JetBrains Mono', monospace; color: #A0A7B2; display: flex; flex-direction: column; gap: 4px">
+        <span>claude-opus-5 · 6.2k in (4.8k cached) · 410 out · 3.1 s</span>
+        <span style="color: #7D8592">Session: 3 requests · 19.4k in · 1.3k out · est. [COST]</span>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"syntaxWarning":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return { syntaxWarning: this.props.syntaxWarning ?? false }; }
+}
+</script>
+</body>
+</html>

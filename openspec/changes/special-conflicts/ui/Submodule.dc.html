@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Submodule conflict — vendor/ui-kit</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:38px;padding:0 16px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+.node{display:flex;flex-direction:column;gap:6px;padding:14px 16px;background:#1E2126;border:1px solid #2A2E35;border-radius:10px;min-width:0}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 24px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <a href="RepoWindow.dc.html" style="font-size: 13px; text-decoration: none">← Conflicts</a>
+    <span style="font: 600 14px 'JetBrains Mono', monospace"><span style="color: #7D8592; font-weight: 400">vendor/</span>ui-kit</span>
+    <span style="font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 4px; background: #2A2238; color: #CDB4F5">Submodule</span>
+    <span style="font-size: 13px; color: #A0A7B2">Both moved the pointer</span>
+  </header>
+
+  <main style="flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; box-sizing: border-box; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <h1 style="margin: 0; font-size: 20px; font-weight: 600">Which ui-kit commit should this repository point to?</h1>
+      <p style="margin: 0; font-size: 14px; color: #A0A7B2">Choosing updates the index entry only. The submodule's own checkout is not changed.</p>
+    </div>
+
+    <section aria-label="Commit ancestry" style="display: grid; grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr) 40px minmax(0, 1fr); align-items: center; gap: 0">
+      <div class="node">
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Base</span>
+        <span style="font: 600 14px 'JetBrains Mono', monospace; color: #F0C47A">1d9e0b7</span>
+        <span style="font-size: 13px">Bump tokens to 3.8</span>
+        <span style="font-size: 12px; color: #A0A7B2">Sep 18</span>
+      </div>
+      <svg width="40" height="16" viewBox="0 0 40 16" aria-hidden="true"><path d="M2 8h32" stroke="#4A505A" stroke-width="2"></path><path d="m30 3 6 5-6 5" fill="none" stroke="#4A505A" stroke-width="2"></path></svg>
+      <div class="node">
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Left · <span style="font-family: 'JetBrains Mono', monospace; text-transform: none">main</span></span>
+        <span style="font: 600 14px 'JetBrains Mono', monospace; color: #F0C47A">a41f0c2</span>
+        <span style="font-size: 13px">Fix focus ring on Select</span>
+        <span style="font-size: 12px; color: #A0A7B2">Sep 30</span>
+      </div>
+      <svg width="40" height="16" viewBox="0 0 40 16" aria-hidden="true"><path d="M2 8h32" stroke="#4A505A" stroke-width="2"></path><path d="m30 3 6 5-6 5" fill="none" stroke="#4A505A" stroke-width="2"></path></svg>
+      <div class="node" style="border-color: #3F7A55">
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Right · <span style="font-family: 'JetBrains Mono', monospace; text-transform: none">feature/checkout-v2</span></span>
+        <span style="font: 600 14px 'JetBrains Mono', monospace; color: #F0C47A">7be9d13</span>
+        <span style="font-size: 13px">Add PromoBadge component</span>
+        <span style="font-size: 12px; color: #A0A7B2">Oct 4</span>
+      </div>
+    </section>
+
+    <div role="status" style="display: flex; gap: 12px; align-items: center; padding: 12px 14px; background: #1C2A22; border: 1px solid #2F5A3D; border-radius: 8px; font-size: 14px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7FD69C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+      <span><span style="font-family: 'JetBrains Mono', monospace">a41f0c2</span> (left) is an ancestor of <span style="font-family: 'JetBrains Mono', monospace">7be9d13</span> (right). Using Right keeps both sides' changes.</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #2A2E35; border-radius: 10px">
+        <button class="btn" type="button" style="align-self: flex-start">Use Left · a41f0c2</button>
+        <span style="font-size: 13px; color: #A0A7B2">Drops the PromoBadge commit from the pointer.</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #E8A33D; border-radius: 10px; background: #221E16">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+          <button class="btn pri" type="button">Use Right · 7be9d13</button>
+          <span style="font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: #1C3626; color: #8FDCA8">Recommended</span>
+        </div>
+        <span style="font-size: 13px; color: #C9B48E">Descendant of both. Same as a fast-forward.</span>
+      </div>
+    </div>
+
+    <p style="margin: 0; font: 12px 'JetBrains Mono', monospace; color: #7D8592">Runs: git update-index --cacheinfo 160000,7be9d13…,vendor/ui-kit</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

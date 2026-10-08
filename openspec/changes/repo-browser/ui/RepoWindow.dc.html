@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Repository — shop-web</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}a:hover{color:#A9D0F0}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:32px;padding:0 12px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:7px;cursor:pointer;text-decoration:none;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A;color:#E4E6EA}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn.pri:hover{background:#F0B252;color:#16181C}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.danger{color:#FFB0B0;border-color:#5A2A33}
+.ib{width:28px;height:28px;border-radius:6px;border:0;background:transparent;color:#A0A7B2;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.seg{font:500 12px 'IBM Plex Sans',sans-serif;height:26px;padding:0 10px;border:0;border-radius:5px;background:transparent;color:#A0A7B2;cursor:pointer}
+.tab{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;font-size:13px;color:#A0A7B2;text-decoration:none;border-right:1px solid #2A2E35}
+.tab:hover{color:#E4E6EA}
+.btn:focus-visible,.ib:focus-visible,.seg:focus-visible,.tab:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+.th{font-size:12px;font-weight:600;color:#A0A7B2;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;text-align:left;border-bottom:1px solid #2A2E35}
+.td{padding:0 12px;height:46px;font-size:13px;border-bottom:1px solid #22262B;vertical-align:middle}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column; position: relative">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 16px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <a href="Main.dc.html" aria-label="Home" style="display: flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 3v5c0 4 7 4 7 8v5"></path><path d="M19 3v5c0 4-7 4-7 8"></path></svg></a>
+    <span style="font-weight: 600; font-size: 14px">shop-web</span>
+    <span style="font: 12px 'JetBrains Mono', monospace; color: #A0A7B2">~/code/shop-web</span>
+  </header>
+
+  <nav aria-label="Open tabs" style="display: flex; overflow-x: auto; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <a class="tab" href="#" aria-current="page" style="color: #E4E6EA; background: #16181C; box-shadow: inset 0 -2px 0 #E8A33D">Conflicts <span style="font-size: 11px; padding: 1px 7px; border-radius: 999px; background: #43202A; color: #FFC2C2">{{openCount}}</span></a>
+    <a class="tab" href="MergeEditor.dc.html"><span style="font-family: 'JetBrains Mono', monospace">CartService.kt</span><span aria-label="Unsaved changes" style="width: 7px; height: 7px; border-radius: 50%; background: #E8A33D"></span></a>
+    <a class="tab" href="ModifyDelete.dc.html"><span style="font-family: 'JetBrains Mono', monospace">Coupon.kt</span></a>
+  </nav>
+
+  <div style="flex: 1; width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 20px">
+
+    <section aria-label="Operation in progress" style="background: #1E2126; border: 1px solid #2E333A; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"></circle><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="12" r="2.5"></circle><path d="M6 8.5v7"></path><path d="M8.5 6c5 0 7 2 7.5 3.6"></path></svg>
+        <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+          <span style="font-size: 15px">Rebasing <span style="font-family: 'JetBrains Mono', monospace; font-weight: 600">feature/checkout-v2</span> onto <span style="font-family: 'JetBrains Mono', monospace; font-weight: 600">main</span> — commit 3 of 7: Add promo code stacking</span>
+          <sc-if value="{{resolved}}" hint-placeholder-val="{{false}}"><span style="font-size: 13px; color: #7FD69C">All conflicts resolved</span></sc-if>
+          <sc-if value="{{unresolved}}" hint-placeholder-val="{{true}}"><span style="font-size: 13px; color: #A0A7B2">{{openCount}} conflicted files · Continue unlocks when none remain</span></sc-if>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <button class="btn" type="button">Skip commit…</button>
+          <button class="btn danger" type="button">Abort rebase…</button>
+          <button class="btn pri" type="button" disabled="{{unresolved}}">Continue</button>
+        </div>
+      </div>
+      <details style="font-size: 13px; color: #A0A7B2">
+        <summary style="cursor: pointer; width: fit-content">Git output</summary>
+        <pre style="margin: 8px 0 0; font: 12px/1.6 'JetBrains Mono', monospace; color: #C9CDD3; background: #121417; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap">CONFLICT (content): Merge conflict in src/main/kotlin/com/shop/cart/CartService.kt
+CONFLICT (modify/delete): src/main/kotlin/com/shop/promo/Coupon.kt deleted in 9f8e7d6 and modified in HEAD.
+error: could not apply 9f8e7d6... Add promo code stacking</pre>
+      </details>
+    </section>
+
+    <section aria-label="Conflicted files" style="display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+        <label style="flex: 1 1 260px; max-width: 360px; display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px; background: #1E2126; border: 1px solid #3A3F48; border-radius: 6px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7D8592" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <span style="position: absolute; left: -9999px">Filter files</span>
+          <input type="search" placeholder="Filter files" style="flex: 1; min-width: 0; border: 0; background: transparent; color: #E4E6EA; font: 13px 'IBM Plex Sans', sans-serif; outline: none">
+        </label>
+        <div role="group" aria-label="View" style="display: flex; gap: 2px; padding: 3px; background: #1E2126; border: 1px solid #2A2E35; border-radius: 7px">
+          <button class="seg" type="button" aria-pressed="true" style="background: #30353D; color: #E4E6EA">Flat</button>
+          <button class="seg" type="button">By folder</button>
+        </div>
+        <span style="flex: 1"></span>
+        <span style="font-size: 13px; color: #A0A7B2">2 selected</span>
+        <button class="btn" type="button">Accept Left <span style="font-family: 'JetBrains Mono', monospace; color: #A0A7B2">main</span></button>
+        <button class="btn" type="button">Accept Right <span style="font-family: 'JetBrains Mono', monospace; color: #A0A7B2">feature/checkout-v2</span></button>
+      </div>
+
+      <div style="overflow-x: auto; border: 1px solid #2A2E35; border-radius: 10px; background: #1A1D21">
+        <table style="width: 100%; min-width: 900px; border-collapse: collapse">
+          <thead>
+            <tr>
+              <th class="th" style="width: 36px"><input type="checkbox" aria-label="Select all" style="width: 16px; height: 16px; accent-color: #E8A33D"></th>
+              <th class="th"><button type="button" style="all: unset; cursor: pointer">Path ↑</button></th>
+              <th class="th">Conflict</th>
+              <th class="th">Left · main</th>
+              <th class="th">Right · feature/checkout-v2</th>
+              <th class="th">Kind</th>
+              <th class="th" style="width: 100px"><span style="position: absolute; left: -9999px">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{files}}" as="f" hint-placeholder-count="6">
+              <tr style="{{f.rowS}}">
+                <td class="td"><input type="checkbox" defaultChecked="{{f.sel}}" aria-label="Select {{f.file}}" style="width: 16px; height: 16px; accent-color: #E8A33D"></td>
+                <td class="td"><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px"><span style="color: #7D8592">{{f.dir}}</span><span style="color: #E4E6EA; font-weight: 600">{{f.file}}</span></span></td>
+                <td class="td" style="color: #C9CDD3">{{f.type}}</td>
+                <td class="td" style="{{f.leftS}}">{{f.left}}</td>
+                <td class="td" style="{{f.rightS}}">{{f.right}}</td>
+                <td class="td"><span style="{{f.kindS}}">{{f.kind}}</span></td>
+                <td class="td" style="text-align: right"><a class="btn" href="{{f.href}}" style="height: 30px">Merge…</a></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-label="Resolved in this session" style="display: flex; flex-direction: column; gap: 8px">
+      <h2 style="margin: 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Resolved in this session · 2</h2>
+      <div style="border: 1px solid #2A2E35; border-radius: 10px; overflow: hidden">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 10px 14px; border-bottom: 1px solid #22262B">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7FD69C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+          <span style="flex: 1 1 300px; font: 13px 'JetBrains Mono', monospace"><span style="color: #7D8592">web/</span>package.json</span>
+          <span style="font-size: 13px; color: #A0A7B2">Merged</span>
+          <button class="btn" type="button" style="height: 30px">Reopen conflict…</button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 10px 14px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7FD69C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+          <span style="flex: 1 1 300px; font: 13px 'JetBrains Mono', monospace">CHANGELOG.md</span>
+          <span style="font-size: 13px; color: #A0A7B2">Accepted Right</span>
+          <button class="btn" type="button" style="height: 30px">Reopen conflict…</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div role="status" style="position: absolute; right: 24px; bottom: 24px; display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; background: #262A30; border: 1px solid #3A3F48; border-radius: 10px; box-shadow: 0 12px 28px rgba(0,0,0,0.4); font-size: 13px">
+    <span><span style="font-family: 'JetBrains Mono', monospace">Coupon.kt</span> was resolved outside MergeIQ</span>
+    <button class="btn" type="button" style="height: 28px">Close tab</button>
+    <button class="ib" type="button" aria-label="Dismiss"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"allResolved":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const resolved = this.props.allResolved ?? false;
+    const KIND = {
+      Text: 'background:#262A30;color:#C9CDD3',
+      Image: 'background:#1E2F3F;color:#9CC8F0',
+      Lockfile: 'background:#2E2718;color:#F0C47A',
+      Submodule: 'background:#2A2238;color:#CDB4F5',
+      'go.sum': 'background:#1C3626;color:#8FDCA8',
+    };
+    const side = (v) => v === 'Deleted' ? 'color:#FF9F9F;font-weight:500' : 'color:#C9CDD3';
+    const raw = [
+      ['src/main/kotlin/com/shop/cart/', 'CartService.kt', 'Both modified', 'Modified', 'Modified', 'Text', 'MergeEditor.dc.html', false],
+      ['src/main/kotlin/com/shop/promo/', 'Coupon.kt', 'Deleted by them', 'Modified', 'Deleted', 'Text', 'ModifyDelete.dc.html', false],
+      ['web/assets/', 'logo.png', 'Both modified', 'Modified', 'Modified', 'Image', 'ImageConflict.dc.html', false],
+      ['web/', 'pnpm-lock.yaml', 'Both modified', 'Modified', 'Modified', 'Lockfile · pnpm', 'Lockfile.dc.html', true],
+      ['services/edge/', 'go.sum', 'Both modified', 'Modified', 'Modified', 'go.sum', 'Lockfile.dc.html', true],
+      ['vendor/', 'ui-kit', 'Both modified', 'a41f0c2', '7be9d13', 'Submodule', '#', false],
+    ];
+    const files = resolved ? [] : raw.map(([dir, file, type, left, right, kind, href, sel]) => ({
+      dir, file, type, left, right, kind, href, sel,
+      rowS: sel ? 'background:#22262C' : '',
+      leftS: side(left), rightS: side(right),
+      kindS: 'font-size:12px;font-weight:500;padding:3px 8px;border-radius:4px;' + (KIND[kind.split(' ·')[0]] || KIND.Text),
+    }));
+    return { files, resolved, unresolved: !resolved, openCount: files.length };
+  }
+}
+</script>
+</body>
+</html>

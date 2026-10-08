@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Merge editor — CartService.kt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.t-dark{--bg:#16181C;--bar:#1B1E22;--surface:#262A30;--surface-2:#2E333A;--border:#2A2E35;--border-2:#3A3F48;--border-3:#4A505A;--text:#E4E6EA;--text-2:#C9CDD3;--muted:#A0A7B2;--faint:#7D8592;--code:#D5D8DD;--accent:#E8A33D;--on-accent:#16181C;--link:#7FB8E6;
+--ins-bg:#1C3626;--mod-bg:#1A2C46;--con-bg:#43202A;--res-bg:#22262B;--ins-em:#2D6A43;--mod-em:#2C4F80;--con-em:#7A2F3B;--res-em:#30353D;
+--ins-band:rgba(63,185,107,.22);--mod-band:rgba(76,141,255,.24);--con-band:rgba(240,96,96,.28);--res-band:rgba(160,167,178,.10);
+--ins-fg:#5FCB86;--mod-fg:#8FB8FF;--con-fg:#FF8A8A;--res-fg:#8A929E;--hatch:#23272D;
+--kw:#E0A262;--type:#7FC4D9;--num:#D7A0E8;--str:#9CCB86;
+--pill-bg:#2A1E22;--pill-border:#5A2A33;--pill-fg:#F2C1C1;--chip-bg:#3A2E18;--chip-fg:#F0C47A;--shadow:rgba(0,0,0,.45)}
+.t-light{--bg:#FFFFFF;--bar:#F3F4F6;--surface:#FFFFFF;--surface-2:#E9EBEE;--border:#DDE0E4;--border-2:#C6CBD2;--border-3:#B3B9C1;--text:#1E2228;--text-2:#363C45;--muted:#59616C;--faint:#6B7380;--code:#1E2228;--accent:#E8A33D;--on-accent:#16181C;--link:#1D5FB0;
+--ins-bg:#E1F4E7;--mod-bg:#E0EAFB;--con-bg:#FBE0E3;--res-bg:#EFF0F2;--ins-em:#AEE2BF;--mod-em:#B6CDF4;--con-em:#F2AEB6;--res-em:#DCDFE3;
+--ins-band:rgba(46,160,90,.22);--mod-band:rgba(50,110,220,.20);--con-band:rgba(210,50,60,.20);--res-band:rgba(100,110,125,.10);
+--ins-fg:#1F7A3F;--mod-fg:#2459B8;--con-fg:#B42330;--res-fg:#6B7380;--hatch:#E3E5E9;
+--kw:#9A4D00;--type:#1F6F8B;--num:#7A3E9D;--str:#2E7D32;
+--pill-bg:#FCE8EA;--pill-border:#F1B5BC;--pill-fg:#8C1D27;--chip-bg:#FCEFD6;--chip-fg:#8A5A0C;--shadow:rgba(20,30,50,.18)}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:32px;padding:0 12px;border-radius:6px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);display:inline-flex;align-items:center;gap:7px;cursor:pointer;text-decoration:none;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:var(--surface-2);color:var(--text)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.btn.pri:hover{background:#F0B252;color:var(--on-accent)}
+.btn.q{background:transparent;border-color:transparent;color:var(--text-2)}
+.btn.q:hover{background:var(--surface-2)}
+.btn[aria-pressed="true"]{background:var(--surface-2);border-color:var(--border-3);color:var(--text)}
+.ib{width:32px;height:32px;border-radius:6px;border:0;background:transparent;color:var(--text-2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:var(--surface-2);color:var(--text)}
+.gb{font:600 12px 'JetBrains Mono',monospace;min-width:24px;height:20px;padding:0 4px;border-radius:4px;border:1px solid var(--border-3);background:var(--surface);color:var(--text);cursor:pointer;line-height:1}
+.gb:hover{background:var(--surface-2)}
+.btn:focus-visible,.ib:focus-visible,.gb:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.kbd{font:500 11px 'JetBrains Mono',monospace;padding:1px 5px;border:1px solid var(--border-3);border-radius:4px;color:var(--text-2)}
+.sep{width:1px;height:20px;background:var(--border-2);margin:0 4px}
+.code{font:13px/22px 'JetBrains Mono',monospace;white-space:pre;overflow:hidden;color:var(--code)}
+.ln{font:12px/22px 'JetBrains Mono',monospace;color:var(--faint);text-align:right;padding-right:8px;display:flex;justify-content:flex-end;align-items:center;gap:4px}
+.fold{font:12px 'JetBrains Mono',monospace;color:var(--faint);padding:4px 8px;background:var(--bar);border-radius:4px}
+</style>
+</helmet>
+<div class="{{themeClass}}" style="min-height: 900px; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--bar)">
+    <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 420px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 3v5c0 4 7 4 7 8v5"></path><path d="M19 3v5c0 4-7 4-7 8"></path></svg>
+      <span style="font-weight: 600; font-size: 14px">CartService.kt</span>
+      <span style="font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap">Merging <span style="font-family: 'JetBrains Mono', monospace; color: var(--text-2)">feature/checkout-v2</span> into <span style="font-family: 'JetBrains Mono', monospace; color: var(--text-2)">main</span></span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span role="status" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: var(--pill-bg); border: 1px solid var(--pill-border); color: var(--pill-fg)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v9"></path><path d="M12 19v.5"></path></svg>
+        2 changes · 1 conflict left
+      </span>
+      <button class="btn" type="button">Cancel</button>
+      <a class="btn pri" href="SaveDialog.dc.html">Apply <span class="kbd" style="border-color: #9A6A20; color: #3A2A10">⌘S</span></a>
+    </div>
+  </header>
+
+  <div role="toolbar" aria-label="Merge actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--border)">
+    <button class="btn q" type="button" aria-haspopup="menu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ins-fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 17 5-5-5-5"></path><path d="m6 17 5-5-5-5"></path></svg>Apply non-conflicting<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+    <button class="btn q" type="button" title="Resolve simple conflicts (⌘⌥M)" disabled="" style="opacity: 0.45"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 4 5 5L8 21l-5-5z"></path><path d="M18 2v2M22 6h-2M14 2l.5 1"></path></svg>Resolve simple</button>
+    <span class="sep"></span>
+    <button class="btn q" type="button">Accept Left</button>
+    <button class="btn q" type="button">Accept Right</button>
+    <span class="sep"></span>
+    <button class="ib" type="button" aria-label="Previous change (Alt+Up)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 15 6-6 6 6"></path></svg></button>
+    <button class="ib" type="button" aria-label="Next change (Alt+Down)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+    <button class="btn q" type="button" aria-label="Next conflict (F7)" style="color: var(--con-fg)">Next conflict <span class="kbd">F7</span></button>
+    <span class="sep"></span>
+    <button class="btn q" type="button" aria-pressed="{{basePressed}}">Show base</button>
+    <button class="btn q" type="button" aria-pressed="true">Collapse unchanged</button>
+    <button class="btn q" type="button" aria-pressed="true">Sync scroll</button>
+    <span class="sep"></span>
+    <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted)">Whitespace
+      <select style="font: 13px 'IBM Plex Sans', sans-serif; height: 30px; background: var(--surface); color: var(--text); border: 1px solid var(--border-2); border-radius: 6px; padding: 0 8px">
+        <option>Compare all</option>
+        <option>Ignore trailing</option>
+        <option>Ignore all</option>
+      </select>
+    </label>
+  </div>
+
+  <div style="flex: 1; overflow-x: auto; position: relative">
+    <div style="{{wrapS}}">
+      <div style="{{headS}}">
+        <button type="button" style="grid-column: span 2; text-align: left; border: 0; background: transparent; color: inherit; font: inherit; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 3px">
+          <span style="display: flex; align-items: center; gap: 8px"><span style="font: 600 13px 'JetBrains Mono', monospace">main</span><span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); color: var(--muted)">Left · ours · read-only</span></span>
+          <span style="font-size: 12px; color: var(--muted)"><span style="font-family: 'JetBrains Mono', monospace">a1b2c3d</span> Merge PR #412: tax rounding</span>
+        </button>
+        <sc-if value="{{showBase}}" hint-placeholder-val="{{false}}">
+          <div style="grid-column: span 2; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; border-left: 1px solid var(--border)">
+            <span style="display: flex; align-items: center; gap: 8px"><span style="font-weight: 600; font-size: 13px">Base</span><span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); color: var(--muted)">read-only</span></span>
+            <span style="font-size: 12px; color: var(--muted)"><span style="font-family: 'JetBrains Mono', monospace">71c0e4a</span> merge base</span>
+          </div>
+        </sc-if>
+        <div></div>
+        <div style="grid-column: span 2; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; border-left: 1px solid var(--border); border-right: 1px solid var(--border)">
+          <span style="display: flex; align-items: center; gap: 8px"><span style="font-weight: 600; font-size: 13px">Result</span><span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--chip-bg); color: var(--chip-fg)">editable</span></span>
+          <span style="font: 12px 'JetBrains Mono', monospace; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap">src/main/kotlin/com/shop/cart/CartService.kt</span>
+        </div>
+        <div></div>
+        <button type="button" style="grid-column: span 2; text-align: left; border: 0; background: transparent; color: inherit; font: inherit; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 3px">
+          <span style="display: flex; align-items: center; gap: 8px"><span style="font: 600 13px 'JetBrains Mono', monospace">feature/checkout-v2</span><span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); color: var(--muted)">Right · theirs · read-only</span></span>
+          <span style="font-size: 12px; color: var(--muted)"><span style="font-family: 'JetBrains Mono', monospace">9f8e7d6</span> Add promo code stacking</span>
+        </button>
+      </div>
+
+      <div style="padding: 6px 0">
+        <sc-for list="{{rows}}" as="row" hint-placeholder-count="24">
+          <div style="{{rowS}}">
+            <div class="ln" style="{{row.L.lnS}}">{{row.L.mark}}{{row.L.n}}</div>
+            <div class="code" style="{{row.L.s}}"><sc-for list="{{row.L.toks}}" as="tk"><span style="{{tk.s}}">{{tk.t}}</span></sc-for></div>
+            <sc-if value="{{showBase}}" hint-placeholder-val="{{false}}">
+              <div class="ln" style="{{row.B.lnS}}">{{row.B.n}}</div>
+              <div class="code" style="{{row.B.s}}"><sc-for list="{{row.B.toks}}" as="tk"><span style="{{tk.s}}">{{tk.t}}</span></sc-for></div>
+            </sc-if>
+            <div style="{{row.gl.s}}">
+              <sc-if value="{{row.gl.btn}}" hint-placeholder-val="{{false}}"><button class="gb" type="button" aria-label="Apply left change to result (Mod+Alt+Left)">&gt;&gt;</button><button class="gb" type="button" aria-label="Ignore left change">×</button></sc-if>
+              <sc-if value="{{row.gl.done}}" hint-placeholder-val="{{false}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--res-fg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-label="Applied"><path d="m5 12 5 5 9-10"></path></svg></sc-if>
+            </div>
+            <div class="ln" style="{{row.X.lnS}}">
+              <sc-if value="{{row.X.revert}}" hint-placeholder-val="{{false}}"><button class="gb" type="button" aria-label="Revert chunk to base" title="Revert" style="min-width: 20px; height: 18px; padding: 0 2px; font-size: 11px">↺</button></sc-if>
+              {{row.X.mark}}{{row.X.n}}
+            </div>
+            <div class="code" style="{{row.X.s}}"><sc-for list="{{row.X.toks}}" as="tk"><span style="{{tk.s}}">{{tk.t}}</span></sc-for></div>
+            <div style="{{row.gr.s}}">
+              <sc-if value="{{row.gr.btn}}" hint-placeholder-val="{{false}}"><button class="gb" type="button" aria-label="Apply right change to result (Mod+Alt+Right)">&lt;&lt;</button><button class="gb" type="button" aria-label="Ignore right change">×</button></sc-if>
+            </div>
+            <div class="code" style="{{row.R.s}}"><sc-for list="{{row.R.toks}}" as="tk"><span style="{{tk.s}}">{{tk.t}}</span></sc-for></div>
+            <div class="ln" style="{{row.R.lnS}}">{{row.R.n}}{{row.R.mark}}</div>
+          </div>
+        </sc-for>
+        <div style="{{foldS}}">
+          <div></div><div class="fold">⋯ 41 unchanged lines</div>
+          <sc-if value="{{showBase}}" hint-placeholder-val="{{false}}"><div></div><div class="fold">⋯ 41 unchanged lines</div></sc-if>
+          <div></div><div></div><div class="fold">⋯ 41 unchanged lines</div>
+          <div></div><div class="fold">⋯ 41 unchanged lines</div><div></div>
+        </div>
+      </div>
+
+      <sc-if value="{{showPopover}}" hint-placeholder-val="{{false}}">
+        <div role="dialog" aria-label="Commits on feature/checkout-v2 touching this file" style="position: absolute; top: 64px; right: 24px; width: 420px; background: var(--surface); border: 1px solid var(--border-2); border-radius: 10px; box-shadow: 0 12px 32px var(--shadow); padding: 8px; font-size: 13px">
+          <div style="padding: 8px 10px 10px; color: var(--muted); font-size: 12px">feature/checkout-v2 · 3 commits touch this file · newest first</div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; background: var(--surface-2)"><span style="font-family: 'JetBrains Mono', monospace; color: var(--chip-fg)">9f8e7d6</span><span style="flex: 1">Add promo code stacking</span><span style="color: var(--muted); font-size: 12px">priya · 2h</span><button class="ib" type="button" aria-label="Copy SHA 9f8e7d6" style="width: 28px; height: 28px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h8"></path></svg></button></div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px"><span style="font-family: 'JetBrains Mono', monospace; color: var(--chip-fg)">4c3b2a1</span><span style="flex: 1">Region-aware tax lookup</span><span style="color: var(--muted); font-size: 12px">priya · 1d</span><button class="ib" type="button" aria-label="Copy SHA 4c3b2a1" style="width: 28px; height: 28px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h8"></path></svg></button></div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 8px 10px"><span style="font-family: 'JetBrains Mono', monospace; color: var(--chip-fg)">e5d6c7b</span><span style="flex: 1">Introduce PromoCode model</span><span style="color: var(--muted); font-size: 12px">sam · 3d</span><button class="ib" type="button" aria-label="Copy SHA e5d6c7b" style="width: 28px; height: 28px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h8"></path></svg></button></div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <footer style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding: 8px 16px; border-top: 1px solid var(--border); background: var(--bar); font-size: 12px; color: var(--muted)">
+    <span style="display: flex; gap: 16px; flex-wrap: wrap"><span>Kotlin</span><span>UTF-8</span><span>LF</span><span>Ln 11, Col 5</span></span>
+    <span style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center">
+      <span><span class="kbd">F7</span> next conflict</span>
+      <span><span class="kbd">⌘⌥←</span> apply left</span>
+      <span><span class="kbd">⌘⌥→</span> apply right</span>
+      <span><span class="kbd">⌘⌥⌫</span> ignore</span>
+    </span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"showBase":{"editor":"boolean","default":false},"showPopover":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const showBase = !!(this.props.showBase ?? false);
+    const theme = this.props.theme ?? 'dark';
+    const KW = new Set(['package','import','class','private','val','fun','return','const','companion','object']);
+    const MARK = { ins: '+', mod: '~', con: '!', res: '✓' };
+    const chunks = {
+      c1: { kind: 'res', panes: { L: 1, X: 1 }, gl: 'done' },
+      c2: { kind: 'ins', panes: { R: 1 }, gr: 'btn', marker: true },
+      c3: { kind: 'con', panes: { L: 1, B: 1, X: 1, R: 1 }, gl: 'btn', gr: 'btn', current: true },
+      c5: { kind: 'mod', panes: { B: 1, X: 1, R: 1 }, gr: 'btn' },
+    };
+    const same = (t) => [t, t, t];
+    const data = [
+      [null, ...same('package com.shop.cart')],
+      [null, ...same('')],
+      [null, ...same('import com.shop.money.Money')],
+      ['c1', 'import ⟦java.math.RoundingMode⟧', 'import java.math.RoundingMode', null],
+      ['c2', null, null, 'import ⟦com.shop.promo.PromoCode⟧'],
+      [null, ...same('')],
+      [null, ...same('class CartService(private val tax: TaxRules) {')],
+      [null, ...same('    fun subtotal(items: List<LineItem>): Money =')],
+      [null, ...same('        items.fold(Money.ZERO) { acc, i -> acc + i.price * i.qty }')],
+      [null, ...same('')],
+      ['c3', '    fun applyDiscount(total: Money, pct: Int): Money {', '    fun applyDiscount(total: Money, pct: Int): Money {', '    fun applyDiscount(total: Money, ⟦codes: List<PromoCode>⟧): Money {'],
+      ['c3', '        ⟦val off = total * pct / 100⟧', '        return total - total * pct / 100', '        ⟦val pct = codes.sumOf { it.percent }.coerceAtMost(MAX_DISCOUNT)⟧'],
+      ['c3', '        return ⟦(total - off).setScale(2, RoundingMode.HALF_EVEN)⟧', null, '        return total - total * pct / 100'],
+      [null, ...same('    }')],
+      [null, ...same('')],
+      [null, ...same('    fun total(items: List<LineItem>): Money {')],
+      [null, ...same('        val net = subtotal(items)')],
+      ['c5', '        return net + tax.on(net)', '        return net + tax.on(net)', '        return net + tax.on(net⟦, region = Region.EU⟧)'],
+      [null, ...same('    }')],
+      [null, ...same('')],
+      [null, ...same('    companion object {')],
+      [null, ...same('        const val MAX_DISCOUNT = 50')],
+      [null, ...same('    }')],
+      [null, ...same('}')],
+    ];
+    const toks = (s, em) => {
+      const out = [];
+      for (const p of s.split(/(⟦[^⟧]*⟧)/)) {
+        if (!p) continue;
+        const isEm = p.startsWith('⟦');
+        const txt = isEm ? p.slice(1, -1) : p;
+        const emS = isEm && em ? 'background:var(--' + em + '-em);border-radius:2px;' : '';
+        const re = /\b[A-Za-z_]\w*\b|\b\d+\b|"[^"]*"/g;
+        let last = 0, m;
+        while ((m = re.exec(txt))) {
+          if (m.index > last) out.push({ t: txt.slice(last, m.index), s: emS });
+          const w = m[0];
+          let c = '';
+          if (KW.has(w)) c = 'color:var(--kw);';
+          else if (/^\d/.test(w)) c = 'color:var(--num);';
+          else if (/^"/.test(w)) c = 'color:var(--str);';
+          else if (/^[A-Z]/.test(w)) c = 'color:var(--type);';
+          out.push({ t: w, s: c + emS });
+          last = re.lastIndex;
+        }
+        if (last < txt.length) out.push({ t: txt.slice(last), s: emS });
+      }
+      return out;
+    };
+    const num = { L: 0, B: 0, X: 0, R: 0 };
+    const hatch = 'background:repeating-linear-gradient(135deg,transparent 0 5px,var(--hatch) 5px 6px);';
+    const rows = data.map((r, i) => {
+      const id = r[0];
+      const ch = id ? chunks[id] : null;
+      const first = id && (i === 0 || data[i - 1][0] !== id);
+      const last = id && (i === data.length - 1 || data[i + 1][0] !== id);
+      const pane = (key, text) => {
+        const on = ch && ch.panes[key];
+        let s = 'padding-left:10px;';
+        let lnS = '';
+        if (text === null) {
+          s += hatch;
+          if (ch && ch.marker && key === 'X') s += 'box-shadow:inset 0 -2px 0 var(--' + ch.kind + '-fg);';
+          return { n: '', mark: '', toks: [], s, lnS, revert: false };
+        }
+        num[key] += 1;
+        if (on) {
+          s += 'background:var(--' + ch.kind + '-bg);';
+          lnS = 'background:var(--' + ch.kind + '-bg);';
+          if (ch.kind === 'res') s += 'color:var(--muted);';
+          if (ch.current && key === 'X') {
+            const c = 'var(--con-fg)';
+            const sh = ['inset 1px 0 0 ' + c, 'inset -1px 0 0 ' + c];
+            if (first) sh.push('inset 0 1px 0 ' + c);
+            if (last) sh.push('inset 0 -1px 0 ' + c);
+            s += 'box-shadow:' + sh.join(',') + ';';
+          }
+        }
+        const mark = on && first && key !== 'B' ? MARK[ch.kind] + ' ' : '';
+        if (mark) lnS += 'color:var(--' + ch.kind + '-fg);font-weight:600;';
+        return { n: num[key], mark, toks: toks(text, on ? ch.kind : ''), s, lnS, revert: !!(on && first && key === 'X' && ch.kind === 'res') };
+      };
+      const gut = (which) => {
+        const has = ch && ch[which];
+        const sideHas = ch && (which === 'gl' ? (ch.panes.L || ch.gl) : (ch.panes.R || ch.gr));
+        let s = 'display:flex;align-items:center;justify-content:center;gap:3px;';
+        if (sideHas) s += 'background:var(--' + ch.kind + '-band);';
+        return { s, btn: !!(has && first && ch[which] === 'btn'), done: !!(has && first && ch[which] === 'done') };
+      };
+      const base = id === 'c1' ? null : r[2];
+      return { L: pane('L', r[1]), B: pane('B', base), X: pane('X', r[2]), R: pane('R', r[3]), gl: gut('gl'), gr: gut('gr') };
+    });
+    const cols = showBase
+      ? '48px minmax(0,1fr) 48px minmax(0,1fr) 64px 56px minmax(0,1fr) 64px minmax(0,1fr) 48px'
+      : '48px minmax(0,1fr) 64px 56px minmax(0,1fr) 64px minmax(0,1fr) 48px';
+    const grid = 'display:grid;grid-template-columns:' + cols + ';';
+    return {
+      rows, showBase,
+      showPopover: this.props.showPopover ?? false,
+      themeClass: theme === 'light' ? 't-light' : 't-dark',
+      basePressed: showBase ? 'true' : 'false',
+      wrapS: 'min-width:' + (showBase ? 1320 : 1040) + 'px',
+      headS: grid + 'border-bottom:1px solid var(--border);background:var(--bar);',
+      rowS: grid + 'height:22px;',
+      foldS: grid + 'margin-top:6px;',
+    };
+  }
+}
+</script>
+</body>
+</html>

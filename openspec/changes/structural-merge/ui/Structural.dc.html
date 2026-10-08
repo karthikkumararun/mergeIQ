@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Structural merge proposal</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:32px;padding:0 12px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:7px;cursor:pointer;text-decoration:none;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn.q{background:transparent;border-color:transparent;color:#C9CDD3}
+.btn:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+.l{display:grid;grid-template-columns:44px 22px minmax(0,1fr);font:13px/22px 'JetBrains Mono',monospace;white-space:pre;color:#D5D8DD}
+.n{color:#7D8592;text-align:right;padding-right:8px;font-size:12px}
+.k{color:#9CCB86}.s{color:#E0A262}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 10px 16px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <span style="font-weight: 600; font-size: 14px">package.json</span>
+    <span style="font-size: 13px; color: #A0A7B2">Merging <span style="font-family: 'JetBrains Mono', monospace; color: #C9CDD3">feature/checkout-v2</span> into <span style="font-family: 'JetBrains Mono', monospace; color: #C9CDD3">main</span></span>
+    <span style="flex: 1"></span>
+    <span role="status" style="font-size: 13px; padding: 6px 12px; border-radius: 999px; background: #2A1E22; border: 1px solid #5A2A33; color: #F2C1C1">3 conflicts left</span>
+  </header>
+  <div role="toolbar" aria-label="Merge actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid #2A2E35">
+    <button class="btn q" type="button">Apply non-conflicting</button>
+    <button class="btn q" type="button">Resolve simple</button>
+    <button class="btn" type="button" style="border-color: #3E6E9E; background: #1A2C46; color: #CFE3FF">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="8.5" y="14" width="7" height="7" rx="1"></rect><path d="M6.5 10v2h11v-2M12 12v2"></path></svg>
+      Resolve structurally (3)
+    </button>
+    <span style="font-size: 12px; color: #7D8592; margin-left: 6px">Proposals ready · computed in 140 ms</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap; gap: 24px; padding: 20px 24px; align-items: flex-start">
+    <section aria-label="Result pane" style="flex: 999 1 520px; min-width: 0; border: 1px solid #2A2E35; border-radius: 10px; overflow: hidden; background: #1A1D21">
+      <div style="padding: 10px 14px; border-bottom: 1px solid #2A2E35; font-size: 13px; font-weight: 600">Result</div>
+      <div style="padding: 8px 0; overflow-x: auto">
+        <div class="l"><span class="n">1</span><span></span><span>{</span></div>
+        <div class="l"><span class="n">2</span><span></span><span>  <span class="k">"name"</span>: <span class="s">"shop-web"</span>,</span></div>
+        <div class="l"><span class="n">3</span><span></span><span>  <span class="k">"private"</span>: true,</span></div>
+        <div class="l"><span class="n">4</span><span></span><span>  <span class="k">"scripts"</span>: {</span></div>
+        <div class="l"><span class="n">5</span><span></span><span>    <span class="k">"dev"</span>: <span class="s">"vite"</span>,</span></div>
+        <div class="l" style="background: #43202A; box-shadow: inset 1px 0 0 #6E8FD0, inset -1px 0 0 #6E8FD0, inset 0 1px 0 #6E8FD0"><span class="n" style="color: #FF8A8A; font-weight: 600">! 6</span><button type="button" aria-label="Show structural proposal" style="width: 20px; height: 20px; margin-top: 1px; border-radius: 4px; border: 1px solid #3E6E9E; background: #1A2C46; color: #CFE3FF; font: 600 10px 'JetBrains Mono', monospace; cursor: pointer; padding: 0">S</button><span>    <span class="k">"build"</span>: <span class="s">"vite build"</span></span></div>
+        <div class="l" style="background: #43202A; box-shadow: inset 1px 0 0 #6E8FD0, inset -1px 0 0 #6E8FD0, inset 0 -1px 0 #6E8FD0"><span class="n"></span><span></span><span style="background: repeating-linear-gradient(135deg, transparent 0 5px, #5A2A33 5px 6px)"> </span></div>
+        <div class="l"><span class="n">7</span><span></span><span>  },</span></div>
+        <div class="l"><span class="n">8</span><span></span><span>  <span class="k">"dependencies"</span>: {</span></div>
+        <div class="l" style="background: #43202A"><span class="n" style="color: #FF8A8A; font-weight: 600">! 9</span><button type="button" aria-label="Show structural proposal" style="width: 20px; height: 20px; margin-top: 1px; border-radius: 4px; border: 1px solid #3E6E9E; background: #1A2C46; color: #CFE3FF; font: 600 10px 'JetBrains Mono', monospace; cursor: pointer; padding: 0">S</button><span>    <span class="k">"react"</span>: <span class="s">"^19.1.0"</span>,</span></div>
+        <div class="l"><span class="n">10</span><span></span><span>    <span class="k">"react-dom"</span>: <span class="s">"^19.1.0"</span></span></div>
+        <div class="l"><span class="n">11</span><span></span><span>  },</span></div>
+        <div class="l" style="background: #43202A"><span class="n" style="color: #FF8A8A; font-weight: 600">! 12</span><span></span><span>  <span class="k">"packageManager"</span>: <span class="s">"pnpm@9.12.0"</span></span></div>
+        <div class="l"><span class="n">13</span><span></span><span>}</span></div>
+      </div>
+      <div style="padding: 10px 14px; border-top: 1px solid #2A2E35; font-size: 12px; color: #A0A7B2; display: flex; gap: 16px; flex-wrap: wrap">
+        <span><span style="font: 600 10px 'JetBrains Mono', monospace; padding: 1px 4px; border: 1px solid #3E6E9E; border-radius: 3px; color: #CFE3FF">S</span> structural proposal available</span>
+        <span>Line 12 has no proposal: both sides changed the same key</span>
+      </div>
+    </section>
+
+    <aside role="dialog" aria-labelledby="sp-title" style="flex: 1 1 420px; max-width: 520px; min-width: 0; background: #1E2126; border: 1px solid #3E6E9E; border-radius: 10px; box-shadow: 0 14px 32px rgba(0,0,0,0.45); display: flex; flex-direction: column">
+      <div style="padding: 14px 16px; border-bottom: 1px solid #2A2E35; display: flex; flex-direction: column; gap: 4px">
+        <h2 id="sp-title" style="margin: 0; font-size: 15px; font-weight: 600">Structural proposal · <span style="font-family: 'JetBrains Mono', monospace">scripts</span></h2>
+        <span style="font-size: 13px; color: #A0A7B2; line-height: 1.5">Left added <span style="font-family: 'JetBrains Mono', monospace; color: #C9CDD3">lint</span>, right added <span style="font-family: 'JetBrains Mono', monospace; color: #C9CDD3">test</span>. Different keys, so both are kept, left's first. A comma was added after <span style="font-family: 'JetBrains Mono', monospace; color: #C9CDD3">build</span>.</span>
+      </div>
+      <div style="padding: 12px 0; font: 13px/22px 'JetBrains Mono', monospace">
+        <div style="display: grid; grid-template-columns: 28px minmax(0, 1fr); white-space: pre; background: #3A1F24"><span style="text-align: center; color: #FF9F9F">−</span><span>    "build": "vite build"</span></div>
+        <div style="display: grid; grid-template-columns: 28px minmax(0, 1fr); white-space: pre; background: #1C3626"><span style="text-align: center; color: #7FD69C">+</span><span>    "build": "vite build"<span style="background: #2D6A43">,</span></span></div>
+        <div style="display: grid; grid-template-columns: 28px minmax(0, 1fr); white-space: pre; background: #1C3626"><span style="text-align: center; color: #7FD69C">+</span><span>    <span style="background: #2D6A43">"lint": "eslint .",</span></span></div>
+        <div style="display: grid; grid-template-columns: 28px minmax(0, 1fr); white-space: pre; background: #1C3626"><span style="text-align: center; color: #7FD69C">+</span><span>    <span style="background: #2D6A43">"test": "vitest"</span></span></div>
+      </div>
+      <div style="padding: 10px 16px; font-size: 12px; color: #A0A7B2; display: flex; flex-wrap: wrap; gap: 6px 16px; border-top: 1px solid #2A2E35">
+        <span>Covers 1 conflict</span><span>Validated: parses without errors</span>
+      </div>
+      <div style="padding: 12px 16px; border-top: 1px solid #2A2E35; display: flex; gap: 8px; justify-content: flex-end">
+        <button class="btn" type="button">Dismiss</button>
+        <button class="btn pri" type="button">Apply proposal</button>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Symlink, LFS and oversized conflicts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:36px;padding:0 14px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:8px;cursor:pointer;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A}
+.btn:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+.card{background:#1E2126;border:1px solid #2A2E35;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.ch{padding:14px 16px;border-bottom:1px solid #2A2E35;display:flex;flex-direction:column;gap:6px}
+.rows{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 16px;padding:16px;font-size:13px;align-items:baseline}
+.rows dt{color:#A0A7B2}
+.rows dd{margin:0;font-family:'JetBrains Mono',monospace;color:#E4E6EA;overflow-wrap:anywhere}
+.acts{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px;margin-top:auto}
+.tag{font-size:12px;font-weight:500;padding:3px 8px;border-radius:4px;width:fit-content}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 32px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <h1 style="margin: 0; font-size: 20px; font-weight: 600">Pick-a-side conflicts</h1>
+      <p style="margin: 0; font-size: 14px; color: #A0A7B2">Three conflict kinds that can't be merged line by line. Each opens as its own tab; shown side by side here.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; align-items: stretch">
+
+      <section class="card" aria-labelledby="sl-h">
+        <div class="ch">
+          <span class="tag" style="background: #262A30; color: #C9CDD3">Symlink</span>
+          <h2 id="sl-h" style="margin: 0; font: 600 14px 'JetBrains Mono', monospace">config/current</h2>
+        </div>
+        <dl class="rows">
+          <dt>Base</dt><dd>→ ../envs/staging</dd>
+          <dt>Left · main</dt><dd>→ ../envs/prod-eu</dd>
+          <dt>Right · feature/checkout-v2</dt><dd>→ ../envs/prod-us</dd>
+        </dl>
+        <p style="margin: 0; padding: 0 16px 14px; font-size: 12px; color: #7D8592">The link is recreated and staged with mode 120000.</p>
+        <div class="acts"><button class="btn" type="button">Use Left</button><button class="btn" type="button">Use Right</button></div>
+      </section>
+
+      <section class="card" aria-labelledby="lfs-h">
+        <div class="ch">
+          <span class="tag" style="background: #1E2F3F; color: #9CC8F0">Git LFS pointer</span>
+          <h2 id="lfs-h" style="margin: 0; font: 600 14px 'JetBrains Mono', monospace">assets/video/hero.mp4</h2>
+        </div>
+        <dl class="rows">
+          <dt>Base</dt><dd>oid 4d7a21…e9c0 · 38.2 MB</dd>
+          <dt>Left · main</dt><dd>oid 9b1f03…27aa · 36.9 MB</dd>
+          <dt>Right · feature/checkout-v2</dt><dd>oid c25e88…b413 · 41.0 MB</dd>
+        </dl>
+        <p style="margin: 0; padding: 0 16px 14px; font-size: 12px; color: #7D8592">Stages that side's pointer file. LFS fetches the content on checkout.</p>
+        <div class="acts"><button class="btn" type="button">Use Left</button><button class="btn" type="button">Use Right</button></div>
+      </section>
+
+      <section class="card" aria-labelledby="big-h">
+        <div class="ch">
+          <span class="tag" style="background: #2E2718; color: #F0C47A">Too large to open · over 20 MB</span>
+          <h2 id="big-h" style="margin: 0; font: 600 14px 'JetBrains Mono', monospace">data/exports/orders-2026.csv</h2>
+        </div>
+        <dl class="rows">
+          <dt>Base</dt><dd>48.6 MB</dd>
+          <dt>Left · main</dt><dd>50.1 MB</dd>
+          <dt>Right · feature/checkout-v2</dt><dd>52.3 MB</dd>
+        </dl>
+        <p style="margin: 0; padding: 0 16px 14px; font-size: 12px; color: #7D8592">MergeIQ won't load this file into the editor.</p>
+        <div class="acts"><button class="btn" type="button">Use Left</button><button class="btn" type="button">Use Right</button><button class="btn" type="button">Open in default app</button></div>
+      </section>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

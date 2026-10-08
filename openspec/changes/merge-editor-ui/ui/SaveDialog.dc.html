@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Unresolved changes dialog</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#101215}
+.opt{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;padding:12px 14px;border-radius:8px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;font:inherit;cursor:pointer;box-sizing:border-box}
+.opt:hover{background:#2E333A}
+.opt:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+.kbd{font:500 11px 'JetBrains Mono',monospace;padding:1px 5px;border:1px solid #4A505A;border-radius:4px;color:#C9CDD3}
+</style>
+</helmet>
+<div style="width: 640px; height: 420px; box-sizing: border-box; background: #101215; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Sans', sans-serif; color: #E4E6EA">
+  <div role="dialog" aria-modal="true" aria-labelledby="dlg-title" style="width: 540px; background: #1E2126; border: 1px solid #3A3F48; border-radius: 12px; box-shadow: 0 20px 48px rgba(0,0,0,0.5); padding: 22px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h2 id="dlg-title" style="margin: 0; font-size: 17px; font-weight: 600">1 conflict and 2 changes are unresolved</h2>
+      <p style="margin: 0; font-size: 13px; color: #A0A7B2; line-height: 1.5"><span style="font-family: 'JetBrains Mono', monospace">CartService.kt</span> still has a conflict in <span style="font-family: 'JetBrains Mono', monospace">applyDiscount</span> (line 11).</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <button class="opt" type="button" autofocus="" style="border-color: #E8A33D; background: #2E2718">
+        <span style="display: flex; flex-direction: column; gap: 3px; flex: 1"><span style="font-weight: 600; font-size: 14px">Continue resolving</span><span style="font-size: 12px; color: #C9B48E">Go back to the next unresolved chunk.</span></span>
+        <span class="kbd">↵</span>
+      </button>
+      <button class="opt" type="button">
+        <span style="display: flex; flex-direction: column; gap: 3px; flex: 1"><span style="font-weight: 600; font-size: 14px">Save with conflict markers</span><span style="font-size: 12px; color: #A0A7B2">Writes <span style="font-family: 'JetBrains Mono', monospace">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span> markers around the unresolved region. Not staged.</span></span>
+      </button>
+      <button class="opt" type="button">
+        <span style="display: flex; flex-direction: column; gap: 3px; flex: 1"><span style="font-weight: 600; font-size: 14px">Mark as resolved anyway</span><span style="font-size: 12px; color: #A0A7B2">Saves the result exactly as it is now and stages the file.</span></span>
+      </button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":640,"height":420}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

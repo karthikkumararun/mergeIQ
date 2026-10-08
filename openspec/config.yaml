@@ -1,0 +1,40 @@
+schema: spec-driven
+
+context: |
+  MergeIQ — open-source (Apache-2.0) cross-platform desktop app (macOS + Windows, Linux best-effort)
+  for git conflict resolution. Goal: 3-way merge editor at least as good as IntelliJ/PyCharm's, plus a
+  repo browser, later AI-assisted resolution (Claude / OpenAI Codex / GitHub Models / Ollama).
+
+  Tech stack:
+  - Tauri 2 shell. Rust backend (stable toolchain, edition 2021). Web UI: React 18 + TypeScript (strict) + Vite.
+  - Editor: CodeMirror 6 (@codemirror/*). Custom 3-pane merge view (NOT @codemirror/merge's 2-pane MergeView).
+  - State: Zustand. Styling: CSS modules + CSS variables (light/dark themes).
+  - Diff: `imara-diff` (histogram). Git reads: `gix`. Git writes: shell out to `git` CLI (respects hooks/config/credentials).
+  - Structural merge: `tree-sitter` with grammars for Java, Python, Kotlin, YAML, JSON, JavaScript, TypeScript, Go.
+  - Package manager: pnpm. Rust workspace with crates under `crates/`, app under `apps/desktop/`.
+
+  Repository layout:
+    crates/mergeiq-core     pure merge engine (no IO, no Tauri) — diff3, chunks, auto-resolve
+    crates/mergeiq-git      git adapter (conflict discovery, stage reads, resolve/stage)
+    crates/mergeiq-struct   tree-sitter structural merge
+    crates/mergeiq-ai       AI provider abstraction (later)
+    apps/desktop/src-tauri  Tauri app + CLI entry + IPC commands
+    apps/desktop/src        React UI
+
+  Conventions:
+  - Core crates are UI-agnostic and fully unit tested; golden-file fixtures under `crates/*/tests/fixtures/`.
+  - All IPC commands are typed; TS types generated from Rust via `specta` + `tauri-specta`.
+  - Errors: `thiserror` in libraries, `anyhow` only in the app binary. No panics on user data.
+  - Line endings and encodings preserved byte-for-byte unless the user edits the line.
+  - Terminology: "ours"/"theirs" are internal only; UI always shows contextual labels (branch, commit).
+
+rules:
+  proposal:
+    - Reference earlier changes by name when depending on them.
+  specs:
+    - Every scenario must be testable automatically (unit, integration, or Playwright/WebDriver UI test).
+  design:
+    - State which crate/module owns each piece of logic.
+  tasks:
+    - Each task completable in one session and ends with passing `cargo test` / `pnpm test`.
+    - Include tests in the same task group as the code they cover.

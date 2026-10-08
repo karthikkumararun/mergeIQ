@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Modify/delete conflict — Coupon.kt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:38px;padding:0 16px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:8px;cursor:pointer;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn.danger{color:#FFB0B0;border-color:#5A2A33}
+.btn:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+.d{display:grid;grid-template-columns:44px 44px 24px minmax(0,1fr);font:13px/22px 'JetBrains Mono',monospace;white-space:pre;color:#D5D8DD}
+.d span:nth-child(-n+2){color:#7D8592;text-align:right;padding-right:8px;font-size:12px}
+.d span:nth-child(3){text-align:center}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 24px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <a href="RepoWindow.dc.html" style="font-size: 13px; text-decoration: none">← Conflicts</a>
+    <span style="font: 600 14px 'JetBrains Mono', monospace"><span style="color: #7D8592; font-weight: 400">src/main/kotlin/com/shop/promo/</span>Coupon.kt</span>
+    <span style="font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 4px; background: #3A1F24; color: #FFB0B0">Deleted by them</span>
+  </header>
+
+  <main style="flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; box-sizing: border-box; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px">
+      <div style="background: #1E2126; border: 1px solid #2A2E35; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Left · <span style="font-family: 'JetBrains Mono', monospace; text-transform: none">main</span></span>
+        <span style="font-size: 16px; font-weight: 600; color: #8FB8FF">Modified</span>
+        <span style="font-size: 13px; color: #C9CDD3"><span style="font-family: 'JetBrains Mono', monospace; color: #F0C47A">c8a0f13</span> Store coupon expiry in UTC · sam · 2d</span>
+      </div>
+      <div style="background: #1E2126; border: 1px solid #5A2A33; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Right · <span style="font-family: 'JetBrains Mono', monospace; text-transform: none">feature/checkout-v2</span></span>
+        <span style="font-size: 16px; font-weight: 600; color: #FF9F9F">Deleted</span>
+        <span style="font-size: 13px; color: #C9CDD3"><span style="font-family: 'JetBrains Mono', monospace; color: #F0C47A">9f8e7d6</span> Add promo code stacking · priya · 2h</span>
+      </div>
+    </div>
+
+    <section aria-labelledby="diff-h" style="border: 1px solid #2A2E35; border-radius: 10px; overflow: hidden; background: #1A1D21">
+      <div style="padding: 10px 14px; border-bottom: 1px solid #2A2E35; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between">
+        <h2 id="diff-h" style="margin: 0; font-size: 14px; font-weight: 600">What <span style="font-family: 'JetBrains Mono', monospace">main</span> changed since base</h2>
+        <span style="font-size: 12px; color: #A0A7B2">1 change · +2 −1</span>
+      </div>
+      <div style="padding: 8px 0; overflow-x: auto">
+        <div class="d"><span>14</span><span>14</span><span></span><span>data class Coupon(</span></div>
+        <div class="d"><span>15</span><span>15</span><span></span><span>    val code: String,</span></div>
+        <div class="d" style="background: #3A1F24"><span>16</span><span></span><span style="color: #FF9F9F">−</span><span>    val expiresAt: <span style="background: #7A2F3B">LocalDateTime</span>,</span></div>
+        <div class="d" style="background: #1C3626"><span></span><span>16</span><span style="color: #7FD69C">+</span><span>    val expiresAt: <span style="background: #2D6A43">Instant</span>,</span></div>
+        <div class="d" style="background: #1C3626"><span></span><span>17</span><span style="color: #7FD69C">+</span><span>    <span style="background: #2D6A43">val zone: ZoneId = ZoneOffset.UTC,</span></span></div>
+        <div class="d"><span>17</span><span>18</span><span></span><span>    val percent: Int,</span></div>
+        <div class="d"><span>18</span><span>19</span><span></span><span>)</span></div>
+      </div>
+    </section>
+
+    <section aria-label="Resolution" style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 600">Resolve</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #2A2E35; border-radius: 10px">
+          <button class="btn pri" type="button" style="align-self: flex-start">Keep modified</button>
+          <span style="font-size: 13px; color: #A0A7B2; line-height: 1.5">Write <span style="font-family: 'JetBrains Mono', monospace">main</span>'s version and stage it.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #2A2E35; border-radius: 10px">
+          <button class="btn danger" type="button" style="align-self: flex-start">Delete file</button>
+          <span style="font-size: 13px; color: #A0A7B2; line-height: 1.5">Remove from working tree and index (<span style="font-family: 'JetBrains Mono', monospace">git rm</span>).</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #2A2E35; border-radius: 10px">
+          <button class="btn" type="button" style="align-self: flex-start">Keep and edit</button>
+          <span style="font-size: 13px; color: #A0A7B2; line-height: 1.5">Open <span style="font-family: 'JetBrains Mono', monospace">main</span>'s version in an editor tab. Marked resolved when you save.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

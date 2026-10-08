@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MergeIQ home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}a:hover{color:#A9D0F0}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:36px;padding:0 14px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.btn:hover{background:#2E333A;color:#E4E6EA}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn.pri:hover{background:#F0B252;color:#16181C}
+.ib{width:32px;height:32px;border-radius:6px;border:0;background:transparent;color:#A0A7B2;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#2E333A;color:#E4E6EA}
+.btn:focus-visible,.ib:focus-visible,.row:focus-visible,.seg:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+.kbd{font:500 11px 'JetBrains Mono',monospace;padding:2px 5px;border:1px solid #4A505A;border-radius:4px;opacity:.8}
+.row{display:flex;align-items:center;gap:16px;padding:12px 14px;border-radius:8px;text-decoration:none;color:#E4E6EA;min-height:44px;box-sizing:border-box}
+.row:hover{background:#22262C;color:#E4E6EA}
+.seg{font:500 12px 'IBM Plex Sans',sans-serif;height:28px;padding:0 12px;border:0;border-radius:5px;background:transparent;color:#A0A7B2;cursor:pointer}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; border-bottom: 1px solid #2A2E35">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 3v5c0 4 7 4 7 8v5"></path><path d="M19 3v5c0 4-7 4-7 8"></path></svg>
+      <span style="font-weight: 700; font-size: 16px; letter-spacing: -0.01em">MergeIQ</span>
+      <span style="font: 500 12px 'JetBrains Mono', monospace; color: #A0A7B2; padding: 3px 8px; background: #22262C; border-radius: 4px">v0.1.0 · macOS</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; background: #1E2126; border: 1px solid #2A2E35; border-radius: 7px">
+        <button class="seg" type="button">Light</button>
+        <button class="seg" type="button" aria-pressed="true" style="background: #30353D; color: #E4E6EA">Dark</button>
+        <button class="seg" type="button">System</button>
+      </div>
+      <a class="ib" href="CliSetup.dc.html" aria-label="Settings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg></a>
+    </div>
+  </header>
+
+  <main style="flex: 1; width: 100%; max-width: 1160px; margin: 0 auto; box-sizing: border-box; padding: 48px 24px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+    <section style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h1 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.02em">Open a repository</h1>
+        <p style="margin: 0; color: #A0A7B2; font-size: 15px; line-height: 1.5">MergeIQ shows the operation in progress and every conflicted file, then lets you resolve them one by one.</p>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 10px">
+        <button class="btn pri" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Open repository… <span class="kbd">⌘O</span></button>
+        <button class="btn" type="button">Resolve a single file…</button>
+      </div>
+
+      <div style="border: 1.5px dashed #3A3F48; border-radius: 10px; padding: 28px; display: flex; flex-direction: column; align-items: center; gap: 6px; color: #A0A7B2; font-size: 14px; text-align: center">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7D8592" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"></path><path d="m7 8 5-5 5 5"></path><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"></path></svg>
+        <span>Drop a repository folder anywhere on this window</span>
+        <span style="font: 12px 'JetBrains Mono', monospace; color: #7D8592">or run  mergeiq open ~/code/app</span>
+      </div>
+
+      <div role="alert" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 14px; background: #3A1F22; border: 1px solid #6A2E34; border-radius: 8px; font-size: 14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F08A8A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6"></path><path d="M12 16.5v.5"></path></svg>
+        <span style="flex: 1"><strong style="font-weight: 600">Not a git repository.</strong> <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #E0B4B4">~/Downloads/brand-assets</span> was not added to recents.</span>
+        <button class="ib" type="button" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 0 14px 6px">
+          <h2 style="margin: 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Recent repositories</h2>
+          <span style="font-size: 12px; color: #7D8592">Most recent first</span>
+        </div>
+        <div style="display: flex; flex-direction: column">
+          <div style="display: flex; align-items: center">
+            <a class="row" href="RepoWindow.dc.html" style="flex: 1; min-width: 0">
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1"><span style="font-weight: 600; font-size: 15px">shop-web</span><span style="font: 12px 'JetBrains Mono', monospace; color: #A0A7B2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">~/code/shop-web</span></span>
+              <span style="font-size: 13px; color: #A0A7B2; white-space: nowrap">2 min ago</span>
+            </a>
+            <button class="ib" type="button" aria-label="Remove shop-web from recents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+          <div style="display: flex; align-items: center">
+            <a class="row" href="RepoWindow.dc.html" style="flex: 1; min-width: 0">
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1"><span style="font-weight: 600; font-size: 15px">payments-service</span><span style="font: 12px 'JetBrains Mono', monospace; color: #A0A7B2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">~/code/work/payments-service</span></span>
+              <span style="font-size: 13px; color: #A0A7B2; white-space: nowrap">Yesterday</span>
+            </a>
+            <button class="ib" type="button" aria-label="Remove payments-service from recents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+          <div style="display: flex; align-items: center">
+            <a class="row" href="RepoWindow.dc.html" style="flex: 1; min-width: 0">
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1"><span style="font-weight: 600; font-size: 15px">infra-charts</span><span style="font: 12px 'JetBrains Mono', monospace; color: #A0A7B2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">~/code/infra-charts</span></span>
+              <span style="font-size: 13px; color: #A0A7B2; white-space: nowrap">3 days ago</span>
+            </a>
+            <button class="ib" type="button" aria-label="Remove infra-charts from recents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; padding-right: 0">
+            <div class="row" aria-disabled="true" style="flex: 1; min-width: 0; opacity: 0.55">
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1"><span style="font-weight: 600; font-size: 15px">old-api</span><span style="font: 12px 'JetBrains Mono', monospace; color: #A0A7B2">~/code/old-api · folder not found</span></span>
+              <span style="font-size: 13px; color: #A0A7B2; white-space: nowrap">Aug 12</span>
+            </div>
+            <button class="btn" type="button" style="height: 30px; font-size: 12px">Remove</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0 0 4px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2">Set up</h2>
+      <div style="background: #1E2126; border: 1px solid #2A2E35; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 600; font-size: 15px">Command-line tool</span><span style="font-size: 12px; color: #E8A33D">Not installed</span></div>
+        <p style="margin: 0; font-size: 13px; color: #A0A7B2; line-height: 1.5">Adds <span style="font-family: 'JetBrains Mono', monospace">mergeiq</span> to your PATH for <span style="font-family: 'JetBrains Mono', monospace">open</span>, <span style="font-family: 'JetBrains Mono', monospace">merge</span> and <span style="font-family: 'JetBrains Mono', monospace">resolve</span>.</p>
+        <a class="btn" href="CliSetup.dc.html" style="align-self: flex-start">Install…</a>
+      </div>
+      <div style="background: #1E2126; border: 1px solid #2A2E35; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 600; font-size: 15px">git mergetool</span><span style="font-size: 12px; color: #E8A33D">Not configured</span></div>
+        <p style="margin: 0; font-size: 13px; color: #A0A7B2; line-height: 1.5">Make <span style="font-family: 'JetBrains Mono', monospace">git mergetool</span> open conflicts in MergeIQ.</p>
+        <a class="btn" href="CliSetup.dc.html" style="align-self: flex-start">Configure…</a>
+      </div>
+      <div style="background: #1E2126; border: 1px solid #2A2E35; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 600; font-size: 15px">AI assist</span><span style="font-size: 12px; color: #A0A7B2">Off</span></div>
+        <p style="margin: 0; font-size: 13px; color: #A0A7B2; line-height: 1.5">Explain and suggest resolutions with Claude, OpenAI, GitHub Models or a local Ollama model.</p>
+        <a href="AiSettings.dc.html" style="font-size: 13px; font-weight: 500">Set up AI</a>
+      </div>
+    </aside>
+  </main>
+
+  <footer style="padding: 14px 24px; border-top: 1px solid #2A2E35; font-size: 12px; color: #7D8592; display: flex; flex-wrap: wrap; gap: 6px 24px">
+    <span>Settings: <span style="font-family: 'JetBrains Mono', monospace">~/Library/Application Support/MergeIQ/settings.json</span></span>
+    <span>Logs: <span style="font-family: 'JetBrains Mono', monospace">~/Library/Logs/MergeIQ</span></span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

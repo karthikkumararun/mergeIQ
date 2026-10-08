@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Theme tokens</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#16181C}</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif">
+  <div style="max-width: 1280px; margin: 0 auto; padding: 36px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h1 style="margin: 0; font-size: 26px; font-weight: 600">Theme tokens</h1>
+      <p style="margin: 0; font-size: 14px; color: #A0A7B2; line-height: 1.5; max-width: 760px">All UI colours are CSS variables. <span style="font-family: 'JetBrains Mono', monospace">system</span> mode picks dark or light from <span style="font-family: 'JetBrains Mono', monospace">prefers-color-scheme</span> and switches live. Type: IBM Plex Sans for UI, JetBrains Mono for code, 13px/22px code lines.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(560px, 1fr)); gap: 24px">
+      <sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+        <section style="border: 1px solid #2A2E35; border-radius: 10px; overflow: hidden">
+          <h2 style="margin: 0; padding: 10px 14px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #A0A7B2; background: #1B1E22; border-bottom: 1px solid #2A2E35">{{g.name}}</h2>
+          <div style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); font-size: 12px; color: #7D8592; padding: 6px 14px; border-bottom: 1px solid #22262B"><span>Token</span><span>Dark</span><span>Light</span></div>
+          <sc-for list="{{g.items}}" as="t" hint-placeholder-count="6">
+            <div style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 8px; padding: 6px 14px; border-bottom: 1px solid #1F2227">
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font: 12.5px 'JetBrains Mono', monospace; color: #E4E6EA">{{t.name}}</span><span style="font-size: 12px; color: #A0A7B2">{{t.use}}</span></span>
+              <span style="display: flex; align-items: center; gap: 8px"><span style="{{t.dS}}"></span><span style="font: 12px 'JetBrains Mono', monospace; color: #C9CDD3">{{t.d}}</span></span>
+              <span style="display: flex; align-items: center; gap: 8px"><span style="{{t.lS}}"></span><span style="font: 12px 'JetBrains Mono', monospace; color: #C9CDD3">{{t.l}}</span></span>
+            </div>
+          </sc-for>
+        </section>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const G = [
+      ['Surfaces & text', [
+        ['--bg', 'Window and pane background', '#16181C', '#FFFFFF'],
+        ['--bar', 'Title bar, headers, footer', '#1B1E22', '#F3F4F6'],
+        ['--surface', 'Buttons, popovers, inputs', '#262A30', '#FFFFFF'],
+        ['--surface-2', 'Hover, pressed toggles', '#2E333A', '#E9EBEE'],
+        ['--border', 'Dividers', '#2A2E35', '#DDE0E4'],
+        ['--border-2', 'Control outlines', '#3A3F48', '#C6CBD2'],
+        ['--text', 'Primary text', '#E4E6EA', '#1E2228'],
+        ['--text-2', 'Secondary text', '#C9CDD3', '#363C45'],
+        ['--muted', 'Labels, metadata', '#A0A7B2', '#59616C'],
+        ['--faint', 'Line numbers', '#7D8592', '#6B7380'],
+      ]],
+      ['Accent & status', [
+        ['--accent', 'Primary button, focus ring', '#E8A33D', '#E8A33D'],
+        ['--on-accent', 'Text on accent', '#16181C', '#16181C'],
+        ['--link', 'Links', '#7FB8E6', '#1D5FB0'],
+        ['--pill-bg', 'Conflict counter fill', '#2A1E22', '#FCE8EA'],
+        ['--pill-fg', 'Conflict counter text', '#F2C1C1', '#8C1D27'],
+        ['--chip-bg', 'Editable / SHA chip', '#3A2E18', '#FCEFD6'],
+        ['--chip-fg', 'Editable / SHA text', '#F0C47A', '#8A5A0C'],
+      ]],
+      ['Chunks (bg · word emphasis · icon)', [
+        ['--ins-bg', 'Inserted lines', '#1C3626', '#E1F4E7'],
+        ['--ins-em', 'Inserted tokens', '#2D6A43', '#AEE2BF'],
+        ['--ins-fg', 'Inserted gutter icon +', '#5FCB86', '#1F7A3F'],
+        ['--mod-bg', 'Modified lines', '#1A2C46', '#E0EAFB'],
+        ['--mod-em', 'Modified tokens', '#2C4F80', '#B6CDF4'],
+        ['--mod-fg', 'Modified gutter icon ~', '#8FB8FF', '#2459B8'],
+        ['--con-bg', 'Conflict lines', '#43202A', '#FBE0E3'],
+        ['--con-em', 'Conflict tokens', '#7A2F3B', '#F2AEB6'],
+        ['--con-fg', 'Conflict icon !, current outline', '#FF8A8A', '#B42330'],
+        ['--res-bg', 'Resolved (muted) lines', '#22262B', '#EFF0F2'],
+        ['--res-fg', 'Resolved icon ✓', '#8A929E', '#6B7380'],
+        ['--hatch', 'Missing-lines hatch', '#23272D', '#E3E5E9'],
+      ]],
+      ['Syntax', [
+        ['--kw', 'Keywords', '#E0A262', '#9A4D00'],
+        ['--type', 'Types, classes', '#7FC4D9', '#1F6F8B'],
+        ['--str', 'Strings', '#9CCB86', '#2E7D32'],
+        ['--num', 'Numbers', '#D7A0E8', '#7A3E9D'],
+        ['--code', 'Default code text', '#D5D8DD', '#1E2228'],
+      ]],
+    ];
+    const sw = (c) => 'width:28px;height:20px;border-radius:4px;border:1px solid #4A505A;flex:none;background:' + c;
+    const groups = G.map(([name, items]) => ({
+      name,
+      items: items.map(([n, use, d, l]) => ({ name: n, use, d, l, dS: sw(d), lS: sw(l) })),
+    }));
+    return { groups };
+  }
+}
+</script>
+</body>
+</html>

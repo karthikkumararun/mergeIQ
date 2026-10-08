@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rename/rename conflict</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:38px;padding:0 16px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:8px;cursor:pointer;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn:focus-visible,.opt:focus-within{outline:2px solid #E8A33D;outline-offset:1px}
+.opt{display:flex;gap:14px;align-items:flex-start;padding:16px;border:1px solid #3A3F48;border-radius:10px;background:#1E2126;cursor:pointer}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 24px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <a href="RepoWindow.dc.html" style="font-size: 13px; text-decoration: none">← Conflicts</a>
+    <span style="font: 600 14px 'JetBrains Mono', monospace"><span style="color: #7D8592; font-weight: 400">src/cart/</span>discount.ts</span>
+    <span style="font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 4px; background: #262A30; color: #C9CDD3">Rename / rename</span>
+  </header>
+
+  <main style="flex: 1; width: 100%; max-width: 1000px; margin: 0 auto; box-sizing: border-box; padding: 28px 24px; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <h1 style="margin: 0; font-size: 20px; font-weight: 600">Both sides moved this file to different places</h1>
+      <p style="margin: 0; font-size: 14px; color: #A0A7B2">Pick the final path. The other path is removed from the index and working tree.</p>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px; font: 13px 'JetBrains Mono', monospace; color: #A0A7B2; flex-wrap: wrap">
+      <span style="color: #7D8592; font-family: 'IBM Plex Sans', sans-serif">Base</span>
+      <span style="color: #E4E6EA">src/cart/discount.ts</span>
+    </div>
+
+    <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+      <legend style="font-size: 14px; font-weight: 600; margin-bottom: 12px">Final path</legend>
+      <label class="opt">
+        <input type="radio" name="path" style="width: 18px; height: 18px; margin-top: 2px; accent-color: #E8A33D">
+        <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font: 600 14px 'JetBrains Mono', monospace">src/cart/pricing/discount.ts</span>
+          <span style="font-size: 13px; color: #A0A7B2">Left · <span style="font-family: 'JetBrains Mono', monospace">main</span> · <span style="font-family: 'JetBrains Mono', monospace">b30c9a4</span> Group pricing code</span>
+        </span>
+      </label>
+      <label class="opt" style="border-color: #E8A33D; background: #2E2718">
+        <input type="radio" name="path" checked="" style="width: 18px; height: 18px; margin-top: 2px; accent-color: #E8A33D">
+        <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font: 600 14px 'JetBrains Mono', monospace">src/promo/discount.ts</span>
+          <span style="font-size: 13px; color: #C9B48E">Right · <span style="font-family: 'JetBrains Mono', monospace">feature/checkout-v2</span> · <span style="font-family: 'JetBrains Mono', monospace">e5d6c7b</span> Introduce PromoCode model</span>
+        </span>
+      </label>
+    </fieldset>
+
+    <div role="note" style="display: flex; gap: 12px; padding: 12px 14px; background: #1E2126; border: 1px solid #2A2E35; border-radius: 8px; font-size: 14px; line-height: 1.5">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8FB8FF" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5v.5"></path></svg>
+      <span>The contents differ too (2 conflicts). After you pick the path, the file opens in the merge editor at <span style="font-family: 'JetBrains Mono', monospace">src/promo/discount.ts</span>.</span>
+    </div>
+
+    <div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap">
+      <a class="btn" href="RepoWindow.dc.html" style="text-decoration: none">Cancel</a>
+      <a class="btn pri" href="MergeEditor.dc.html" style="text-decoration: none">Use this path and merge content</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
