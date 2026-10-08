@@ -56,6 +56,12 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
 - [WebView differences WKWebView vs WebView2] → keep CSS standard; CI builds both; manual smoke test on each before release.
 - [tauri-specta API churn (pre-1.0)] → pin exact versions; isolate usage to `src-tauri/src/ipc.rs`.
 - [Windows CI slow] → cache cargo + pnpm stores.
+- [`mergeiq-desktop`'s test binary aborts on windows-latest with `0xc0000139` (entry point
+  not found) when listed by `cargo nextest`, even in a clean build] → root cause not fully
+  isolated; likely from the tauri-template `[lib] crate-type = ["staticlib", "cdylib", "rlib"]`
+  combination interacting with the Windows MSVC CRT/test harness. `mergeiq-desktop` tests are
+  excluded from `cargo nextest run` on windows-latest only (still compiled there via the later
+  `tauri build` step); they run on macOS and Ubuntu. Revisit if nextest or tauri publishes a fix.
 
 ## Open Questions
 
