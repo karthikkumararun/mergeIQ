@@ -7,6 +7,9 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  # Works around nextest-rs/nextest#1493: on Windows, rustup-installed toolchains can make
+  # nextest fail to locate a required DLL when listing tests ("entry point not found").
+  RUSTUP_WINDOWS_PATH_ADD_BIN: "1"
 
 jobs:
   ci:
