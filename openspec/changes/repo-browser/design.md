@@ -19,7 +19,7 @@
 **UI layout (`apps/desktop/src/repo/`)**
 ```
 HomeView.tsx           open/drag-drop/recents
-RepoWindow.tsx         banner + split: left ConflictsPanel (resizable), right Tabs
+RepoWindow.tsx         banner + split: left ConflictsPanel (resizable), right Tabs (see ui/RepoSplit.dc.html)
 OperationBanner.tsx
 ConflictsPanel.tsx     virtualized list (react-window) — repos can have 1000s of conflicts
 ResolvedSection.tsx
@@ -41,19 +41,22 @@ Approved screens are in `ui/` and `bootstrap-app/ui/Main.dc.html`; how to read t
 
 - `bootstrap-app/ui/Main.dc.html` (home body): "Open repository…" primary button (⌘O / Ctrl+O), drop zone with `mergeiq open` hint, inline "Not a git repository." error (`--danger-*`, dismissible), Recent repositories list (name, mono path, relative time, remove ×; missing paths dimmed with "folder not found" and a Remove button).
   - The mock also shows "Resolve a single file…"; no spec covers it. Leave it out.
-- `ui/RepoWindow.dc.html` — repository window. Variant `allResolved` in `data-props`.
-  - Tab bar: "Conflicts (N)" tab first, then one tab per open file (mono name, `--accent` dot when unsaved).
-  - Operation banner card: the contextual sentence (bold mono branch names), a sub-line ("N conflicted files · Continue unlocks when none remain" or "All conflicts resolved" in `--ok-fg`), buttons Skip commit… (rebase only) · Abort… (danger outline) · Continue (primary, disabled until resolved). A "Git output" disclosure holds verbatim git messages.
-  - Conflicts toolbar: filter box, Flat / By folder segmented control, selection count, "Accept Left `<label>`" / "Accept Right `<label>`".
-  - Table columns: checkbox · Path (dir muted, file bold, mono) · Conflict (type) · Left · `<label>` · Right · `<label>` · Kind badge · Merge… button. "Deleted" side text is `--danger-fg`. Wide tables scroll horizontally.
-  - "Resolved in this session · N" list: check icon, path, method (Merged / Accepted Left / Accepted Right), "Reopen conflict…".
-  - External-change notice: a non-blocking toast "`<file>` was resolved outside MergeIQ" with Close tab and Reload (the mock shows only Close tab; Reload is required by the spec).
-- The Kind column shows `special-conflicts` classes. Until that change lands, show the conflict type only and hide the column.
-- **Layout:** the mock puts the conflicts list in the first tab, full width, while the layout decision above describes a split view (list left, tabs right). See Open Questions.
- → cap 10 tabs, LRU close of clean tabs.
+- `ui/RepoSplit.dc.html` — **the repository window layout (chosen 2026-10-07)**: matches the split decision above. It embeds `merge-editor-ui/ui/MergeEditor.dc.html` in the tab area.
+  - Header (repo name, mono path), then the operation banner as one slim strip: contextual sentence (bold mono branch names) + "· N conflicted files", "Git output" disclosure, buttons Skip commit… (rebase only) · Abort… (danger outline) · Continue (primary, disabled until resolved).
+  - Left `ConflictsPanel` (default ~340px, resizable 280–520px, width persisted): filter box + Flat / Folders control; selection row ("N selected", Accept Left / Accept Right, with the contextual label in the tooltip and in the confirmation); a two-line row per file — line 1 file name (bold mono) + muted directory (ellipsis), line 2 conflict type · Left / Right status ("Deleted" in `--danger-fg`) · kind badge. Checkbox per row for multi-select; clicking the row opens it (= Merge…). The file open in the active tab has a `--surface` row background.
+  - "Resolved in this session · N" is a collapsible section at the bottom of the panel: path, method (Merged / Accepted Left / Accepted Right), "Reopen conflict…" on hover/focus.
+  - Right: editor tabs (mono name, `--accent` dot when unsaved) above the merge editor or special-conflict panel. No separate "Conflicts" tab.
+  - With no tab open, the right side shows "Select a file to resolve" with the first unresolved file's name as a link.
+- `ui/RepoWindow.dc.html` — rejected Option A (full-width table as the first tab). Keep it only as a reference for:
+  - The banner sub-line states: "N conflicted files · Continue unlocks when none remain" / "All conflicts resolved" in `--ok-fg`. Its `allResolved` variant shows the all-resolved state.
+  - The external-change toast: "`<file>` was resolved outside MergeIQ", with Close tab and Reload (Reload is required by the spec, though the mock shows only Close tab).
+- Kind badges show `special-conflicts` classes. Until that change lands, omit the badge.
+
+## Risks / Trade-offs
+
+- [Many open tabs memory] → cap 10 tabs, LRU close of clean tabs.
 - [Rebase continue triggers hooks that take long] → run async with spinner and cancel-not-possible note; stream stderr.
 
 ## Open Questions
 
-- **Decide before implementing:** conflicts list as the first tab (approved mock, full-width table) or as a resizable left panel beside the editor tabs (Decisions › UI layout)? Default if undecided: follow the mock, because the table's columns need the width.
 - Should Continue offer editing the commit message? v1: default message; later add message editor.

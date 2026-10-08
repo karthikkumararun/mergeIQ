@@ -43,7 +43,10 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
   - Confirmation card: editable command, working directory, the "asked every time / staged only on exit 0" note, Cancel / Run command.
   - Output panel: status bar (exit code, duration, staged or not) above a terminal-style log.
   - Not drawn: while running, the status bar shows a spinner and a Cancel button. The confirmation card also warns that the command may change other files (see Risks).
- vs git's ort strategy] → info only; resolution acts on actual index entries.
+
+## Risks / Trade-offs
+
+- [Rename detection mismatch vs git's ort strategy] → info only; resolution acts on actual index entries.
 - [Regeneration modifies other files (e.g. node_modules)] → warn in confirmation dialog; only lockfile is staged.
 - [Windows symlink privileges] → follow `core.symlinks`, explain in UI.
 

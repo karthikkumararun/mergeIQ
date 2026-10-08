@@ -49,7 +49,10 @@ Approved screen: `ui/Structural.dc.html`; how to read it and precedence rules: `
 - Chunk indicator: a 20×20 "S" button in the Result gutter on the first line of each chunk with a proposal, `aria-label="Show structural proposal"`. The chunk outline uses `--mod-fg` when its proposal is open.
 - Preview popover (anchored to the chunk; drawn docked to the right in the mock): title "Structural proposal · `<container key>`", one-paragraph explanation from `StructuralProposal.explanation`, a −/+ diff of current result range vs proposal with token emphasis, a footer line ("Covers N conflicts", "Validated: parses without errors"), then Dismiss and Apply proposal (primary).
 - Chunks without a proposal get no indicator; the footer legend in the mock is optional.
- (overloads, decorators)] → composite keys; unresolvable when ambiguous (duplicate keys in a container → skip container).
+
+## Risks / Trade-offs
+
+- [Wrong key identity (overloads, decorators)] → composite keys; unresolvable when ambiguous (duplicate keys in a container → skip container).
 - [Comments between entries attached to wrong entry] → leading comments/blank lines belong to the following entry (span extended upward to previous entry end).
 - [Kotlin grammar maturity] → treat Kotlin parse errors as unsupported for that file.
 - [YAML anchors/aliases, multi-docs] → skip containers containing anchors; handle each document separately.

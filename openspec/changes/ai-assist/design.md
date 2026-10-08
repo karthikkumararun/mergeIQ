@@ -72,7 +72,10 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
   - Decline / truncation / error states in the panel (`--danger-*` box with the message).
   - Ollama form: no API key row.
   - Price table editor (`UsageTable`).
- → always preview with diff, confidence, risks; syntax check; never bulk-apply.
+
+## Risks / Trade-offs
+
+- [Wrong but plausible suggestions] → always preview with diff, confidence, risks; syntax check; never bulk-apply.
 - [Cost surprises] → pre-flight token estimate for bulk, session totals, per-request max_tokens 16000.
 - [Provider API drift] → adapters isolated, contract tests against recorded fixtures; live tests behind env var `MERGEIQ_LIVE_AI=1` (manual only).
 - [Sensitive code sent externally] → opt-in per repo, exclusion globs, payload preview, Ollama option.

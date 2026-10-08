@@ -45,7 +45,10 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
 - Windows (not drawn): the Install section shows whether the install directory is on the user PATH and offers adding it; the mergetool section is identical.
 - Home "Set up" cards (`bootstrap-app/ui/Main.dc.html`) link here and show Not installed / Not configured status.
 - Mergetool mode reuses the merge editor screens unchanged; the title bar shows the contextual labels or "Local"/"Remote" fallbacks.
- `open` on macOS loses argv/stdio] → git invokes the inner binary directly, not `open`; docs show the inner path.
+
+## Risks / Trade-offs
+
+- [App launched via `open` on macOS loses argv/stdio] → git invokes the inner binary directly, not `open`; docs show the inner path.
 - [Hung client if primary crashes] → client detects socket EOF and exits 1.
 - [Antivirus flagging named pipes] → standard per-user pipe; no elevation.
 

@@ -74,7 +74,10 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
 **Where this design.md wins over the mock-up:**
 - The mock aligns panes with hatched padding rows and draws flat rectangular bands. Implement the decisions above: no padding rows, empty ranges as 2px marker lines, Bézier connector bands in a 48px SVG gutter.
 - The mock places `>>` / `<<` / `×` buttons in the connector column. Per the decision above, they are HTML buttons in the side panes' gutters next to the connector; keep their look (24×20, mono glyphs, `--border-3` outline) and accessible names.
- with many chunks] → only visible chunks; rAF throttle.
+
+## Risks / Trade-offs
+
+- [Gutter band rendering perf with many chunks] → only visible chunks; rAF throttle.
 - [Scroll sync jitter in WKWebView] → sync on `scroll` event with rAF, not smooth-scroll.
 - [Kotlin/Go highlighting quality via legacy modes] → acceptable for v1; Lezer grammars later.
 - [Edits straddling chunk boundaries] → mark every intersected chunk edited; revert restores each independently.

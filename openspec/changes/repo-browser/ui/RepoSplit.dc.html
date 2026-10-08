@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Repository — side panel layout</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#16181C}
+a{color:#7FB8E6}a:hover{color:#A9D0F0}
+.btn{font:500 13px/1 'IBM Plex Sans',sans-serif;height:32px;padding:0 12px;border-radius:6px;border:1px solid #3A3F48;background:#262A30;color:#E4E6EA;display:inline-flex;align-items:center;gap:7px;cursor:pointer;text-decoration:none;box-sizing:border-box;white-space:nowrap}
+.btn:hover{background:#2E333A;color:#E4E6EA}
+.btn.pri{background:#E8A33D;border-color:#E8A33D;color:#16181C;font-weight:600}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.danger{color:#FFB0B0;border-color:#5A2A33}
+.seg{font:500 12px 'IBM Plex Sans',sans-serif;height:26px;padding:0 10px;border:0;border-radius:5px;background:transparent;color:#A0A7B2;cursor:pointer}
+.tab{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;font-size:13px;color:#A0A7B2;text-decoration:none;border-right:1px solid #2A2E35}
+.tab:hover{color:#E4E6EA}
+.item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:6px;text-decoration:none;color:#E4E6EA}
+.item:hover{background:#22262C;color:#E4E6EA}
+.btn:focus-visible,.seg:focus-visible,.tab:focus-visible,.item:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid #E8A33D;outline-offset:1px}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #16181C; color: #E4E6EA; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 16px; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+    <a href="Main.dc.html" aria-label="Home" style="display: flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 3v5c0 4 7 4 7 8v5"></path><path d="M19 3v5c0 4-7 4-7 8"></path></svg></a>
+    <span style="font-weight: 600; font-size: 14px">shop-web</span>
+    <span style="font: 12px 'JetBrains Mono', monospace; color: #A0A7B2">~/code/shop-web</span>
+  </header>
+
+  <section aria-label="Operation in progress" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 10px 16px; border-bottom: 1px solid #2A2E35; background: #1E2126">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"></circle><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="12" r="2.5"></circle><path d="M6 8.5v7"></path><path d="M8.5 6c5 0 7 2 7.5 3.6"></path></svg>
+    <span style="flex: 1 1 420px; min-width: 0; font-size: 14px">Rebasing <span style="font-family: 'JetBrains Mono', monospace; font-weight: 600">feature/checkout-v2</span> onto <span style="font-family: 'JetBrains Mono', monospace; font-weight: 600">main</span> — commit 3 of 7: Add promo code stacking <span style="color: #A0A7B2; font-size: 13px">· 6 conflicted files</span></span>
+    <details style="font-size: 13px; color: #A0A7B2"><summary style="cursor: pointer">Git output</summary></details>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+      <button class="btn" type="button">Skip commit…</button>
+      <button class="btn danger" type="button">Abort rebase…</button>
+      <button class="btn pri" type="button" disabled="">Continue</button>
+    </div>
+  </section>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap; min-height: 0">
+    <aside aria-label="Conflicted files" style="flex: 1 1 320px; max-width: 380px; min-width: 0; border-right: 1px solid #2A2E35; background: #1A1D21; display: flex; flex-direction: column">
+      <div style="padding: 12px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #2A2E35">
+        <div style="display: flex; gap: 8px; align-items: center">
+          <label style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; background: #16181C; border: 1px solid #3A3F48; border-radius: 6px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7D8592" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+            <input type="search" placeholder="Filter files" aria-label="Filter files" style="flex: 1; min-width: 0; border: 0; background: transparent; color: #E4E6EA; font: 13px 'IBM Plex Sans', sans-serif; outline: none">
+          </label>
+          <div role="group" aria-label="View" style="display: flex; gap: 2px; padding: 3px; background: #16181C; border: 1px solid #2A2E35; border-radius: 7px">
+            <button class="seg" type="button" aria-pressed="true" style="background: #30353D; color: #E4E6EA">Flat</button>
+            <button class="seg" type="button">Folders</button>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
+          <span style="font-size: 12px; color: #A0A7B2; flex: 1">2 selected</span>
+          <button class="btn" type="button" title="Accept Left (main) for selected files" style="height: 28px; font-size: 12px">Accept Left</button>
+          <button class="btn" type="button" title="Accept Right (feature/checkout-v2) for selected files" style="height: 28px; font-size: 12px">Accept Right</button>
+        </div>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; padding: 6px">
+        <sc-for list="{{files}}" as="f" hint-placeholder-count="6">
+          <div style="{{f.wrapS}}">
+            <input type="checkbox" defaultChecked="{{f.sel}}" aria-label="Select {{f.file}}" style="width: 16px; height: 16px; margin: 11px 0 0 10px; accent-color: #E8A33D; flex: none">
+            <a class="item" href="{{f.href}}" style="flex: 1; min-width: 0">
+              <span style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1">
+                <span style="display: flex; align-items: center; gap: 8px; min-width: 0">
+                  <span style="font: 600 13px 'JetBrains Mono', monospace; white-space: nowrap">{{f.file}}</span>
+                  <span style="font: 12px 'JetBrains Mono', monospace; color: #7D8592; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{f.dir}}</span>
+                </span>
+                <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #A0A7B2; flex-wrap: wrap">
+                  <span>{{f.type}}</span><span style="{{f.sideS}}">{{f.sides}}</span><span style="{{f.kindS}}">{{f.kind}}</span>
+                </span>
+              </span>
+            </a>
+          </div>
+        </sc-for>
+      </div>
+
+      <details style="border-top: 1px solid #2A2E35; padding: 10px 12px; font-size: 13px">
+        <summary style="cursor: pointer; color: #A0A7B2; font-weight: 600">Resolved in this session · 2</summary>
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px">
+          <span style="display: flex; justify-content: space-between; gap: 8px"><span style="font-family: 'JetBrains Mono', monospace">package.json</span><span style="color: #A0A7B2">Merged</span></span>
+          <span style="display: flex; justify-content: space-between; gap: 8px"><span style="font-family: 'JetBrains Mono', monospace">CHANGELOG.md</span><span style="color: #A0A7B2">Accepted Right</span></span>
+        </div>
+      </details>
+    </aside>
+
+    <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <nav aria-label="Open tabs" style="display: flex; overflow-x: auto; border-bottom: 1px solid #2A2E35; background: #1B1E22">
+        <a class="tab" href="MergeEditor.dc.html" aria-current="page" style="color: #E4E6EA; background: #16181C; box-shadow: inset 0 -2px 0 #E8A33D"><span style="font-family: 'JetBrains Mono', monospace">CartService.kt</span><span aria-label="Unsaved changes" style="width: 7px; height: 7px; border-radius: 50%; background: #E8A33D"></span></a>
+        <a class="tab" href="ModifyDelete.dc.html"><span style="font-family: 'JetBrains Mono', monospace">Coupon.kt</span></a>
+      </nav>
+      <div style="flex: 1; min-width: 0; overflow: hidden">
+        <dc-import name="MergeEditor" theme="dark" hint-size="100%,760px"></dc-import>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const KIND = {
+      Text: 'background:#262A30;color:#C9CDD3',
+      Image: 'background:#1E2F3F;color:#9CC8F0',
+      Lockfile: 'background:#2E2718;color:#F0C47A',
+      Submodule: 'background:#2A2238;color:#CDB4F5',
+      'go.sum': 'background:#1C3626;color:#8FDCA8',
+    };
+    const raw = [
+      ['src/main/kotlin/com/shop/cart/', 'CartService.kt', 'Both modified', 'Modified / Modified', 'Text', 'MergeEditor.dc.html', false, true],
+      ['src/main/kotlin/com/shop/promo/', 'Coupon.kt', 'Deleted by them', 'Modified / Deleted', 'Text', 'ModifyDelete.dc.html', false, false],
+      ['web/assets/', 'logo.png', 'Both modified', 'Modified / Modified', 'Image', 'ImageConflict.dc.html', false, false],
+      ['web/', 'pnpm-lock.yaml', 'Both modified', 'Modified / Modified', 'Lockfile', 'Lockfile.dc.html', true, false],
+      ['services/edge/', 'go.sum', 'Both modified', 'Modified / Modified', 'go.sum', 'GoSum.dc.html', true, false],
+      ['vendor/', 'ui-kit', 'Both modified', 'a41f0c2 / 7be9d13', 'Submodule', 'Submodule.dc.html', false, false],
+    ];
+    const files = raw.map(([dir, file, type, sides, kind, href, sel, active]) => ({
+      dir, file, type, sides, kind, href, sel,
+      wrapS: 'display:flex;align-items:flex-start;border-radius:6px;' + (active ? 'background:#262A30;' : sel ? 'background:#1F2328;' : ''),
+      sideS: sides.indexOf('Deleted') >= 0 ? 'color:#FF9F9F' : 'color:#A0A7B2',
+      kindS: 'font-size:11px;font-weight:500;padding:1px 6px;border-radius:4px;' + KIND[kind],
+    }));
+    return { files };
+  }
+}
+</script>
+</body>
+</html>

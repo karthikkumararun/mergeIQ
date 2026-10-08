@@ -40,7 +40,8 @@ Each file is one screen as plain HTML + inline CSS, written for a design canvas 
 | merge-editor-ui | `EditorLight.dc.html` | Light theme + commit popover |
 | merge-editor-ui | `SaveDialog.dc.html` | Apply with unresolved changes |
 | mergetool-cli | `CliSetup.dc.html` | Settings › Command line |
-| repo-browser | `RepoWindow.dc.html` | Banner, conflicts list, resolved section, tabs; variant `allResolved` |
+| repo-browser | `RepoSplit.dc.html` | Repository window (chosen layout): banner, side conflicts panel, editor tabs |
+| repo-browser | `RepoWindow.dc.html` | Rejected layout; reference only for banner states and the external-change toast |
 | structural-merge | `Structural.dc.html` | Proposal indicator, preview, bulk action |
 | special-conflicts | `ImageConflict`, `ModifyDelete`, `Lockfile`, `Submodule`, `Rename`, `GoSum`, `PickSide` | One panel per conflict class |
 | ai-assist | `AiAssist.dc.html` | Suggestion panel; variant `syntaxWarning` |
