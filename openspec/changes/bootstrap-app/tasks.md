@@ -2,7 +2,7 @@
 
 - [x] 1.1 Add LICENSE (Apache-2.0), README (vision, prerequisites, build steps), CONTRIBUTING, CODE_OF_CONDUCT
 - [x] 1.2 Add `.editorconfig`, `.gitattributes` (`* text=auto`, fixtures `-text` to keep bytes exact), `.gitignore` (target/, node_modules/, dist/)
-- [x] 1.3 Add `rust-toolchain.toml` (stable, components rustfmt + clippy) and `.nvmrc` (20)
+- [x] 1.3 Add `rust-toolchain.toml` (stable, components rustfmt + clippy) and `.nvmrc` (22 — jsdom 30 requires Node ≥22.22, bumped from spec's 20)
 
 ## 2. Rust workspace
 

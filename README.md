@@ -15,7 +15,7 @@ the merge engine and editor UI are being built next — see `openspec/ROADMAP.md
 
 - [Rust](https://www.rust-lang.org/tools/install) (stable toolchain — see `rust-toolchain.toml`), with
   the `rustfmt` and `clippy` components.
-- [Node.js](https://nodejs.org/) 20+ (see `.nvmrc`) and [pnpm](https://pnpm.io/) 9+.
+- [Node.js](https://nodejs.org/) 22+ (see `.nvmrc`) and [pnpm](https://pnpm.io/) 9+.
 - [cargo-nextest](https://nexte.st/) for running Rust tests.
 - Platform prerequisites for [Tauri 2](https://tauri.app/start/prerequisites/):
   - **macOS**: Xcode Command Line Tools.
