@@ -42,4 +42,4 @@
 
 - [x] 7.1 `.github/workflows/ci.yml`: matrix macOS/Windows/Ubuntu; cache cargo + pnpm; fmt, clippy, nextest, bindings check, pnpm lint/test, tauri debug build
 - [x] 7.2 `.github/workflows/release.yml`: tag `v*` → `tauri-action` builds dmg + msi as draft release (signing env vars optional, skipped when absent)
-- [ ] 7.3 Confirm CI green on all three OSes
+- [x] 7.3 Confirm CI green on all three OSes
