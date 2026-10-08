@@ -6,4 +6,21 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+encoding_rs = "0.8.42"
+imara-diff = "0.2.0"
+serde = { workspace = true, features = ["derive"] }
+specta = { version = "2.0.0-rc.25", optional = true, features = ["derive"] }
 thiserror.workspace = true
+
+[features]
+specta = ["dep:specta"]
+
+[dev-dependencies]
+criterion = { version = "0.8.2", features = ["html_reports"] }
+insta = { version = "1.49.0", features = ["json"] }
+proptest = "1.11.0"
+tempfile = "3.27.0"
+
+[[bench]]
+name = "analyze"
+harness = false

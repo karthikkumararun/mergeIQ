@@ -17,7 +17,7 @@ Each file is one screen as plain HTML + inline CSS, written for a design canvas 
 - `{{name}}` is a value from `renderVals()` in the `<script type="text/x-dc">` block at the bottom; `<sc-for list=… as=…>` repeats, `<sc-if value=…>` is conditional. The script contains sample data (file lists, code lines) — it is fixture data, not app logic.
 - `data-props` on that script lists the screen's variants (e.g. `theme`, `showBase`, `allResolved`, `outcome`). Implement every listed variant as a real state.
 - `<a href="X.dc.html">` links show navigation between screens. `<dc-import name="X">` embeds another screen with different props.
-- Hex colours in most boards are the dark-theme values. Map each to the variable with the same value in `changes/bootstrap-app/ui/tokens.css` — never hard-code them. `MergeEditor.dc.html` already uses the variables.
+- Hex colours in most boards are the dark-theme values. Map each to the variable with the same value in `apps/desktop/src/theme/tokens.css` (copied from `openspec/changes/archive/2026-10-08-bootstrap-app/ui/tokens.css`) — never hard-code them. `MergeEditor.dc.html` already uses the variables.
 - Sample names (repos, branches, SHAs, authors, sizes, `[COST]`) are placeholders.
 
 ## Shared visual rules

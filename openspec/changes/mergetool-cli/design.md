@@ -43,7 +43,7 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
   - Mergetool section: the exact `git config --global` commands in a code block; `mergetool.keepBackup false` greyed until its checkbox is ticked; primary "Run N commands…" opens a confirmation, plus "Copy commands".
   - Usage section: `open`, `resolve`, `merge` with one-line descriptions.
 - Windows (not drawn): the Install section shows whether the install directory is on the user PATH and offers adding it; the mergetool section is identical.
-- Home "Set up" cards (`bootstrap-app/ui/Main.dc.html`) link here and show Not installed / Not configured status.
+- Home "Set up" cards (`../archive/2026-10-08-bootstrap-app/ui/Main.dc.html`) link here and show Not installed / Not configured status.
 - Mergetool mode reuses the merge editor screens unchanged; the title bar shows the contextual labels or "Local"/"Remote" fallbacks.
 
 ## Risks / Trade-offs

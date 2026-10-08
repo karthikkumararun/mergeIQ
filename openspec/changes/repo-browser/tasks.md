@@ -30,4 +30,4 @@
 
 ## 6. UI fidelity
 
-- [ ] 6.1 Match `bootstrap-app/ui/Main.dc.html` (home body) and `ui/RepoSplit.dc.html` (see design.md › UI reference): slim banner and its states, resizable side panel with two-line rows and selection actions, collapsible resolved section, empty editor state, external-change toast with Close tab + Reload; Playwright screenshots for conflicts-remaining and all-resolved states in dark + light
+- [ ] 6.1 Match `../archive/2026-10-08-bootstrap-app/ui/Main.dc.html` (home body) and `ui/RepoSplit.dc.html` (see design.md › UI reference): slim banner and its states, resizable side panel with two-line rows and selection actions, collapsible resolved section, empty editor state, external-change toast with Close tab + Reload; Playwright screenshots for conflicts-remaining and all-resolved states in dark + light

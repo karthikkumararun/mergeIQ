@@ -60,7 +60,7 @@ onSave(result: { lines: ResultLine[]; unresolvedIds: number[]; mode: 'resolved'|
 
 Approved screens are in `ui/`; how to read them and precedence rules: `openspec/UI.md`.
 
-- `ui/MergeEditor.dc.html` — the editor. Variants in its `data-props`: `theme` (dark/light), `showBase`, `showPopover`. It already uses the token variables from `bootstrap-app/ui/tokens.css`.
+- `ui/MergeEditor.dc.html` — the editor. Variants in its `data-props`: `theme` (dark/light), `showBase`, `showPopover`. It already uses the token variables from `apps/desktop/src/theme/tokens.css`.
   - Title bar: file name, "Merging `<right label>` into `<left label>`", status counter pill (`--pill-*`), Cancel, Apply (primary, shows ⌘S / Ctrl+S).
   - Toolbar order: Apply non-conflicting (menu: All / Left only / Right only) · Resolve simple (disabled when none qualify) | Accept Left · Accept Right | prev/next change · next conflict (F7) | Show base · Collapse unchanged · Sync scroll (pressed toggles) | Whitespace select. Prev conflict (Shift+F7) is keyboard-only and in the overflow menu.
   - Pane headers: contextual label in mono + role chip ("Left · ours · read-only", "Result · editable", "Right · theirs · read-only") + short SHA and subject. Clicking a side header opens the commit popover (`EditorLight.dc.html` shows it).

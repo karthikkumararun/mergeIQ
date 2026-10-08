@@ -1,0 +1,26 @@
+---
+source: crates/mergeiq-core/tests/golden.rs
+expression: summary
+---
+{
+  "dominant_eol": "Crlf",
+  "encoding": "Utf8",
+  "chunk_count": 1,
+  "chunks": [
+    {
+      "kind": "OursOnly",
+      "base": [
+        1,
+        2
+      ],
+      "ours": [
+        1,
+        2
+      ],
+      "theirs": [
+        1,
+        2
+      ]
+    }
+  ]
+}

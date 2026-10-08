@@ -37,9 +37,9 @@ store/repoStore.ts     Zustand: status, conflicts, tabs, resolved-session log
 
 ## UI reference
 
-Approved screens are in `ui/` and `bootstrap-app/ui/Main.dc.html`; how to read them and precedence rules: `openspec/UI.md`.
+Approved screens are in `ui/` and `../archive/2026-10-08-bootstrap-app/ui/Main.dc.html`; how to read them and precedence rules: `openspec/UI.md`.
 
-- `bootstrap-app/ui/Main.dc.html` (home body): "Open repository…" primary button (⌘O / Ctrl+O), drop zone with `mergeiq open` hint, inline "Not a git repository." error (`--danger-*`, dismissible), Recent repositories list (name, mono path, relative time, remove ×; missing paths dimmed with "folder not found" and a Remove button).
+- `../archive/2026-10-08-bootstrap-app/ui/Main.dc.html` (home body): "Open repository…" primary button (⌘O / Ctrl+O), drop zone with `mergeiq open` hint, inline "Not a git repository." error (`--danger-*`, dismissible), Recent repositories list (name, mono path, relative time, remove ×; missing paths dimmed with "folder not found" and a Remove button).
   - The mock also shows "Resolve a single file…"; no spec covers it. Leave it out.
 - `ui/RepoSplit.dc.html` — **the repository window layout (chosen 2026-10-07)**: matches the split decision above. It embeds `merge-editor-ui/ui/MergeEditor.dc.html` in the tab area.
   - Header (repo name, mono path), then the operation banner as one slim strip: contextual sentence (bold mono branch names) + "· N conflicted files", "Git output" disclosure, buttons Skip commit… (rebase only) · Abort… (danger outline) · Continue (primary, disabled until resolved).

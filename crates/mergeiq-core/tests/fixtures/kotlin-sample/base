@@ -1,0 +1,7 @@
+class Counter {
+    var count: Int = 0
+
+    fun increment() {
+        count += 1
+    }
+}

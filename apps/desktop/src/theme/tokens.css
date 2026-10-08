@@ -1,5 +1,5 @@
 /*
- * MergeIQ theme tokens — copied from `openspec/changes/bootstrap-app/ui/tokens.css`
+ * MergeIQ theme tokens — copied from `openspec/changes/archive/2026-10-08-bootstrap-app/ui/tokens.css`
  * (the approved design canvas). Keep in sync if the canvas changes.
  * Theme is selected by `data-theme` on <html>: "dark" | "light". In `system` mode the theme hook
  * sets it from `prefers-color-scheme` and updates it live.

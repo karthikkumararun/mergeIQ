@@ -1,0 +1,6 @@
+name: mergeiq
+version: 0.1.0
+dependencies:
+  - rust
+  - react
+  - tauri
