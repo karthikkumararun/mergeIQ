@@ -1,0 +1,4 @@
+* text=auto
+
+# Fixtures must stay byte-for-byte exact (line endings, encodings under test).
+crates/*/tests/fixtures/** -text

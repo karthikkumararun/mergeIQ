@@ -1,0 +1,9 @@
+{
+  "extends": "stylelint-config-standard",
+  "ignoreFiles": ["src/theme/tokens.css"],
+  "rules": {
+    "color-no-hex": true,
+    "custom-property-pattern": null,
+    "selector-class-pattern": null
+  }
+}
