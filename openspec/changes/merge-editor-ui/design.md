@@ -85,3 +85,14 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
 ## Open Questions
 
 - Default for `autoApplyNonConflicting`: false (IntelliJ parity). Revisit after user feedback.
+- **Line endings are normalized on save.** The Result document holds `\n`-normalized text (CodeMirror cannot keep mixed terminators), so a file with mixed endings is saved with the dominant ending (`Analysis.dominant_eol`) on every line, and the last line has none only when no side had a trailing newline. Files with uniform endings round-trip byte-for-byte (tested for CRLF). Preserving per-line terminators of untouched lines would need a terminator side-table mapped through edits; deferred until someone hits a mixed-ending file.
+- **Implementation notes / deviations found while building** (resolved here rather than silently):
+  - `conflict_analyze(path, whitespace)` did not exist in `git-adapter`; this change adds it (`apps/desktop/src-tauri/src/commands/git.rs`, wrapping `Repo::load_conflict` with `Options`). `MergeEditor` stays host-agnostic: the whitespace selector is enabled only when the host passes `reanalyze(policy)`; `reanalyzeViaIpc(pathToken)` in `merge-editor/hosts.ts` is the IPC implementation.
+  - Settings persistence uses two new commands, `get_merge_editor_settings` / `update_merge_editor_settings`, with the preferences nested under `mergeEditor` in `settings.json` (unknown keys are still preserved). `SettingsDto` is unchanged so the home/settings views are unaffected.
+  - `onSave` receives `{ lines, unresolvedIds, unresolved, mode, encoding }`. `unresolved` carries the conflicts to splice in as markers for `mode: "markers"` and `renderSaveText()` (mirrors `mergeiq_core::serialize`) turns the payload into the text `conflict_save` takes; hosts decide staging from `mode` (`resolved` and `force` stage, `markers` does not).
+  - The counter counts every unresolved chunk as a change and the conflicts among them: "3 changes · 1 conflict left" means three chunks remain, one of which is a conflict.
+  - With Show base on, the Base pane sits between Left and the left gutter, so the left bands visually start at Base's edge; they are still computed from the Left pane's lines.
+  - Revert lives in the gutter on the side that changed the chunk (left gutter, right gutter for theirs-only chunks) next to the Result pane edge.
+  - The save dialog says "still has a conflict at line N" instead of naming the enclosing function (no symbol lookup in v0.1).
+  - Contrast check (task 3.3): highlight backgrounds are deliberately subtle, so "≥ 3:1" is applied to what must stay legible: gutter marks against the pane and chunk backgrounds (≥ 3:1) and code text on every highlight (≥ 4.5:1). Run for both themes in `panes/contrast.test.ts`.
+  - Visual baselines are generated per platform (darwin/chromium committed). Playwright runs are not part of the CI gate (`pnpm test` is Vitest); run `pnpm --filter desktop exec playwright test` locally.

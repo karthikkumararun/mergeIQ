@@ -6,10 +6,10 @@ import type {
   PathToken,
   SideLabel,
   Terminator,
+  WhitespacePolicy,
 } from "../../ipc/bindings";
 
-export type WhitespacePolicy =
-  "Exact" | "TrimTrailing" | "IgnoreAmount" | "IgnoreAll";
+export type { WhitespacePolicy };
 
 /** Which pane a side action belongs to. `left` is ours, `right` is theirs. */
 export type Side = "left" | "right";
