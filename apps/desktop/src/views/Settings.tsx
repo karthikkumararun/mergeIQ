@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeSwitch } from "../components/ThemeSwitch";
 import { CommandLine } from "../settings/CommandLine";
 import { ipcCliApi, type CliSetupApi } from "../settings/cliApi";
+import { loadMergeSettings, saveMergeSettings } from "../merge-editor/hosts";
+import type { MergeSettings } from "../merge-editor/model/types";
 import { useTheme } from "../theme/useTheme";
 import styles from "./Settings.module.css";
 
@@ -23,6 +25,16 @@ export function Settings({
 }: SettingsProps) {
   const { theme, setTheme } = useTheme();
   const [section, setSection] = useState<SettingsSection>(initial);
+  const [merge, setMerge] = useState<MergeSettings | null>(null);
+  useEffect(() => {
+    void loadMergeSettings().then(setMerge);
+  }, []);
+  const setAutoAdvance = (autoAdvanceAfterSave: boolean) => {
+    if (!merge) return;
+    const next = { ...merge, autoAdvanceAfterSave };
+    setMerge(next);
+    void saveMergeSettings(next);
+  };
   const items: { id: SettingsSection; label: string }[] = [
     { id: "general", label: "General" },
     { id: "cli", label: "Command line" },
@@ -57,6 +69,17 @@ export function Settings({
               <span className={styles.label}>Theme</span>
               <ThemeSwitch value={theme} onChange={setTheme} />
             </div>
+            <label className={styles.row}>
+              <span className={styles.label}>
+                After saving a resolved file, open the next conflicted file
+              </span>
+              <input
+                type="checkbox"
+                checked={merge?.autoAdvanceAfterSave ?? true}
+                disabled={!merge}
+                onChange={(e) => setAutoAdvance(e.target.checked)}
+              />
+            </label>
           </section>
         ) : (
           <CommandLine api={cliApi} onChanged={onCliChanged} />

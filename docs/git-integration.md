@@ -11,7 +11,7 @@ window it opened is closed.
 |---|---|
 | `mergeiq merge BASE LOCAL REMOTE MERGED` | git mergetool mode. LOCAL is the left pane, REMOTE the right, BASE the common ancestor, and the result is written to MERGED. A missing or empty BASE is an empty base. Blocks until the window closes. |
 | `mergeiq resolve PATH` | Opens one conflicted file. If PATH is unmerged in the git index, the three stages are loaded from git and **Apply** stages the file. Otherwise, if the file contains conflict markers (merge or diff3 style), they are parsed and **Apply** only writes the file. With neither, it exits 2 with `no conflicts in <PATH>`. |
-| `mergeiq open [DIR]` | Opens a repository window for DIR (default: current directory). |
+| `mergeiq open [DIR]` | Opens (or focuses) the repository window for the repository containing DIR (default: current directory) and returns immediately. Exits 2 if DIR is not inside a git working tree. |
 | `mergeiq --version`, `mergeiq --help` | Print and exit. |
 
 ### Exit codes (`merge` and `resolve`)
@@ -20,7 +20,7 @@ window it opened is closed.
 |---|---|
 | `0` | You saved a fully resolved result, or chose **Mark as resolved anyway**. |
 | `1` | You cancelled, or saved with conflict markers still in the file. |
-| `2` | Invalid arguments or an unusable request (usage or the reason is printed to stderr). |
+| `2` | Invalid arguments or an unusable request, including `open` on a folder that is not a git repository (usage or the reason is printed to stderr). |
 
 ## Installing the `mergeiq` command
 
