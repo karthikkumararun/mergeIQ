@@ -16,6 +16,16 @@ async function root() {
     const { DevMerge } = await import("./merge-editor/DevMerge");
     return <DevMerge />;
   }
+  const request = window.location.pathname.match(/^\/(merge|repo)\/(\d+)$/);
+  if (request) {
+    const id = Number(request[2]);
+    if (request[1] === "merge") {
+      const { MergeRequestView } = await import("./requests/MergeRequestView");
+      return <MergeRequestView id={id} />;
+    }
+    const { RepoRequestView } = await import("./requests/RepoRequestView");
+    return <RepoRequestView id={id} />;
+  }
   return <App />;
 }
 

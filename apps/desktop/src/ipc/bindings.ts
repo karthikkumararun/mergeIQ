@@ -25,6 +25,16 @@ export const commands = {
 	opContinue: () => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_continue")),
 	opAbort: () => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_abort")),
 	opSkip: () => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_skip")),
+	mergeRequestLoad: (id: number) => typedError<MergeRequestDoc, IpcError>(__TAURI_INVOKE("merge_request_load", { id })),
+	mergeRequestAnalyze: (id: number, whitespace: WhitespacePolicy) => typedError<Analysis, IpcError>(__TAURI_INVOKE("merge_request_analyze", { id, whitespace })),
+	/**
+	 *  Writes the result and records the exit code for the waiting CLI process. The window
+	 *  stays open; the UI calls [`merge_request_close`] afterwards.
+	 */
+	mergeRequestSave: (id: number, text: string, encoding: EncodingInfo, mode: SaveMode) => typedError<null, IpcError>(__TAURI_INVOKE("merge_request_save", { id, text, encoding, mode })),
+	/**  Closes a request's window; its client gets the recorded exit code (1 if none). */
+	requestClose: (id: number, kind: RequestWindow) => typedError<null, IpcError>(__TAURI_INVOKE("request_close", { id, kind })),
+	repoRequestLoad: (id: number) => typedError<RepoRequestDoc, IpcError>(__TAURI_INVOKE("repo_request_load", { id })),
 };
 
 /** Events */
@@ -257,7 +267,7 @@ stderr: string } |
 /**  The underlying error text. */
 message: string };
 
-export type IpcError = { kind: "Settings"; message: string } | { kind: "Git"; message: GitError } | { kind: "NoRepo" };
+export type IpcError = { kind: "Settings"; message: string } | { kind: "Git"; message: GitError } | { kind: "NoRepo" } | { kind: "Request"; message: string };
 
 /**
  *  A line's content range `[start, end)` (byte offsets, terminator excluded) plus its
@@ -300,6 +310,26 @@ export type MergeEditorSettings = {
 	whitespacePolicy?: WhitespacePolicy,
 };
 
+/**  Left/right labels for the editor headers. */
+export type MergeLabels = {
+	/**  Left pane (ours / local). */
+	left: SideLabel,
+	/**  Right pane (theirs / remote). */
+	right: SideLabel,
+};
+
+/**  Everything the merge window needs (the UI's `MergeDocument`, minus the path token). */
+export type MergeRequestDoc = {
+	/**  Path shown in the title bar. */
+	displayPath: string,
+	/**  Engine analysis of the three sides. */
+	analysis: Analysis,
+	/**  Header labels. */
+	labels: MergeLabels,
+	/**  Commits touching the file per side, when in a repository. */
+	context: FileContext | null,
+};
+
 /**  The operation that produced (or may produce) conflicts. */
 export type Operation = 
 /**  Nothing in progress. */
@@ -329,6 +359,12 @@ export type PathToken = string;
 /**  Emitted (as `repo-changed`) when the index or operation state changes outside the app. */
 export type RepoChanged = null;
 
+/**  What the repository window needs (placeholder until `repo-browser`). */
+export type RepoRequestDoc = {
+	/**  The directory to open. */
+	dir: string,
+};
+
 /**  Snapshot of a repository's conflict state. */
 export type RepoStatus = {
 	/**  Worktree root (lossy display form). */
@@ -340,6 +376,22 @@ export type RepoStatus = {
 	/**  Unmerged paths. */
 	conflicts: ConflictEntry[],
 };
+
+/**  Which kind of request window to close. */
+export type RequestWindow = 
+/**  A merge editor window. */
+"merge" | 
+/**  A repository window. */
+"repo";
+
+/**  How the editor's Apply was chosen (mirrors the UI's `SaveMode`). */
+export type SaveMode = 
+/**  Everything resolved. */
+"resolved" | 
+/**  Unresolved conflicts written as markers. */
+"markers" | 
+/**  "Mark as resolved anyway". */
+"force";
 
 /**
  *  Typed IPC view of [`Settings`]; unknown keys in the settings file are preserved on

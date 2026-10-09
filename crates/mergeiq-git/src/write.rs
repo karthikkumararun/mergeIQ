@@ -86,6 +86,12 @@ fn write_atomic(target: &Path, bytes: &[u8], exec_hint: bool) -> Result<()> {
     Ok(result?)
 }
 
+/// Atomically replaces the file at `path` with `bytes`, preserving an existing file's
+/// permissions. For files outside any repository (git mergetool's `MERGED`).
+pub fn write_file_atomic(path: &Path, bytes: &[u8]) -> Result<()> {
+    write_atomic(path, bytes, false)
+}
+
 impl Repo {
     /// Bytes as they should appear in the working tree (applies CRLF per attributes/config).
     fn to_working_bytes(&self, path: &RepoPath, bytes: &[u8]) -> Result<Vec<u8>> {

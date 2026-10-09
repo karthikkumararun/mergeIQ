@@ -1,4 +1,4 @@
-use crate::commands::git;
+use crate::commands::{git, requests};
 use crate::settings::{self, MergeEditorSettings, Settings};
 
 #[derive(Debug, Clone, serde::Serialize, specta::Type)]
@@ -28,6 +28,8 @@ pub enum IpcError {
     Git(#[from] mergeiq_git::GitError),
     #[error("no repository is open")]
     NoRepo,
+    #[error("{0}")]
+    Request(String),
 }
 
 /// Typed IPC view of [`Settings`]; unknown keys in the settings file are preserved on
@@ -96,6 +98,11 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
             git::op_continue,
             git::op_abort,
             git::op_skip,
+            requests::merge_request_load,
+            requests::merge_request_analyze,
+            requests::merge_request_save,
+            requests::request_close,
+            requests::repo_request_load,
         ])
         .events(tauri_specta::collect_events![git::RepoChanged])
 }

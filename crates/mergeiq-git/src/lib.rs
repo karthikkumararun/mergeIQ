@@ -25,7 +25,7 @@ pub use operation::{Operation, SideLabel, SideLabels};
 pub use paths::{PathToken, RepoPath};
 pub use repo::Repo;
 pub use watch::{RepoWatcher, DEBOUNCE};
-pub use write::AcceptSide;
+pub use write::{write_file_atomic, AcceptSide};
 
 /// This crate's version, from `Cargo.toml`.
 pub fn version() -> &'static str {
