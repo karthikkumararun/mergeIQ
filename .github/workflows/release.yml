@@ -1,49 +1,75 @@
 name: Release
 
+# A `v<semver>` tag builds installers for every platform and publishes one GitHub Release
+# (draft until everything succeeded). A manual run is a dry run: installers are attached to
+# the workflow run as artifacts and no release is created. See docs/releasing.md.
 on:
   push:
     tags:
-      - "v*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  release:
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [macos-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
+  # Fails fast on a wrong tag (seconds, not three platform builds), decides pre-release and
+  # signing status, and creates the single draft release the build jobs upload into.
+  verify:
+    name: Verify version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # creates the draft release
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      tag: ${{ steps.meta.outputs.tag }}
+      prerelease: ${{ steps.meta.outputs.prerelease }}
+      release_id: ${{ steps.draft.outputs.release_id }}
+      signed_macos: ${{ steps.signing.outputs.macos }}
+      signed_windows: ${{ steps.signing.outputs.windows }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache cargo
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: ". -> target"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Install Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: ".nvmrc"
-          cache: "pnpm"
 
-      - name: Install JS dependencies
-        run: pnpm install --frozen-lockfile
+      # Tag runs: the tag version must equal the version in all three files. Manual runs: the
+      # three files must at least agree with each other.
+      - name: Check the tag against the versions in the repository
+        id: meta
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            tag="$GITHUB_REF_NAME"
+            version="$(node scripts/release/read-versions.mjs --tag "$tag")"
+          else
+            version="$(node scripts/release/read-versions.mjs --consistent)"
+            tag="v$version"
+          fi
+          case "$version" in
+            *-*) prerelease=true ;;
+            *) prerelease=false ;;
+          esac
+          {
+            echo "version=$version"
+            echo "tag=$tag"
+            echo "prerelease=$prerelease"
+          } >> "$GITHUB_OUTPUT"
+          echo "Release $tag (version $version, prerelease: $prerelease)"
 
-      # Signing is optional: tauri-action skips codesigning/notarization (macOS) or
-      # Authenticode signing (Windows) when these secrets are absent, producing an
-      # unsigned build. Wire them up in repo secrets before a public release.
-      - name: Build and release
-        uses: tauri-apps/tauri-action@v0
+      # Signing is optional: without its secrets a platform builds unsigned and the release
+      # notes say so.
+      - name: Detect signing secrets
+        id: signing
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
@@ -52,9 +78,280 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
           WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          macos=false
+          if [ -n "$APPLE_CERTIFICATE" ] && [ -n "$APPLE_CERTIFICATE_PASSWORD" ] && [ -n "$APPLE_SIGNING_IDENTITY" ] \
+            && [ -n "$APPLE_ID" ] && [ -n "$APPLE_PASSWORD" ] && [ -n "$APPLE_TEAM_ID" ]; then
+            macos=true
+          fi
+          windows=false
+          if [ -n "$WINDOWS_CERTIFICATE" ] && [ -n "$WINDOWS_CERTIFICATE_PASSWORD" ]; then
+            windows=true
+          fi
+          echo "macos=$macos" >> "$GITHUB_OUTPUT"
+          echo "windows=$windows" >> "$GITHUB_OUTPUT"
+          echo "macOS signing: $macos, Windows signing: $windows"
+
+      # One draft shared by the matrix jobs (each creating its own would race). Re-running a
+      # failed tag run reuses the draft; an already published release is never touched.
+      - name: Create the draft release
+        id: draft
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          PRERELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          existing="$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases" \
+            --jq ".[] | select(.tag_name == \"$TAG\") | [.id, .draft] | @tsv" | head -n 1)"
+          if [ -n "$existing" ]; then
+            id="$(echo "$existing" | cut -f1)"
+            draft="$(echo "$existing" | cut -f2)"
+            if [ "$draft" != "true" ]; then
+              echo "::error::Release $TAG is already published; refusing to modify it."
+              exit 1
+            fi
+            echo "Reusing draft release $id"
+          else
+            id="$(gh api -X POST "repos/$GITHUB_REPOSITORY/releases" \
+              -f tag_name="$TAG" -f name="MergeIQ $TAG" -f body="Release in progress." \
+              -F draft=true -F prerelease="$PRERELEASE" --jq .id)"
+            echo "Created draft release $id"
+          fi
+          echo "release_id=$id" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build (${{ matrix.name }})
+    needs: verify
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS universal
+            os: macos-latest
+            args: --target universal-apple-darwin
+            rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - name: Windows
+            os: windows-latest
+            args: ""
+            rust_targets: ""
+          - name: Linux
+            # An older glibc than ubuntu-latest, so the AppImage and .deb run on more distros.
+            os: ubuntu-22.04
+            args: ""
+            rust_targets: ""
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install Linux Tauri dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libssl-dev xdg-utils file
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.rust_targets }}
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: ". -> target"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+        with:
+          version: 9
+
+      - name: Install Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+
+      # macOS signing and notarization: the secrets reach the build only when all of them are
+      # configured (an empty value would be read as "set" by the bundler).
+      - name: Export macOS signing secrets
+        if: runner.os == 'macOS' && needs.verify.outputs.signed_macos == 'true'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          for name in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
+            {
+              echo "$name<<__SECRET_END__"
+              printf '%s\n' "${!name}"
+              echo "__SECRET_END__"
+            } >> "$GITHUB_ENV"
+          done
+
+      # Windows Authenticode: import the certificate and point Tauri at it with a config file.
+      - name: Prepare Windows signing
+        id: winsign
+        if: runner.os == 'Windows' && needs.verify.outputs.signed_windows == 'true'
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP "certificate.pfx"
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
+          $password = ConvertTo-SecureString $env:WINDOWS_CERTIFICATE_PASSWORD -AsPlainText -Force
+          $cert = Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $password
+          Remove-Item $pfx
+          $config = Join-Path $env:RUNNER_TEMP "tauri-sign.conf.json"
+          @{ bundle = @{ windows = @{
+            certificateThumbprint = $cert.Thumbprint
+            digestAlgorithm = "sha256"
+            timestampUrl = "http://timestamp.digicert.com"
+          } } } | ConvertTo-Json -Depth 5 | Set-Content $config
+          "args=--config $config" >> $env:GITHUB_OUTPUT
+
+      # On tag runs tauri-action uploads the installers to the shared draft release; on dry runs
+      # `releaseId` is empty, so it only builds.
+      - name: Build installers
+        id: tauri
+        uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           projectPath: apps/desktop
-          tagName: ${{ github.ref_name }}
-          releaseName: "MergeIQ ${{ github.ref_name }}"
-          releaseDraft: true
-          prerelease: false
+          releaseId: ${{ needs.verify.outputs.release_id }}
+          args: ${{ matrix.args }} ${{ steps.winsign.outputs.args }}
+
+      # The universal build must really contain both architectures, in the .app and in the
+      # .dmg users download, and the CLI must be `mergeiq`.
+      - name: Verify macOS universal binary
+        if: runner.os == 'macOS'
+        run: |
+          bundle=target/universal-apple-darwin/release/bundle
+          check() {
+            archs="$(lipo -archs "$1")"
+            echo "$1: $archs"
+            for arch in arm64 x86_64; do
+              case " $archs " in
+                *" $arch "*) ;;
+                *) echo "::error::$1 is missing the $arch slice (has: $archs)"; exit 1 ;;
+              esac
+            done
+          }
+          check "$bundle/macos/MergeIQ.app/Contents/MacOS/mergeiq"
+          dmg="$(ls "$bundle"/dmg/*.dmg)"
+          mount="$(mktemp -d)"
+          hdiutil attach -nobrowse -readonly -mountpoint "$mount" "$dmg"
+          check "$mount/MergeIQ.app/Contents/MacOS/mergeiq"
+          hdiutil detach "$mount"
+          {
+            echo "### macOS universal check"
+            echo "\`$(basename "$dmg")\`: \`$(lipo -archs "$bundle/macos/MergeIQ.app/Contents/MacOS/mergeiq")\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: List installers
+        shell: bash
+        run: |
+          find target -path '*/release/bundle/*' -type f \
+            \( -name '*.dmg' -o -name '*.msi' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' \) \
+            -not -path '*/_CPack_Packages/*' -exec ls -l {} \;
+
+      # Dry run only: attach the installers to the workflow run.
+      - name: Upload installers as workflow artifacts
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: installers-${{ runner.os }}
+          if-no-files-found: error
+          path: |
+            target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            target/release/bundle/msi/*.msi
+            target/release/bundle/nsis/*.exe
+            target/release/bundle/appimage/*.AppImage
+            target/release/bundle/deb/*.deb
+
+  # Only when every platform built: check the asset set, checksum the exact uploaded files,
+  # write the notes, then publish the draft.
+  publish:
+    name: Publish release
+    if: github.event_name == 'push'
+    needs: [verify, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_ID: ${{ needs.verify.outputs.release_id }}
+      TAG: ${{ needs.verify.outputs.tag }}
+      VERSION: ${{ needs.verify.outputs.version }}
+      PRERELEASE: ${{ needs.verify.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Download the release assets
+        run: |
+          mkdir assets
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
+            --jq '.assets[] | "\(.id)\t\(.name)"' | while IFS=$'\t' read -r asset_id name; do
+            echo "Downloading $name"
+            gh api -H "Accept: application/octet-stream" \
+              "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" > "assets/$name"
+          done
+          ls -l assets
+
+      - name: Check the asset set
+        run: node scripts/release/check-assets.mjs "$VERSION" assets
+
+      # Generated from the files that were uploaded, not from build outputs.
+      - name: Generate SHA256SUMS.txt
+        working-directory: assets
+        run: |
+          shopt -s nullglob
+          files=(*.dmg *.msi *.exe *.AppImage *.deb)
+          sha256sum -- "${files[@]}" > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          sha256sum --check SHA256SUMS.txt
+
+      - name: Write the release notes
+        env:
+          SIGNED_MACOS: ${{ needs.verify.outputs.signed_macos }}
+          SIGNED_WINDOWS: ${{ needs.verify.outputs.signed_windows }}
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
+            -f tag_name="$TAG" --jq .body > generated.md
+          flags=()
+          [ "$SIGNED_MACOS" = "true" ] || flags+=(--unsigned-macos)
+          [ "$SIGNED_WINDOWS" = "true" ] || flags+=(--unsigned-windows)
+          node scripts/release/render-notes.mjs --tag "$TAG" --repo "$GITHUB_REPOSITORY" \
+            --assets assets --generated generated.md "${flags[@]}" > notes.md
+          cat notes.md
+
+      - name: Upload SHA256SUMS.txt
+        run: |
+          old="$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
+            --jq '.assets[] | select(.name == "SHA256SUMS.txt") | .id')"
+          if [ -n "$old" ]; then
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$old"
+          fi
+          gh api --method POST \
+            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=SHA256SUMS.txt" \
+            -H "Content-Type: text/plain" --input assets/SHA256SUMS.txt > /dev/null
+
+      # Pre-release tags publish as pre-releases and are never marked "latest".
+      - name: Publish
+        run: |
+          if [ "$PRERELEASE" = "true" ]; then latest=false; else latest=true; fi
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
+            -F body=@notes.md -F draft=false -F prerelease="$PRERELEASE" -f make_latest="$latest" > /dev/null
+          echo "Published $TAG (prerelease: $PRERELEASE)"
