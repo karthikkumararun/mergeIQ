@@ -1,0 +1,107 @@
+{
+  "base": {
+    "text": "a\r\nb\r\nc\r\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Crlf"
+      },
+      {
+        "start": 3,
+        "end": 4,
+        "term": "Crlf"
+      },
+      {
+        "start": 6,
+        "end": 7,
+        "term": "Crlf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "a\r\nB\r\nc\r\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Crlf"
+      },
+      {
+        "start": 3,
+        "end": 4,
+        "term": "Crlf"
+      },
+      {
+        "start": 6,
+        "end": 7,
+        "term": "Crlf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "a\r\nb\r\nc\r\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Crlf"
+      },
+      {
+        "start": 3,
+        "end": 4,
+        "term": "Crlf"
+      },
+      {
+        "start": 6,
+        "end": 7,
+        "term": "Crlf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "OursOnly",
+      "base": {
+        "start": 1,
+        "end": 2
+      },
+      "ours": {
+        "start": 1,
+        "end": 2
+      },
+      "theirs": {
+        "start": 1,
+        "end": 2
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 1
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": []
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Crlf"
+}

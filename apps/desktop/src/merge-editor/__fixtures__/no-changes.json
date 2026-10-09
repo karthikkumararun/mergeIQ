@@ -1,0 +1,68 @@
+{
+  "base": {
+    "text": "a\nb\nc\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "term": "Lf"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "a\nb\nc\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "term": "Lf"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "a\nb\nc\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "term": "Lf"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}
