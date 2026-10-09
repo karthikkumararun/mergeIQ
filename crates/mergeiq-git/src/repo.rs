@@ -63,7 +63,7 @@ impl Repo {
         else {
             return Err(not_a_repo());
         };
-        let cwd = path.canonicalize().unwrap_or_else(|_| path.to_path_buf());
+        let cwd = dunce::canonicalize(path).unwrap_or_else(|_| path.to_path_buf());
         let common_dir = {
             let p = PathBuf::from(common);
             if p.is_absolute() {

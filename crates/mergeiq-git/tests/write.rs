@@ -123,6 +123,7 @@ fn restore_conflict() {
 }
 
 #[test]
+#[cfg(unix)] // `*` is not a valid file name character on Windows
 fn paths_with_leading_dashes_and_globs_are_literal() {
     let s = Scenario::new();
     s.write_commit("-weird*.txt", "one\ntwo\n", "base");

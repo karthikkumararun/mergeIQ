@@ -15,7 +15,7 @@ impl Scenario {
     /// New repo on branch `main` with an isolated local config.
     pub fn new() -> Self {
         let dir = tempfile::tempdir().unwrap();
-        let root = dir.path().canonicalize().unwrap().join("repo");
+        let root = dunce::canonicalize(dir.path()).unwrap().join("repo");
         std::fs::create_dir_all(&root).unwrap();
         let s = Self { _dir: dir, root };
         s.git(&["init", "-q", "-b", "main"]);
