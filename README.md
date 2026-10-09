@@ -11,6 +11,22 @@ MergeIQ works as a standalone app, a `git mergetool`, and (later) a CLI.
 Early development. The desktop shell, typed IPC, theming, settings and CI described below are in place;
 the merge engine and editor UI are being built next — see `openspec/ROADMAP.md`.
 
+## Install
+
+Download the installer for your system from the [latest release](https://github.com/karthikkumararun/mergeIQ/releases/latest):
+
+| System                                 | File                                                                   |
+| -------------------------------------- | ---------------------------------------------------------------------- |
+| macOS 10.15+ (Apple silicon and Intel) | `MergeIQ_<version>_universal.dmg`                                      |
+| Windows (x64)                          | `MergeIQ_<version>_x64_en-US.msi` or `MergeIQ_<version>_x64-setup.exe` |
+| Linux (x86_64)                         | `MergeIQ_<version>_amd64.AppImage` or `MergeIQ_<version>_amd64.deb`    |
+
+Check a download with `sha256sum --check SHA256SUMS.txt` (macOS: `shasum -a 256 --check SHA256SUMS.txt`).
+Builds may be unsigned: on macOS right-click the app › **Open** the first time; on Windows choose
+**More info › Run anyway** in SmartScreen. The release notes say which installers are unsigned.
+Then see [docs/git-integration.md](docs/git-integration.md) for the `mergeiq` command and `git mergetool`.
+Maintainers: [docs/releasing.md](docs/releasing.md).
+
 ## Prerequisites
 
 - [Rust](https://www.rust-lang.org/tools/install) (stable toolchain — see `rust-toolchain.toml`), with
