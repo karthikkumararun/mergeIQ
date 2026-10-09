@@ -1,0 +1,112 @@
+{
+  "base": {
+    "text": "a\nb\nc\nd\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "term": "Lf"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 7,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "a\nb\nc\nd\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "term": "Lf"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 7,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "a\nc\nd\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "term": "Lf"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "TheirsOnly",
+      "base": {
+        "start": 1,
+        "end": 2
+      },
+      "ours": {
+        "start": 1,
+        "end": 2
+      },
+      "theirs": {
+        "start": 1,
+        "end": 1
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [],
+          "side_ranges": []
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "side_ranges": []
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}

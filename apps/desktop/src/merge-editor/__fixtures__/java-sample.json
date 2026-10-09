@@ -1,0 +1,264 @@
+{
+  "base": {
+    "text": "public class Greeter {\n    private String name;\n\n    public Greeter(String name) {\n        this.name = name;\n    }\n\n    public String greet() {\n        return \"Hello, \" + name;\n    }\n}\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 22,
+        "term": "Lf"
+      },
+      {
+        "start": 23,
+        "end": 47,
+        "term": "Lf"
+      },
+      {
+        "start": 48,
+        "end": 48,
+        "term": "Lf"
+      },
+      {
+        "start": 49,
+        "end": 82,
+        "term": "Lf"
+      },
+      {
+        "start": 83,
+        "end": 108,
+        "term": "Lf"
+      },
+      {
+        "start": 109,
+        "end": 114,
+        "term": "Lf"
+      },
+      {
+        "start": 115,
+        "end": 115,
+        "term": "Lf"
+      },
+      {
+        "start": 116,
+        "end": 143,
+        "term": "Lf"
+      },
+      {
+        "start": 144,
+        "end": 176,
+        "term": "Lf"
+      },
+      {
+        "start": 177,
+        "end": 182,
+        "term": "Lf"
+      },
+      {
+        "start": 183,
+        "end": 184,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "public class Greeter {\n    private String name;\n\n    public Greeter(String name) {\n        this.name = name;\n    }\n\n    public String greet() {\n        return \"Hi, \" + name + \"!\";\n    }\n}\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 22,
+        "term": "Lf"
+      },
+      {
+        "start": 23,
+        "end": 47,
+        "term": "Lf"
+      },
+      {
+        "start": 48,
+        "end": 48,
+        "term": "Lf"
+      },
+      {
+        "start": 49,
+        "end": 82,
+        "term": "Lf"
+      },
+      {
+        "start": 83,
+        "end": 108,
+        "term": "Lf"
+      },
+      {
+        "start": 109,
+        "end": 114,
+        "term": "Lf"
+      },
+      {
+        "start": 115,
+        "end": 115,
+        "term": "Lf"
+      },
+      {
+        "start": 116,
+        "end": 143,
+        "term": "Lf"
+      },
+      {
+        "start": 144,
+        "end": 179,
+        "term": "Lf"
+      },
+      {
+        "start": 180,
+        "end": 185,
+        "term": "Lf"
+      },
+      {
+        "start": 186,
+        "end": 187,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "public class Greeter {\n    private final String name;\n\n    public Greeter(String name) {\n        this.name = name;\n    }\n\n    public String greet() {\n        return \"Hello, \" + name;\n    }\n}\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 22,
+        "term": "Lf"
+      },
+      {
+        "start": 23,
+        "end": 53,
+        "term": "Lf"
+      },
+      {
+        "start": 54,
+        "end": 54,
+        "term": "Lf"
+      },
+      {
+        "start": 55,
+        "end": 88,
+        "term": "Lf"
+      },
+      {
+        "start": 89,
+        "end": 114,
+        "term": "Lf"
+      },
+      {
+        "start": 115,
+        "end": 120,
+        "term": "Lf"
+      },
+      {
+        "start": 121,
+        "end": 121,
+        "term": "Lf"
+      },
+      {
+        "start": 122,
+        "end": 149,
+        "term": "Lf"
+      },
+      {
+        "start": 150,
+        "end": 182,
+        "term": "Lf"
+      },
+      {
+        "start": 183,
+        "end": 188,
+        "term": "Lf"
+      },
+      {
+        "start": 189,
+        "end": 190,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "TheirsOnly",
+      "base": {
+        "start": 1,
+        "end": 2
+      },
+      "ours": {
+        "start": 1,
+        "end": 2
+      },
+      "theirs": {
+        "start": 1,
+        "end": 2
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [],
+          "side_ranges": []
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": [
+            {
+              "start": 12,
+              "end": 18
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    },
+    {
+      "id": 1,
+      "kind": "OursOnly",
+      "base": {
+        "start": 8,
+        "end": 9
+      },
+      "ours": {
+        "start": 8,
+        "end": 9
+      },
+      "theirs": {
+        "start": 8,
+        "end": 9
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 16,
+              "end": 21
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 16,
+              "end": 18
+            },
+            {
+              "start": 28,
+              "end": 34
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": []
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}

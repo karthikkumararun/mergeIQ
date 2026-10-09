@@ -1,0 +1,182 @@
+{
+  "base": {
+    "text": "class Counter {\n    var count: Int = 0\n\n    fun increment() {\n        count += 1\n    }\n}\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 15,
+        "term": "Lf"
+      },
+      {
+        "start": 16,
+        "end": 38,
+        "term": "Lf"
+      },
+      {
+        "start": 39,
+        "end": 39,
+        "term": "Lf"
+      },
+      {
+        "start": 40,
+        "end": 61,
+        "term": "Lf"
+      },
+      {
+        "start": 62,
+        "end": 80,
+        "term": "Lf"
+      },
+      {
+        "start": 81,
+        "end": 86,
+        "term": "Lf"
+      },
+      {
+        "start": 87,
+        "end": 88,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "class Counter {\n    var count: Int = 0\n\n    fun increment() {\n        count += 1\n    }\n\n    fun reset() {\n        count = 0\n    }\n}\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 15,
+        "term": "Lf"
+      },
+      {
+        "start": 16,
+        "end": 38,
+        "term": "Lf"
+      },
+      {
+        "start": 39,
+        "end": 39,
+        "term": "Lf"
+      },
+      {
+        "start": 40,
+        "end": 61,
+        "term": "Lf"
+      },
+      {
+        "start": 62,
+        "end": 80,
+        "term": "Lf"
+      },
+      {
+        "start": 81,
+        "end": 86,
+        "term": "Lf"
+      },
+      {
+        "start": 87,
+        "end": 87,
+        "term": "Lf"
+      },
+      {
+        "start": 88,
+        "end": 105,
+        "term": "Lf"
+      },
+      {
+        "start": 106,
+        "end": 123,
+        "term": "Lf"
+      },
+      {
+        "start": 124,
+        "end": 129,
+        "term": "Lf"
+      },
+      {
+        "start": 130,
+        "end": 131,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "class Counter {\n    var count: Int = 0\n\n    fun increment() {\n        count += 1\n    }\n}\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 15,
+        "term": "Lf"
+      },
+      {
+        "start": 16,
+        "end": 38,
+        "term": "Lf"
+      },
+      {
+        "start": 39,
+        "end": 39,
+        "term": "Lf"
+      },
+      {
+        "start": 40,
+        "end": 61,
+        "term": "Lf"
+      },
+      {
+        "start": 62,
+        "end": 80,
+        "term": "Lf"
+      },
+      {
+        "start": 81,
+        "end": 86,
+        "term": "Lf"
+      },
+      {
+        "start": 87,
+        "end": 88,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "OursOnly",
+      "base": {
+        "start": 6,
+        "end": 6
+      },
+      "ours": {
+        "start": 6,
+        "end": 10
+      },
+      "theirs": {
+        "start": 6,
+        "end": 6
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 42
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": []
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}

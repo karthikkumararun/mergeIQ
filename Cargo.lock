@@ -2375,6 +2375,7 @@ dependencies = [
  "insta",
  "proptest",
  "serde",
+ "serde_json",
  "specta",
  "tempfile",
  "thiserror 2.0.21",

@@ -1,0 +1,250 @@
+{
+  "base": {
+    "text": "l1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nl10\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 14,
+        "term": "Lf"
+      },
+      {
+        "start": 15,
+        "end": 17,
+        "term": "Lf"
+      },
+      {
+        "start": 18,
+        "end": 20,
+        "term": "Lf"
+      },
+      {
+        "start": 21,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 26,
+        "term": "Lf"
+      },
+      {
+        "start": 27,
+        "end": 30,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "l1\nL2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nl10\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 14,
+        "term": "Lf"
+      },
+      {
+        "start": 15,
+        "end": 17,
+        "term": "Lf"
+      },
+      {
+        "start": 18,
+        "end": 20,
+        "term": "Lf"
+      },
+      {
+        "start": 21,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 26,
+        "term": "Lf"
+      },
+      {
+        "start": 27,
+        "end": 30,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "l1\nl2\nl3\nl4\nl5\nl6\nl7\nL8\nl9\nl10\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 14,
+        "term": "Lf"
+      },
+      {
+        "start": 15,
+        "end": 17,
+        "term": "Lf"
+      },
+      {
+        "start": 18,
+        "end": 20,
+        "term": "Lf"
+      },
+      {
+        "start": 21,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 26,
+        "term": "Lf"
+      },
+      {
+        "start": 27,
+        "end": 30,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "OursOnly",
+      "base": {
+        "start": 1,
+        "end": 2
+      },
+      "ours": {
+        "start": 1,
+        "end": 2
+      },
+      "theirs": {
+        "start": 1,
+        "end": 2
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": []
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    },
+    {
+      "id": 1,
+      "kind": "TheirsOnly",
+      "base": {
+        "start": 7,
+        "end": 8
+      },
+      "ours": {
+        "start": 7,
+        "end": 8
+      },
+      "theirs": {
+        "start": 7,
+        "end": 8
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [],
+          "side_ranges": []
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}

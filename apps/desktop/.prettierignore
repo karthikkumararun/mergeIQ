@@ -1,3 +1,7 @@
 dist
 src-tauri
 src/ipc/bindings.ts
+src/merge-editor/__fixtures__
+test-results
+playwright-report
+e2e/__shots__

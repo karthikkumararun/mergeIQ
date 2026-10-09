@@ -1,0 +1,170 @@
+{
+  "base": {
+    "text": "def total(items):\n    result = 0\n    for item in items:\n        result += item\n    return result\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 17,
+        "term": "Lf"
+      },
+      {
+        "start": 18,
+        "end": 32,
+        "term": "Lf"
+      },
+      {
+        "start": 33,
+        "end": 55,
+        "term": "Lf"
+      },
+      {
+        "start": 56,
+        "end": 78,
+        "term": "Lf"
+      },
+      {
+        "start": 79,
+        "end": 96,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "def total(items):\n    result = 0\n    for item in items:\n        result += item\n    return result * 2\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 17,
+        "term": "Lf"
+      },
+      {
+        "start": 18,
+        "end": 32,
+        "term": "Lf"
+      },
+      {
+        "start": 33,
+        "end": 55,
+        "term": "Lf"
+      },
+      {
+        "start": 56,
+        "end": 78,
+        "term": "Lf"
+      },
+      {
+        "start": 79,
+        "end": 100,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "def total(items):\n    \"\"\"Sum all items.\"\"\"\n    result = 0\n    for item in items:\n        result += item\n    return result\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 17,
+        "term": "Lf"
+      },
+      {
+        "start": 18,
+        "end": 42,
+        "term": "Lf"
+      },
+      {
+        "start": 43,
+        "end": 57,
+        "term": "Lf"
+      },
+      {
+        "start": 58,
+        "end": 80,
+        "term": "Lf"
+      },
+      {
+        "start": 81,
+        "end": 103,
+        "term": "Lf"
+      },
+      {
+        "start": 104,
+        "end": 121,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "TheirsOnly",
+      "base": {
+        "start": 1,
+        "end": 1
+      },
+      "ours": {
+        "start": 1,
+        "end": 1
+      },
+      "theirs": {
+        "start": 1,
+        "end": 2
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [],
+          "side_ranges": []
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 24
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    },
+    {
+      "id": 1,
+      "kind": "OursOnly",
+      "base": {
+        "start": 4,
+        "end": 5
+      },
+      "ours": {
+        "start": 4,
+        "end": 5
+      },
+      "theirs": {
+        "start": 5,
+        "end": 6
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [],
+          "side_ranges": [
+            {
+              "start": 17,
+              "end": 21
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": []
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}

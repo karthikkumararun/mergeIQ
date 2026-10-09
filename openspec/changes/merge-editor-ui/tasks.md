@@ -1,15 +1,15 @@
 ## 1. Test harness and fixtures
 
-- [ ] 1.1 Add Rust test/bin that exports engine Analysis JSON for fixtures into `apps/desktop/src/merge-editor/__fixtures__/`
+- [x] 1.1 Add Rust test/bin that exports engine Analysis JSON for fixtures into `apps/desktop/src/merge-editor/__fixtures__/`
 - [ ] 1.2 IPC mock layer `src/ipc/mock.ts` switchable via `VITE_IPC_MOCK=1`; dev route `/dev/merge?fixture=<name>`
-- [ ] 1.3 Playwright setup (chromium + webkit) against Vite dev server
+- [x] 1.3 Playwright setup (chromium + webkit) against Vite dev server
 
 ## 2. Session model (no UI)
 
-- [ ] 2.1 `model/types.ts` and `model/session.ts`: ChunkSet StateField, effects, position mapping
-- [ ] 2.2 `model/actions.ts`: apply, append, ignore, revert, apply-non-conflicting (all/left/right), resolve-simple, accept-whole-side
-- [ ] 2.3 invertedEffects for undo/redo of chunk state; edited-detection transaction filter
-- [ ] 2.4 Vitest suite covering every scenario in "Per-chunk actions", "Manual edits", "Bulk actions", "Initial result content"
+- [x] 2.1 `model/types.ts` and `model/session.ts`: ChunkSet StateField, effects, position mapping
+- [x] 2.2 `model/actions.ts`: apply, append, ignore, revert, apply-non-conflicting (all/left/right), resolve-simple, accept-whole-side
+- [x] 2.3 invertedEffects for undo/redo of chunk state; edited-detection transaction filter
+- [x] 2.4 Vitest suite covering every scenario in "Per-chunk actions", "Manual edits", "Bulk actions", "Initial result content"
 
 ## 3. Panes and highlighting
 

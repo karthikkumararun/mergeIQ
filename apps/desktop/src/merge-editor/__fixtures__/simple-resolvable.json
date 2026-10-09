@@ -1,0 +1,277 @@
+{
+  "base": {
+    "text": "a\nfoo(a, b)\nb\nbar(a, b)\nc\nk = 1\nd\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "term": "Lf"
+      },
+      {
+        "start": 14,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "term": "Lf"
+      },
+      {
+        "start": 26,
+        "end": 31,
+        "term": "Lf"
+      },
+      {
+        "start": 32,
+        "end": 33,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "a\nfoo(x, b)\nb\nbar(x, b)\nc\nk = 2\nd\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "term": "Lf"
+      },
+      {
+        "start": 14,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "term": "Lf"
+      },
+      {
+        "start": 26,
+        "end": 31,
+        "term": "Lf"
+      },
+      {
+        "start": 32,
+        "end": 33,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "a\nfoo(a, y)\nb\nbar(a, y)\nc\nk = 3\nd\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "term": "Lf"
+      },
+      {
+        "start": 14,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "term": "Lf"
+      },
+      {
+        "start": 26,
+        "end": 31,
+        "term": "Lf"
+      },
+      {
+        "start": 32,
+        "end": 33,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "Conflict",
+      "base": {
+        "start": 1,
+        "end": 2
+      },
+      "ours": {
+        "start": 1,
+        "end": 2
+      },
+      "theirs": {
+        "start": 1,
+        "end": 2
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 7,
+              "end": 8
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 7,
+              "end": 8
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": {
+        "Resolved": "foo(x, y)"
+      }
+    },
+    {
+      "id": 1,
+      "kind": "Conflict",
+      "base": {
+        "start": 3,
+        "end": 4
+      },
+      "ours": {
+        "start": 3,
+        "end": 4
+      },
+      "theirs": {
+        "start": 3,
+        "end": 4
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 7,
+              "end": 8
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 7,
+              "end": 8
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": {
+        "Resolved": "bar(x, y)"
+      }
+    },
+    {
+      "id": 2,
+      "kind": "Conflict",
+      "base": {
+        "start": 5,
+        "end": 6
+      },
+      "ours": {
+        "start": 5,
+        "end": 6
+      },
+      "theirs": {
+        "start": 5,
+        "end": 6
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 4,
+              "end": 5
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": "Unresolvable"
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}

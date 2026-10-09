@@ -17,6 +17,7 @@ specta = ["dep:specta"]
 
 [dev-dependencies]
 criterion = { version = "0.8.2", features = ["html_reports"] }
+serde_json.workspace = true
 insta = { version = "1.49.0", features = ["json"] }
 proptest = "1.11.0"
 tempfile = "3.27.0"

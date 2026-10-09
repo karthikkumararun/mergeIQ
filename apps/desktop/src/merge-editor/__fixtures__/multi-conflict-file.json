@@ -1,0 +1,225 @@
+{
+  "base": {
+    "text": "a\nb\nc\nd\ne\nf\ng\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 1,
+        "term": "Lf"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "term": "Lf"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 7,
+        "term": "Lf"
+      },
+      {
+        "start": 8,
+        "end": 9,
+        "term": "Lf"
+      },
+      {
+        "start": 10,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "A1\nb\nc\nd\ne\nF1\ng\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 4,
+        "term": "Lf"
+      },
+      {
+        "start": 5,
+        "end": 6,
+        "term": "Lf"
+      },
+      {
+        "start": 7,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 10,
+        "term": "Lf"
+      },
+      {
+        "start": 11,
+        "end": 13,
+        "term": "Lf"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "A2\nb\nc\nd\ne\nF2\ng\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 4,
+        "term": "Lf"
+      },
+      {
+        "start": 5,
+        "end": 6,
+        "term": "Lf"
+      },
+      {
+        "start": 7,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 10,
+        "term": "Lf"
+      },
+      {
+        "start": 11,
+        "end": 13,
+        "term": "Lf"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "Conflict",
+      "base": {
+        "start": 0,
+        "end": 1
+      },
+      "ours": {
+        "start": 0,
+        "end": 1
+      },
+      "theirs": {
+        "start": 0,
+        "end": 1
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": "Unresolvable"
+    },
+    {
+      "id": 1,
+      "kind": "Conflict",
+      "base": {
+        "start": 5,
+        "end": 6
+      },
+      "ours": {
+        "start": 5,
+        "end": 6
+      },
+      "theirs": {
+        "start": 5,
+        "end": 6
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": "Unresolvable"
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}

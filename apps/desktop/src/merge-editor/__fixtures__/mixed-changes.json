@@ -1,0 +1,298 @@
+{
+  "base": {
+    "text": "l1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nl10\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 14,
+        "term": "Lf"
+      },
+      {
+        "start": 15,
+        "end": 17,
+        "term": "Lf"
+      },
+      {
+        "start": 18,
+        "end": 20,
+        "term": "Lf"
+      },
+      {
+        "start": 21,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 26,
+        "term": "Lf"
+      },
+      {
+        "start": 27,
+        "end": 30,
+        "term": "Lf"
+      }
+    ]
+  },
+  "ours": {
+    "text": "l1\nOURS2\nl3\nl4\nOURS5\nl6\nl7\nl8\nl9\nl10\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 14,
+        "term": "Lf"
+      },
+      {
+        "start": 15,
+        "end": 20,
+        "term": "Lf"
+      },
+      {
+        "start": 21,
+        "end": 23,
+        "term": "Lf"
+      },
+      {
+        "start": 24,
+        "end": 26,
+        "term": "Lf"
+      },
+      {
+        "start": 27,
+        "end": 29,
+        "term": "Lf"
+      },
+      {
+        "start": 30,
+        "end": 32,
+        "term": "Lf"
+      },
+      {
+        "start": 33,
+        "end": 36,
+        "term": "Lf"
+      }
+    ]
+  },
+  "theirs": {
+    "text": "l1\nl2\nl3\nl4\nTHEIRS5\nl6\nl7\nl8\nTHEIRS9\nl10\n",
+    "lines": [
+      {
+        "start": 0,
+        "end": 2,
+        "term": "Lf"
+      },
+      {
+        "start": 3,
+        "end": 5,
+        "term": "Lf"
+      },
+      {
+        "start": 6,
+        "end": 8,
+        "term": "Lf"
+      },
+      {
+        "start": 9,
+        "end": 11,
+        "term": "Lf"
+      },
+      {
+        "start": 12,
+        "end": 19,
+        "term": "Lf"
+      },
+      {
+        "start": 20,
+        "end": 22,
+        "term": "Lf"
+      },
+      {
+        "start": 23,
+        "end": 25,
+        "term": "Lf"
+      },
+      {
+        "start": 26,
+        "end": 28,
+        "term": "Lf"
+      },
+      {
+        "start": 29,
+        "end": 36,
+        "term": "Lf"
+      },
+      {
+        "start": 37,
+        "end": 40,
+        "term": "Lf"
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "kind": "OursOnly",
+      "base": {
+        "start": 1,
+        "end": 2
+      },
+      "ours": {
+        "start": 1,
+        "end": 2
+      },
+      "theirs": {
+        "start": 1,
+        "end": 2
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 5
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [],
+          "side_ranges": []
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    },
+    {
+      "id": 1,
+      "kind": "Conflict",
+      "base": {
+        "start": 4,
+        "end": 5
+      },
+      "ours": {
+        "start": 4,
+        "end": 5
+      },
+      "theirs": {
+        "start": 4,
+        "end": 5
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 5
+            }
+          ]
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 7
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": "Unresolvable"
+    },
+    {
+      "id": 2,
+      "kind": "TheirsOnly",
+      "base": {
+        "start": 8,
+        "end": 9
+      },
+      "ours": {
+        "start": 8,
+        "end": 9
+      },
+      "theirs": {
+        "start": 8,
+        "end": 9
+      },
+      "fine": {
+        "ours": {
+          "base_ranges": [],
+          "side_ranges": []
+        },
+        "theirs": {
+          "base_ranges": [
+            {
+              "start": 0,
+              "end": 2
+            }
+          ],
+          "side_ranges": [
+            {
+              "start": 0,
+              "end": 7
+            }
+          ]
+        }
+      },
+      "fine_diff_skipped": false,
+      "simple": null
+    }
+  ],
+  "encoding": {
+    "encoding": "Utf8",
+    "bom": false
+  },
+  "dominant_eol": "Lf"
+}
