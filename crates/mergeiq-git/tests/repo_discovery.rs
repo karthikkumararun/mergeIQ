@@ -30,7 +30,7 @@ fn linked_worktree() {
     assert!(!out.status.success());
 
     let repo = Repo::open(s.exec(), &wt.join(".")).unwrap();
-    assert_eq!(repo.root(), wt.canonicalize().unwrap());
+    assert_eq!(repo.root(), dunce::canonicalize(&wt).unwrap());
     assert!(repo
         .git_dir()
         .components()

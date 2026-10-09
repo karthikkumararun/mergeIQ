@@ -119,8 +119,8 @@ fn open_repo(near: &Path) -> Option<Repo> {
 
 /// `path` relative to the repository root, as a [`RepoPath`] (forward slashes).
 fn repo_relative(repo: &Repo, path: &Path) -> Option<RepoPath> {
-    let canonical = path.canonicalize().ok()?;
-    let root = repo.root().canonicalize().ok()?;
+    let canonical = dunce::canonicalize(path).ok()?;
+    let root = dunce::canonicalize(repo.root()).ok()?;
     let rel = canonical.strip_prefix(root).ok()?;
     let text = rel
         .components()

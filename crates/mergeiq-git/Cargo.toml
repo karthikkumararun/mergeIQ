@@ -6,6 +6,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+dunce.workspace = true
 mergeiq-core = { path = "../mergeiq-core" }
 specta = { version = "2.0.0-rc.25", optional = true, features = ["derive"] }
 base64 = "0.22"
