@@ -75,3 +75,33 @@ fn repo_status_summarises_state() {
     assert_eq!(status.conflicts.len(), 1);
     assert!(status.labels.ours.role.contains("main"));
 }
+
+#[test]
+fn conflict_load_honours_the_whitespace_policy() {
+    let s = Scenario::new();
+    s.write_commit("a.txt", "one\ntwo\n", "base");
+    s.checkout_new("feature");
+    s.write_commit("a.txt", "one\nTWO\n", "feature change");
+    s.checkout("main");
+    s.write_commit("a.txt", "one\ntwo  \n", "main trailing whitespace");
+    s.expect_conflict(&["merge", "feature"]);
+    let token = RepoPath::from_bytes(b"a.txt".to_vec()).token();
+    let repo = s.repo();
+
+    let exact = repo.load_conflict(&token, &Options::default()).unwrap();
+    assert_eq!(exact.analysis.unwrap().chunks[0].kind, ChunkKind::Conflict);
+
+    let trimmed = repo
+        .load_conflict(
+            &token,
+            &Options {
+                whitespace: mergeiq_core::WhitespacePolicy::TrimTrailing,
+                ..Options::default()
+            },
+        )
+        .unwrap();
+    assert_eq!(
+        trimmed.analysis.unwrap().chunks[0].kind,
+        ChunkKind::TheirsOnly
+    );
+}

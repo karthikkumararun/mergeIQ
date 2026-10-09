@@ -8,9 +8,16 @@ export const commands = {
 	appInfo: () => __TAURI_INVOKE<AppInfo>("app_info"),
 	getSettings: () => __TAURI_INVOKE<SettingsDto>("get_settings"),
 	updateSettings: (settings: SettingsDto) => typedError<SettingsDto, IpcError>(__TAURI_INVOKE("update_settings", { settings })),
+	getMergeEditorSettings: () => __TAURI_INVOKE<MergeEditorSettings>("get_merge_editor_settings"),
+	updateMergeEditorSettings: (settings: MergeEditorSettings) => typedError<MergeEditorSettings, IpcError>(__TAURI_INVOKE("update_merge_editor_settings", { settings })),
 	repoOpen: (path: string) => typedError<RepoStatus, IpcError>(__TAURI_INVOKE("repo_open", { path })),
 	repoStatus: () => typedError<RepoStatus, IpcError>(__TAURI_INVOKE("repo_status")),
 	conflictLoad: (path: PathToken) => typedError<ConflictLoad, IpcError>(__TAURI_INVOKE("conflict_load", { path })),
+	/**
+	 *  Re-runs the merge analysis for one conflicted file with another whitespace policy
+	 *  (the merge editor's whitespace selector).
+	 */
+	conflictAnalyze: (path: PathToken, whitespace: WhitespacePolicy) => typedError<Analysis, IpcError>(__TAURI_INVOKE("conflict_analyze", { path, whitespace })),
 	/**  Saves editor text. With `stage` the path is also `git add`ed (resolved). */
 	conflictSave: (path: PathToken, text: string, encoding: EncodingInfo, stage: boolean) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_save", { path, text, encoding, stage })),
 	conflictAcceptSide: (path: PathToken, side: AcceptSide) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_accept_side", { path, side })),
@@ -276,6 +283,23 @@ export type LineRange = {
 	end: number,
 };
 
+/**
+ *  Merge editor preferences (`merge-editor-ui`), stored under `mergeEditor` in the
+ *  settings file and exposed over IPC as-is (every field has a default).
+ */
+export type MergeEditorSettings = {
+	/**  Apply non-conflicting chunks automatically when a file opens. */
+	autoApplyNonConflicting?: boolean,
+	/**  Show the read-only base pane. */
+	showBase?: boolean,
+	/**  Fold long unchanged regions. */
+	collapseUnchanged?: boolean,
+	/**  Keep the panes scroll-aligned. */
+	syncScroll?: boolean,
+	/**  Whitespace policy used when analysing a file. */
+	whitespacePolicy?: WhitespacePolicy,
+};
+
 /**  The operation that produced (or may produce) conflicts. */
 export type Operation = 
 /**  Nothing in progress. */
@@ -403,6 +427,20 @@ export type Utf16Range = {
 	/**  UTF-16 code unit offset just past the range's end. */
 	end: number,
 };
+
+/**  How line content is normalized for equality when diffing. */
+export type WhitespacePolicy = 
+/**  Lines must match byte-for-byte. */
+"Exact" | 
+/**  Trailing whitespace is ignored. */
+"TrimTrailing" | 
+/**
+ *  Leading/trailing whitespace is ignored and interior whitespace runs collapse
+ *  to a single space.
+ */
+"IgnoreAmount" | 
+/**  All whitespace is ignored. */
+"IgnoreAll";
 
 /* Tauri Specta runtime */
 async function typedError<T, E>(result: Promise<T>): Promise<{ status: "ok"; data: T } | { status: "error"; error: E }> {

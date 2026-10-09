@@ -10,6 +10,40 @@ fn default_theme() -> String {
     "system".to_string()
 }
 
+fn default_true() -> bool {
+    true
+}
+
+/// Merge editor preferences (`merge-editor-ui`), stored under `mergeEditor` in the
+/// settings file and exposed over IPC as-is (every field has a default).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase", default)]
+pub struct MergeEditorSettings {
+    /// Apply non-conflicting chunks automatically when a file opens.
+    pub auto_apply_non_conflicting: bool,
+    /// Show the read-only base pane.
+    pub show_base: bool,
+    /// Fold long unchanged regions.
+    pub collapse_unchanged: bool,
+    /// Keep the panes scroll-aligned.
+    #[serde(default = "default_true")]
+    pub sync_scroll: bool,
+    /// Whitespace policy used when analysing a file.
+    pub whitespace_policy: mergeiq_core::WhitespacePolicy,
+}
+
+impl Default for MergeEditorSettings {
+    fn default() -> Self {
+        Self {
+            auto_apply_non_conflicting: false,
+            show_base: false,
+            collapse_unchanged: false,
+            sync_scroll: true,
+            whitespace_policy: mergeiq_core::WhitespacePolicy::Exact,
+        }
+    }
+}
+
 /// On-disk settings model. Not exported via specta: `extra` holds unknown keys as
 /// arbitrary JSON for forward-compatibility, which specta's TypeScript exporter can't
 /// type losslessly. IPC uses [`crate::ipc::SettingsDto`] instead.
@@ -19,6 +53,9 @@ pub struct Settings {
     /// `"system"` | `"light"` | `"dark"`.
     #[serde(default = "default_theme")]
     pub theme: String,
+    /// Merge editor preferences.
+    #[serde(default)]
+    pub merge_editor: MergeEditorSettings,
     #[serde(flatten)]
     pub extra: BTreeMap<String, Value>,
 }
@@ -27,6 +64,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             theme: default_theme(),
+            merge_editor: MergeEditorSettings::default(),
             extra: BTreeMap::new(),
         }
     }
@@ -156,5 +194,38 @@ mod tests {
         save_to(&path, &settings).unwrap();
         let reloaded = load_from(&path);
         assert_eq!(reloaded, settings);
+    }
+
+    #[test]
+    fn merge_editor_settings_default_when_absent() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        fs::write(&path, r#"{"theme":"dark"}"#).unwrap();
+
+        let settings = load_from(&path);
+
+        assert_eq!(settings.merge_editor, MergeEditorSettings::default());
+        assert!(settings.merge_editor.sync_scroll);
+        assert!(!settings.merge_editor.auto_apply_non_conflicting);
+    }
+
+    #[test]
+    fn merge_editor_settings_persist_across_save() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        fs::write(&path, r#"{"theme":"dark","futureFeature":1}"#).unwrap();
+
+        let mut settings = load_from(&path);
+        settings.merge_editor.show_base = true;
+        settings.merge_editor.whitespace_policy = mergeiq_core::WhitespacePolicy::IgnoreAll;
+        save_to(&path, &settings).unwrap();
+
+        let reloaded = load_from(&path);
+        assert!(reloaded.merge_editor.show_base);
+        assert_eq!(
+            reloaded.merge_editor.whitespace_policy,
+            mergeiq_core::WhitespacePolicy::IgnoreAll
+        );
+        assert_eq!(reloaded.extra.get("futureFeature"), Some(&Value::from(1)));
     }
 }

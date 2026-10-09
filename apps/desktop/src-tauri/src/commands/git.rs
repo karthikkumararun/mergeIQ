@@ -3,7 +3,7 @@
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
-use mergeiq_core::{EncodingInfo, Options};
+use mergeiq_core::{Analysis, EncodingInfo, Options, WhitespacePolicy};
 use mergeiq_git::{
     AcceptSide, ConflictLoad, ControlOutcome, GitExec, PathToken, Repo, RepoStatus, RepoWatcher,
 };
@@ -90,6 +90,29 @@ pub async fn conflict_load(
     path: PathToken,
 ) -> Result<ConflictLoad, IpcError> {
     Ok(state.repo()?.load_conflict(&path, &Options::default())?)
+}
+
+/// Re-runs the merge analysis for one conflicted file with another whitespace policy
+/// (the merge editor's whitespace selector).
+#[tauri::command]
+#[specta::specta]
+pub async fn conflict_analyze(
+    state: State<'_, GitState>,
+    path: PathToken,
+    whitespace: WhitespacePolicy,
+) -> Result<Analysis, IpcError> {
+    let opts = Options {
+        whitespace,
+        ..Options::default()
+    };
+    let load = state.repo()?.load_conflict(&path, &opts)?;
+    load.analysis.ok_or_else(|| {
+        IpcError::Git(mergeiq_git::GitError::Unsupported {
+            what: load
+                .analysis_error
+                .unwrap_or_else(|| "this file cannot be analysed as text".to_string()),
+        })
+    })
 }
 
 /// Saves editor text. With `stage` the path is also `git add`ed (resolved).
