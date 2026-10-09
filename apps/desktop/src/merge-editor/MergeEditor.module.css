@@ -119,8 +119,16 @@
   font-size: 13px;
 }
 
+/* Panes on the left, an extension's side panel (the AI assistant) on the right. */
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
 .scroller {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   overflow: auto hidden;
 }
@@ -201,6 +209,11 @@
   min-width: 0;
   height: 100%;
   display: flex;
+}
+
+/* Positioning context for extension overlays (e.g. structural proposal previews). */
+.resultCell {
+  position: relative;
 }
 
 .gutterCell {

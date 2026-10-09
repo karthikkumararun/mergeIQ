@@ -1,0 +1,10 @@
+class C {
+    void f(int a) {
+    }
+
+    void f(String s) {
+    }
+
+    void f(long l) {
+    }
+}

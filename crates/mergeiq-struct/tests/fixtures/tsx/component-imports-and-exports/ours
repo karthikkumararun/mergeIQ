@@ -1,0 +1,6 @@
+import React from "react";
+import { A } from "./a";
+
+export const App = () => <div />;
+
+export const OursView = () => <A />;

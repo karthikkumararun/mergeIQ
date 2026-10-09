@@ -1,18 +1,22 @@
 use std::path::PathBuf;
 
+use mergeiq_ai::logging::Redacting;
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::EnvFilter;
 
 /// Initializes structured logging to a daily-rotating file in the OS log dir, keeping at
-/// most 7 files. Level defaults to `info`, overridable with the `MERGEIQ_LOG` env var.
+/// most 7 files, with credentials redacted from every line. Level defaults to `info`, overridable with the `MERGEIQ_LOG` env var.
 /// Returns a guard that must be held for the lifetime of the app to flush buffered logs.
 pub fn init() -> Option<WorkerGuard> {
     let filter = EnvFilter::try_from_env("MERGEIQ_LOG").unwrap_or_else(|_| EnvFilter::new("info"));
 
     let Some(dir) = log_dir() else {
         eprintln!("mergeiq: could not determine log directory; logging to stderr only");
-        tracing_subscriber::fmt().with_env_filter(filter).init();
+        tracing_subscriber::fmt()
+            .with_env_filter(filter)
+            .with_writer(Redacting(std::io::stderr))
+            .init();
         return None;
     };
 
@@ -21,7 +25,10 @@ pub fn init() -> Option<WorkerGuard> {
             "mergeiq: failed to create log directory {}: {err}; logging to stderr only",
             dir.display()
         );
-        tracing_subscriber::fmt().with_env_filter(filter).init();
+        tracing_subscriber::fmt()
+            .with_env_filter(filter)
+            .with_writer(Redacting(std::io::stderr))
+            .init();
         return None;
     }
 
@@ -35,7 +42,10 @@ pub fn init() -> Option<WorkerGuard> {
         Ok(appender) => appender,
         Err(err) => {
             eprintln!("mergeiq: failed to set up log rotation: {err}; logging to stderr only");
-            tracing_subscriber::fmt().with_env_filter(filter).init();
+            tracing_subscriber::fmt()
+                .with_env_filter(filter)
+                .with_writer(Redacting(std::io::stderr))
+                .init();
             return None;
         }
     };
@@ -44,7 +54,8 @@ pub fn init() -> Option<WorkerGuard> {
     tracing_subscriber::fmt()
         .with_env_filter(filter)
         .with_ansi(false)
-        .with_writer(non_blocking)
+        // Credentials never reach the log, whatever a dependency prints at trace level.
+        .with_writer(Redacting(non_blocking))
         .init();
     Some(guard)
 }

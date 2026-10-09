@@ -1,0 +1,7 @@
+package main
+
+type A struct{}
+
+func (b B) Name() string { return "b" }
+
+type B struct{}

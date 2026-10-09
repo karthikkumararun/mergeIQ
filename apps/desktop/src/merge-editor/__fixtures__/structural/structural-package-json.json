@@ -1,0 +1,421 @@
+{
+  "analysis": {
+    "base": {
+      "lines": [
+        {
+          "end": 1,
+          "start": 0,
+          "term": "Lf"
+        },
+        {
+          "end": 23,
+          "start": 2,
+          "term": "Lf"
+        },
+        {
+          "end": 42,
+          "start": 24,
+          "term": "Lf"
+        },
+        {
+          "end": 57,
+          "start": 43,
+          "term": "Lf"
+        },
+        {
+          "end": 76,
+          "start": 58,
+          "term": "Lf"
+        },
+        {
+          "end": 102,
+          "start": 77,
+          "term": "Lf"
+        },
+        {
+          "end": 107,
+          "start": 103,
+          "term": "Lf"
+        },
+        {
+          "end": 127,
+          "start": 108,
+          "term": "Lf"
+        },
+        {
+          "end": 151,
+          "start": 128,
+          "term": "Lf"
+        },
+        {
+          "end": 178,
+          "start": 152,
+          "term": "Lf"
+        },
+        {
+          "end": 183,
+          "start": 179,
+          "term": "Lf"
+        },
+        {
+          "end": 217,
+          "start": 184,
+          "term": "Lf"
+        },
+        {
+          "end": 219,
+          "start": 218,
+          "term": "Lf"
+        }
+      ],
+      "text": "{\n  \"name\": \"shop-web\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vite build\"\n  },\n  \"dependencies\": {\n    \"react\": \"^19.1.0\",\n    \"react-dom\": \"^19.1.0\"\n  },\n  \"packageManager\": \"pnpm@9.12.0\"\n}\n"
+    },
+    "chunks": [
+      {
+        "base": {
+          "end": 6,
+          "start": 5
+        },
+        "fine": {
+          "ours": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 49,
+                "start": 25
+              }
+            ]
+          },
+          "theirs": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 47,
+                "start": 25
+              }
+            ]
+          }
+        },
+        "fine_diff_skipped": false,
+        "id": 0,
+        "kind": "Conflict",
+        "ours": {
+          "end": 7,
+          "start": 5
+        },
+        "simple": "Unresolvable",
+        "theirs": {
+          "end": 7,
+          "start": 5
+        }
+      },
+      {
+        "base": {
+          "end": 10,
+          "start": 9
+        },
+        "fine": {
+          "ours": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 51,
+                "start": 26
+              }
+            ]
+          },
+          "theirs": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 47,
+                "start": 26
+              }
+            ]
+          }
+        },
+        "fine_diff_skipped": false,
+        "id": 1,
+        "kind": "Conflict",
+        "ours": {
+          "end": 12,
+          "start": 10
+        },
+        "simple": "Unresolvable",
+        "theirs": {
+          "end": 12,
+          "start": 10
+        }
+      },
+      {
+        "base": {
+          "end": 12,
+          "start": 11
+        },
+        "fine": {
+          "ours": {
+            "base_ranges": [
+              {
+                "end": 30,
+                "start": 28
+              }
+            ],
+            "side_ranges": [
+              {
+                "end": 30,
+                "start": 28
+              }
+            ]
+          },
+          "theirs": {
+            "base_ranges": [
+              {
+                "end": 27,
+                "start": 26
+              },
+              {
+                "end": 30,
+                "start": 28
+              }
+            ],
+            "side_ranges": [
+              {
+                "end": 28,
+                "start": 26
+              },
+              {
+                "end": 30,
+                "start": 29
+              }
+            ]
+          }
+        },
+        "fine_diff_skipped": false,
+        "id": 2,
+        "kind": "Conflict",
+        "ours": {
+          "end": 14,
+          "start": 13
+        },
+        "simple": "Unresolvable",
+        "theirs": {
+          "end": 14,
+          "start": 13
+        }
+      }
+    ],
+    "dominant_eol": "Lf",
+    "encoding": {
+      "bom": false,
+      "encoding": "Utf8"
+    },
+    "ours": {
+      "lines": [
+        {
+          "end": 1,
+          "start": 0,
+          "term": "Lf"
+        },
+        {
+          "end": 23,
+          "start": 2,
+          "term": "Lf"
+        },
+        {
+          "end": 42,
+          "start": 24,
+          "term": "Lf"
+        },
+        {
+          "end": 57,
+          "start": 43,
+          "term": "Lf"
+        },
+        {
+          "end": 76,
+          "start": 58,
+          "term": "Lf"
+        },
+        {
+          "end": 103,
+          "start": 77,
+          "term": "Lf"
+        },
+        {
+          "end": 126,
+          "start": 104,
+          "term": "Lf"
+        },
+        {
+          "end": 131,
+          "start": 127,
+          "term": "Lf"
+        },
+        {
+          "end": 151,
+          "start": 132,
+          "term": "Lf"
+        },
+        {
+          "end": 175,
+          "start": 152,
+          "term": "Lf"
+        },
+        {
+          "end": 203,
+          "start": 176,
+          "term": "Lf"
+        },
+        {
+          "end": 227,
+          "start": 204,
+          "term": "Lf"
+        },
+        {
+          "end": 232,
+          "start": 228,
+          "term": "Lf"
+        },
+        {
+          "end": 266,
+          "start": 233,
+          "term": "Lf"
+        },
+        {
+          "end": 268,
+          "start": 267,
+          "term": "Lf"
+        }
+      ],
+      "text": "{\n  \"name\": \"shop-web\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vite build\",\n    \"lint\": \"eslint .\"\n  },\n  \"dependencies\": {\n    \"react\": \"^19.1.0\",\n    \"react-dom\": \"^19.1.0\",\n    \"zustand\": \"^5.0.0\"\n  },\n  \"packageManager\": \"pnpm@9.15.0\"\n}\n"
+    },
+    "theirs": {
+      "lines": [
+        {
+          "end": 1,
+          "start": 0,
+          "term": "Lf"
+        },
+        {
+          "end": 23,
+          "start": 2,
+          "term": "Lf"
+        },
+        {
+          "end": 42,
+          "start": 24,
+          "term": "Lf"
+        },
+        {
+          "end": 57,
+          "start": 43,
+          "term": "Lf"
+        },
+        {
+          "end": 76,
+          "start": 58,
+          "term": "Lf"
+        },
+        {
+          "end": 103,
+          "start": 77,
+          "term": "Lf"
+        },
+        {
+          "end": 124,
+          "start": 104,
+          "term": "Lf"
+        },
+        {
+          "end": 129,
+          "start": 125,
+          "term": "Lf"
+        },
+        {
+          "end": 149,
+          "start": 130,
+          "term": "Lf"
+        },
+        {
+          "end": 173,
+          "start": 150,
+          "term": "Lf"
+        },
+        {
+          "end": 201,
+          "start": 174,
+          "term": "Lf"
+        },
+        {
+          "end": 221,
+          "start": 202,
+          "term": "Lf"
+        },
+        {
+          "end": 226,
+          "start": 222,
+          "term": "Lf"
+        },
+        {
+          "end": 260,
+          "start": 227,
+          "term": "Lf"
+        },
+        {
+          "end": 262,
+          "start": 261,
+          "term": "Lf"
+        }
+      ],
+      "text": "{\n  \"name\": \"shop-web\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vite build\",\n    \"test\": \"vitest\"\n  },\n  \"dependencies\": {\n    \"react\": \"^19.1.0\",\n    \"react-dom\": \"^19.1.0\",\n    \"zod\": \"^4.0.0\"\n  },\n  \"packageManager\": \"pnpm@10.0.0\"\n}\n"
+    }
+  },
+  "path": "package.json",
+  "resolve": {
+    "elapsed_ms": 12,
+    "outcome": {
+      "Proposals": [
+        {
+          "base_range": {
+            "end": 6,
+            "start": 5
+          },
+          "chunk_ids": [
+            0
+          ],
+          "container": "scripts",
+          "explanation": "Left added `lint` and right added `test`.",
+          "ours_range": {
+            "end": 7,
+            "start": 5
+          },
+          "text": "    \"build\": \"vite build\",\n    \"lint\": \"eslint .\",\n    \"test\": \"vitest\"\n",
+          "theirs_range": {
+            "end": 7,
+            "start": 5
+          }
+        },
+        {
+          "base_range": {
+            "end": 10,
+            "start": 9
+          },
+          "chunk_ids": [
+            1
+          ],
+          "container": "dependencies",
+          "explanation": "Left added `zustand` and right added `zod`.",
+          "ours_range": {
+            "end": 12,
+            "start": 10
+          },
+          "text": "    \"react-dom\": \"^19.1.0\",\n    \"zustand\": \"^5.0.0\",\n    \"zod\": \"^4.0.0\"\n",
+          "theirs_range": {
+            "end": 12,
+            "start": 10
+          }
+        }
+      ]
+    }
+  }
+}

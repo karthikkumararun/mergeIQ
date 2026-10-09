@@ -1,0 +1,8 @@
+class C:
+    x = 1
+
+    def m(self):
+        pass
+
+    def b(self):
+        return 2

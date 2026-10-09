@@ -1,0 +1,14 @@
+import a.A;
+import b.B;
+import c.C2;
+
+class C {
+    void m() {
+    }
+
+    void o() {
+    }
+
+    void t() {
+    }
+}

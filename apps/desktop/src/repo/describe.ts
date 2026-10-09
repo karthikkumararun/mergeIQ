@@ -56,13 +56,52 @@ export function splitPath(display: string): { dir: string; file: string } {
     : { dir: display.slice(0, cut + 1), file: display.slice(cut + 1) };
 }
 
-/** Only plain text conflicts open in the merge editor; everything else gets the panel. */
+/**
+ * Only text conflicts open in the merge editor (a lockfile does once the user chooses to
+ * merge it by hand); everything else gets a special panel.
+ */
 export function opensInEditor(entry: ConflictEntry): boolean {
   return (
     entry.conflictType === "BothModified" &&
     !entry.hasSymlink &&
-    !entry.hasGitlink
+    !entry.hasGitlink &&
+    (entry.class.class === "Text" || entry.class.class === "Lockfile")
   );
+}
+
+/** Lockfiles are offered their panel first (regenerate / go.sum union). */
+export function isLockfile(entry: ConflictEntry): boolean {
+  return entry.class.class === "Lockfile";
+}
+
+/** Short badge text for a conflict class, or `null` for plain text. */
+export function classBadge(entry: ConflictEntry): string | null {
+  const c = entry.class;
+  switch (c.class) {
+    case "Text":
+      return null;
+    case "Binary":
+      return c.isImage ? "Binary · image" : "Binary";
+    case "Symlink":
+      return "Symlink";
+    case "Submodule":
+      return "Submodule";
+    case "LfsPointer":
+      return "Git LFS pointer";
+    case "Oversized":
+      return "Too large to open";
+    case "Lockfile":
+      return c.kind === "GoSum"
+        ? "go.sum"
+        : `Lockfile · ${lockfileName(c.kind)}`;
+  }
+}
+
+/** The package manager behind a lockfile kind. */
+export function lockfileName(
+  kind: "Npm" | "Pnpm" | "Yarn" | "Poetry" | "Cargo" | "Gradle" | "GoSum",
+): string {
+  return kind === "GoSum" ? "go.sum" : kind.toLowerCase();
 }
 
 export interface BannerPart {

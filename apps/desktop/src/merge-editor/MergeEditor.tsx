@@ -2,11 +2,21 @@ import { redo, undo } from "@codemirror/commands";
 import { openSearchPanel } from "@codemirror/search";
 import type { EditorState, TransactionSpec } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useAiHost } from "../ai/context";
 import type { Analysis } from "../ipc/bindings";
 import { ConfirmDialog } from "./dialogs/ConfirmDialog";
 import { SaveDialog } from "./dialogs/SaveDialog";
 import type { MergeEditorExtension } from "./extensions";
+import { createAiExtension } from "./extensions/ai";
+import { createStructuralExtension } from "./extensions/structural";
 import { Connector } from "./gutters/Connector";
 import { SideHeader } from "./header/SideHeader";
 import { formatShortcut, matchShortcut, type ShortcutId } from "./keymap";
@@ -133,7 +143,7 @@ function Inner({
   settings,
   updateSettings,
   reanalyze,
-  extensions = [],
+  extensions: hostExtensions,
   onReanalysed,
   onDirtyChange,
   saveRequest = 0,
@@ -440,6 +450,22 @@ function Inner({
 
   const sideExtensions = useMemo(() => [foldPlaceholder], []);
 
+  // Built-in extension first, then the host's. The structural extension owns the proposals
+  // computed for this editor, so one instance lives as long as the editor.
+  const structural = useMemo(() => createStructuralExtension(), []);
+  const aiHost = useAiHost();
+  const ai = useMemo(() => createAiExtension(aiHost), [aiHost]);
+  const extensions = useMemo(
+    () => [structural, ai, ...(hostExtensions ?? [])],
+    [structural, ai, hostExtensions],
+  );
+  // CodeMirror extensions are read once, when the Result pane is created.
+  const resultExtensions = useMemo(
+    () => [sideExtensions, extensions.map((x) => x.resultExtensions ?? [])],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   const leftChunks = useMemo(
     () => sidePaneChunks(analysis, "left", chunkStates, currentId),
     [analysis, chunkStates, currentId],
@@ -454,12 +480,13 @@ function Inner({
       resultState
         ? {
             analysis,
+            doc,
             state: resultState,
             view: resultView,
             dispatch: dispatchSpec,
           }
         : null,
-    [analysis, resultState, resultView, dispatchSpec],
+    [analysis, doc, resultState, resultView, dispatchSpec],
   );
 
   const resize =
@@ -586,76 +613,64 @@ function Inner({
         </div>
       ) : null}
 
-      <div className={styles.scroller}>
-        <div
-          className={styles.inner}
-          style={{ minWidth: settings.showBase ? 1320 : 1040 }}
-        >
-          <div className={styles.headers}>
-            <div className={styles.cell} style={{ flex: `${w.left} 1 0` }}>
-              <SideHeader
-                side="left"
-                label={labels.left}
-                commits={doc.context?.ours ?? []}
-              />
-            </div>
-            {settings.showBase ? (
+      <div className={styles.body}>
+        <div className={styles.scroller}>
+          <div
+            className={styles.inner}
+            style={{ minWidth: settings.showBase ? 1320 : 1040 }}
+          >
+            <div className={styles.headers}>
+              <div className={styles.cell} style={{ flex: `${w.left} 1 0` }}>
+                <SideHeader
+                  side="left"
+                  label={labels.left}
+                  commits={doc.context?.ours ?? []}
+                />
+              </div>
+              {settings.showBase ? (
+                <div
+                  className={`${styles.cell} ${styles.baseHeader}`}
+                  style={{ flex: `${w.base} 1 0` }}
+                >
+                  <span className={styles.line}>
+                    <span className={styles.baseName}>Base</span>
+                    <span className={styles.chip}>read-only</span>
+                  </span>
+                  <span className={styles.sub}>
+                    {labels.base?.shortSha ?? "merge base"}
+                  </span>
+                </div>
+              ) : null}
+              <div className={styles.spacer} />
               <div
-                className={`${styles.cell} ${styles.baseHeader}`}
-                style={{ flex: `${w.base} 1 0` }}
+                className={`${styles.cell} ${styles.resultHeader}`}
+                style={{ flex: `${w.result} 1 0` }}
               >
                 <span className={styles.line}>
-                  <span className={styles.baseName}>Base</span>
-                  <span className={styles.chip}>read-only</span>
+                  <span className={styles.baseName}>Result</span>
+                  <span className={`${styles.chip} ${styles.chipEditable}`}>
+                    editable
+                  </span>
                 </span>
-                <span className={styles.sub}>
-                  {labels.base?.shortSha ?? "merge base"}
+                <span className={`${styles.sub} ${styles.mono}`}>
+                  {doc.displayPath}
                 </span>
               </div>
-            ) : null}
-            <div className={styles.spacer} />
-            <div
-              className={`${styles.cell} ${styles.resultHeader}`}
-              style={{ flex: `${w.result} 1 0` }}
-            >
-              <span className={styles.line}>
-                <span className={styles.baseName}>Result</span>
-                <span className={`${styles.chip} ${styles.chipEditable}`}>
-                  editable
-                </span>
-              </span>
-              <span className={`${styles.sub} ${styles.mono}`}>
-                {doc.displayPath}
-              </span>
+              <div className={styles.spacer} />
+              <div className={styles.cell} style={{ flex: `${w.right} 1 0` }}>
+                <SideHeader
+                  side="right"
+                  label={labels.right}
+                  commits={doc.context?.theirs ?? []}
+                />
+              </div>
             </div>
-            <div className={styles.spacer} />
-            <div className={styles.cell} style={{ flex: `${w.right} 1 0` }}>
-              <SideHeader
-                side="right"
-                label={labels.right}
-                commits={doc.context?.theirs ?? []}
-              />
-            </div>
-          </div>
 
-          <div ref={panesRef} className={styles.panes}>
-            <div className={styles.pane} style={{ flex: `${w.left} 1 0` }}>
-              <SidePane
-                role="left"
-                label={`Left: ${leftName}`}
-                analysis={analysis}
-                displayPath={doc.displayPath}
-                chunkStates={chunkStates}
-                currentId={currentId}
-                extensions={sideExtensions}
-                onView={registerView}
-              />
-            </div>
-            {settings.showBase ? (
-              <div className={styles.pane} style={{ flex: `${w.base} 1 0` }}>
+            <div ref={panesRef} className={styles.panes}>
+              <div className={styles.pane} style={{ flex: `${w.left} 1 0` }}>
                 <SidePane
-                  role="base"
-                  label="Base"
+                  role="left"
+                  label={`Left: ${leftName}`}
                   analysis={analysis}
                   displayPath={doc.displayPath}
                   chunkStates={chunkStates}
@@ -664,86 +679,120 @@ function Inner({
                   onView={registerView}
                 />
               </div>
-            ) : null}
-            <div className={styles.gutterCell}>
-              <Connector
-                side="left"
-                sideView={views.left ?? null}
-                resultView={resultView}
-                sideChunks={leftChunks}
-                chunkStates={chunkStates}
-                resultState={resultState}
-                version={version}
-                currentId={currentId}
-                onApply={(id, side) => act((s, a) => applySide(s, a, id, side))}
-                onIgnore={(id, side) =>
-                  act((s, a) => ignoreOne(s, a, id, side))
-                }
-                onRevert={(id) => act((s, a) => revertChunk(s, a, id))}
-                extra={
-                  extCtx
-                    ? (id) =>
-                        extensions.map((x, i) => (
-                          <span key={i}>{x.chunkActions?.(extCtx, id)}</span>
-                        ))
-                    : undefined
-                }
-              />
-              <ResizeHandle
-                edge="right"
-                label="Resize left panes"
-                value={pct(leftShare)}
-                onResize={resize(settings.showBase ? "base" : "left", "result")}
-              />
-            </div>
-            <div className={styles.pane} style={{ flex: `${w.result} 1 0` }}>
-              <ResultPane
-                analysis={analysis}
-                displayPath={doc.displayPath}
-                autoApply={settings.autoApplyNonConflicting}
-                currentId={currentId}
-                extensions={sideExtensions}
-                onView={(v) => registerView("result", v)}
-                onState={onResultState}
-              />
-            </div>
-            <div className={styles.gutterCell}>
-              <ResizeHandle
-                edge="left"
-                label="Resize right pane"
-                value={pct(leftShare + w.result)}
-                onResize={resize("result", "right")}
-              />
-              <Connector
-                side="right"
-                sideView={views.right ?? null}
-                resultView={resultView}
-                sideChunks={rightChunks}
-                chunkStates={chunkStates}
-                resultState={resultState}
-                version={version}
-                currentId={currentId}
-                onApply={(id, side) => act((s, a) => applySide(s, a, id, side))}
-                onIgnore={(id, side) =>
-                  act((s, a) => ignoreOne(s, a, id, side))
-                }
-                onRevert={(id) => act((s, a) => revertChunk(s, a, id))}
-              />
-            </div>
-            <div className={styles.pane} style={{ flex: `${w.right} 1 0` }}>
-              <SidePane
-                role="right"
-                label={`Right: ${rightName}`}
-                analysis={analysis}
-                displayPath={doc.displayPath}
-                chunkStates={chunkStates}
-                currentId={currentId}
-                extensions={sideExtensions}
-                onView={registerView}
-              />
+              {settings.showBase ? (
+                <div className={styles.pane} style={{ flex: `${w.base} 1 0` }}>
+                  <SidePane
+                    role="base"
+                    label="Base"
+                    analysis={analysis}
+                    displayPath={doc.displayPath}
+                    chunkStates={chunkStates}
+                    currentId={currentId}
+                    extensions={sideExtensions}
+                    onView={registerView}
+                  />
+                </div>
+              ) : null}
+              <div className={styles.gutterCell}>
+                <Connector
+                  side="left"
+                  sideView={views.left ?? null}
+                  resultView={resultView}
+                  sideChunks={leftChunks}
+                  chunkStates={chunkStates}
+                  resultState={resultState}
+                  version={version}
+                  currentId={currentId}
+                  onApply={(id, side) =>
+                    act((s, a) => applySide(s, a, id, side))
+                  }
+                  onIgnore={(id, side) =>
+                    act((s, a) => ignoreOne(s, a, id, side))
+                  }
+                  onRevert={(id) => act((s, a) => revertChunk(s, a, id))}
+                  extra={
+                    extCtx
+                      ? (id) =>
+                          extensions.map((x, i) => (
+                            <span key={i}>{x.chunkActions?.(extCtx, id)}</span>
+                          ))
+                      : undefined
+                  }
+                />
+                <ResizeHandle
+                  edge="right"
+                  label="Resize left panes"
+                  value={pct(leftShare)}
+                  onResize={resize(
+                    settings.showBase ? "base" : "left",
+                    "result",
+                  )}
+                />
+              </div>
+              <div
+                className={`${styles.pane} ${styles.resultCell}`}
+                style={{ flex: `${w.result} 1 0` }}
+              >
+                <ResultPane
+                  analysis={analysis}
+                  displayPath={doc.displayPath}
+                  autoApply={settings.autoApplyNonConflicting}
+                  currentId={currentId}
+                  extensions={resultExtensions}
+                  onView={(v) => registerView("result", v)}
+                  onState={onResultState}
+                />
+                {extCtx
+                  ? extensions.map((x, i) => (
+                      <Fragment key={i}>{x.resultOverlay?.(extCtx)}</Fragment>
+                    ))
+                  : null}
+              </div>
+              <div className={styles.gutterCell}>
+                <ResizeHandle
+                  edge="left"
+                  label="Resize right pane"
+                  value={pct(leftShare + w.result)}
+                  onResize={resize("result", "right")}
+                />
+                <Connector
+                  side="right"
+                  sideView={views.right ?? null}
+                  resultView={resultView}
+                  sideChunks={rightChunks}
+                  chunkStates={chunkStates}
+                  resultState={resultState}
+                  version={version}
+                  currentId={currentId}
+                  onApply={(id, side) =>
+                    act((s, a) => applySide(s, a, id, side))
+                  }
+                  onIgnore={(id, side) =>
+                    act((s, a) => ignoreOne(s, a, id, side))
+                  }
+                  onRevert={(id) => act((s, a) => revertChunk(s, a, id))}
+                />
+              </div>
+              <div className={styles.pane} style={{ flex: `${w.right} 1 0` }}>
+                <SidePane
+                  role="right"
+                  label={`Right: ${rightName}`}
+                  analysis={analysis}
+                  displayPath={doc.displayPath}
+                  chunkStates={chunkStates}
+                  currentId={currentId}
+                  extensions={sideExtensions}
+                  onView={registerView}
+                />
+              </div>
             </div>
           </div>
         </div>
+        {extCtx
+          ? extensions.map((x, i) => (
+              <Fragment key={i}>{x.sidePanel?.(extCtx)}</Fragment>
+            ))
+          : null}
       </div>
 
       <footer className={styles.footer}>

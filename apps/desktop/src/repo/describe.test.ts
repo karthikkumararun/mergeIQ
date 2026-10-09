@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { ConflictEntry, RepoStatus, SideLabel } from "../ipc/bindings";
 import {
+  classBadge,
+  isLockfile,
   opensInEditor,
   operationSentence,
   sideChanges,
@@ -94,11 +96,50 @@ describe("conflict descriptions", () => {
       stages: [],
       hasSymlink: false,
       hasGitlink: false,
+      class: { class: "Text" },
       ...over,
     });
     expect(opensInEditor(entry({}))).toBe(true);
     expect(opensInEditor(entry({ conflictType: "DeletedByUs" }))).toBe(false);
     expect(opensInEditor(entry({ hasGitlink: true }))).toBe(false);
+  });
+  it("lockfiles open the editor only by hand; special classes never do", () => {
+    const entry = (cls: ConflictEntry["class"]): ConflictEntry => ({
+      path: "p",
+      display: "p",
+      conflictType: "BothModified",
+      stages: [],
+      hasSymlink: false,
+      hasGitlink: false,
+      class: cls,
+    });
+    expect(opensInEditor(entry({ class: "Lockfile", kind: "Pnpm" }))).toBe(
+      true,
+    );
+    expect(isLockfile(entry({ class: "Lockfile", kind: "Pnpm" }))).toBe(true);
+    expect(isLockfile(entry({ class: "Text" }))).toBe(false);
+    for (const cls of [
+      { class: "Binary", isImage: true },
+      { class: "Symlink" },
+      { class: "Submodule" },
+      { class: "LfsPointer" },
+      { class: "Oversized" },
+    ] as const) {
+      expect(opensInEditor(entry(cls))).toBe(false);
+    }
+  });
+  it("badges name the class", () => {
+    const badge = (cls: ConflictEntry["class"]) =>
+      classBadge({ class: cls } as unknown as ConflictEntry);
+    expect(badge({ class: "Text" })).toBeNull();
+    expect(badge({ class: "Binary", isImage: true })).toBe("Binary · image");
+    expect(badge({ class: "Binary", isImage: false })).toBe("Binary");
+    expect(badge({ class: "Lockfile", kind: "Pnpm" })).toBe("Lockfile · pnpm");
+    expect(badge({ class: "Lockfile", kind: "GoSum" })).toBe("go.sum");
+    expect(badge({ class: "LfsPointer" })).toBe("Git LFS pointer");
+    expect(badge({ class: "Oversized" })).toBe("Too large to open");
+    expect(badge({ class: "Submodule" })).toBe("Submodule");
+    expect(badge({ class: "Symlink" })).toBe("Symlink");
   });
   it("splits paths", () => {
     expect(splitPath("a/b/c.ts")).toEqual({ dir: "a/b/", file: "c.ts" });
@@ -114,6 +155,7 @@ describe("visibleRows", () => {
     stages: [],
     hasSymlink: false,
     hasGitlink: false,
+    class: { class: "Text" },
   });
   const all = [e("web/b.ts"), e("a.ts"), e("web/a.ts"), e("src/x.ts")];
   it("sorts by path and filters case-insensitively", () => {

@@ -1,0 +1,6 @@
+type U = {
+  a: number,
+  b: string,
+  c: boolean,
+  d: Date
+};

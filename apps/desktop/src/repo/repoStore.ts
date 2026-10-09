@@ -1,5 +1,10 @@
 import { createStore, type StoreApi } from "zustand/vanilla";
-import type { ConflictEntry, PathToken, RepoInfo } from "../ipc/bindings";
+import type {
+  ConflictEntry,
+  PathToken,
+  RenameOutcome,
+  RepoInfo,
+} from "../ipc/bindings";
 import type {
   AcceptSide,
   ControlOutcome,
@@ -11,7 +16,14 @@ import type {
 export const MAX_TABS = 10;
 
 export type ResolutionMethod =
-  "Merged" | "Accepted Left" | "Accepted Right" | "Deleted";
+  | "Merged"
+  | "Accepted Left"
+  | "Accepted Right"
+  | "Deleted"
+  | "Kept modified"
+  | "Auto-merged"
+  | "Regenerated"
+  | "Renamed";
 
 export type TabNotice = "resolved-outside" | "changed-outside" | null;
 
@@ -123,6 +135,17 @@ export interface RepoActions {
   reloadTab(path: PathToken): void;
   /** Called after the editor saved `path` as resolved. */
   fileResolved(path: PathToken, method: ResolutionMethod): Promise<void>;
+  /**
+   * Records that `path` was resolved without closing its tab (a panel that still shows
+   * results, e.g. a lockfile run's output), so the refresh that follows is not flagged as an
+   * outside change.
+   */
+  logResolved(path: PathToken, method: ResolutionMethod): void;
+  /**
+   * After a rename/rename choice: the three involved paths are gone from the list. Opens the
+   * chosen path in a tab when it now needs a text merge, otherwise logs `from` as resolved.
+   */
+  renameChosen(from: PathToken, outcome: RenameOutcome): Promise<void>;
   acceptSelected(side: AcceptSide): Promise<void>;
   acceptMany(paths: PathToken[], side: AcceptSide): Promise<void>;
   acceptFile(path: PathToken, side: AcceptSide): Promise<void>;
@@ -319,6 +342,17 @@ export function createRepoStore(
       } else {
         dropTabs([path]);
       }
+    },
+
+    logResolved(path, method) {
+      log([resolvedItem(path, method)]);
+    },
+
+    async renameChosen(from, outcome) {
+      if (!outcome.needsMerge) log([resolvedItem(from, "Renamed")]);
+      dropTabs([from]);
+      await actions.refresh();
+      if (outcome.needsMerge) actions.openFile(outcome.chosen);
     },
 
     async acceptMany(paths, side) {

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { ConflictEntry } from "../ipc/bindings";
-import { sideChanges, splitPath, typeLabel } from "./describe";
+import { classBadge, sideChanges, splitPath, typeLabel } from "./describe";
 import { ResolvedSection } from "./ResolvedSection";
 import type { AcceptSide, RepoStatus } from "./repoApi";
 import type { ResolvedItem, ViewMode } from "./repoStore";
@@ -180,6 +180,7 @@ function FileRow({
 }: FileRowProps) {
   const { dir, file } = splitPath(entry.display);
   const changes = sideChanges(entry.conflictType);
+  const badge = classBadge(entry);
   const deleted = (text: string) => (text === "Deleted" ? styles.deleted : "");
   return (
     <div
@@ -202,6 +203,7 @@ function FileRow({
         <span className={styles.line1}>
           <span className={styles.file}>{file}</span>
           <span className={styles.dir}>{dir}</span>
+          {badge && <span className={styles.classTag}>{badge}</span>}
         </span>
         <span className={styles.line2}>
           <span>{typeLabel(entry.conflictType)}</span>

@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 
+use crate::classify::ConflictClass;
 use crate::error::Result;
 use crate::paths::{PathToken, RepoPath};
 use crate::repo::Repo;
@@ -71,6 +72,8 @@ pub struct ConflictEntry {
     pub has_symlink: bool,
     /// Any stage is a gitlink / submodule (mode 160000).
     pub has_gitlink: bool,
+    /// What kind of conflict this is (binary, symlink, lockfile, ...), see `classify`.
+    pub class: ConflictClass,
 }
 
 impl ConflictEntry {
@@ -123,6 +126,7 @@ pub(crate) fn parse_unmerged(raw: &[u8]) -> Vec<ConflictEntry> {
                 conflict_type,
                 has_symlink: stages.iter().any(|s| s.mode == "120000"),
                 has_gitlink: stages.iter().any(|s| s.mode == "160000"),
+                class: ConflictClass::Text,
                 stages,
             })
         })
@@ -132,7 +136,9 @@ pub(crate) fn parse_unmerged(raw: &[u8]) -> Vec<ConflictEntry> {
 impl Repo {
     /// All unmerged paths, sorted.
     pub fn list_conflicts(&self) -> Result<Vec<ConflictEntry>> {
-        Ok(parse_unmerged(&self.git(["ls-files", "-u", "-z"])?))
+        let mut entries = parse_unmerged(&self.git(["ls-files", "-u", "-z"])?);
+        self.classify_entries(&mut entries)?;
+        Ok(entries)
     }
 
     /// The conflict entry for one path, if it is still unmerged.
@@ -144,9 +150,9 @@ impl Repo {
             "--".into(),
             path.to_os_string()?,
         ])?;
-        Ok(parse_unmerged(&raw)
-            .into_iter()
-            .find(|e| e.path == path.token()))
+        let mut entries = parse_unmerged(&raw);
+        self.classify_entries(&mut entries)?;
+        Ok(entries.into_iter().find(|e| e.path == path.token()))
     }
 
     /// Number of unmerged paths.

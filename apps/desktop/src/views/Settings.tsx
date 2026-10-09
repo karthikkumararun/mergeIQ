@@ -1,19 +1,30 @@
 import { useEffect, useState } from "react";
 import { ThemeSwitch } from "../components/ThemeSwitch";
+import { ipcAiApi, type AiApi } from "../ai/api";
+import { AiSettings } from "../settings/AiSettings";
 import { CommandLine } from "../settings/CommandLine";
+import { Lockfiles } from "../settings/Lockfiles";
+import {
+  ipcLockfileApi,
+  type LockfileSettingsApi,
+} from "../settings/lockfileApi";
 import { ipcCliApi, type CliSetupApi } from "../settings/cliApi";
 import { loadMergeSettings, saveMergeSettings } from "../merge-editor/hosts";
 import type { MergeSettings } from "../merge-editor/model/types";
 import { useTheme } from "../theme/useTheme";
 import styles from "./Settings.module.css";
 
-export type SettingsSection = "general" | "cli";
+export type SettingsSection = "general" | "cli" | "lockfiles" | "ai";
 
 interface SettingsProps {
   onClose: () => void;
   section?: SettingsSection;
   /** Backend calls for the Command line section (replaced in tests). */
   cliApi?: CliSetupApi;
+  /** Backend calls for the Lockfiles section (replaced in tests). */
+  lockfileApi?: LockfileSettingsApi;
+  /** Backend calls for the AI section (replaced in tests). */
+  aiApi?: AiApi;
   onCliChanged?: () => void;
 }
 
@@ -21,6 +32,8 @@ export function Settings({
   onClose,
   section: initial = "general",
   cliApi = ipcCliApi,
+  lockfileApi = ipcLockfileApi,
+  aiApi = ipcAiApi,
   onCliChanged,
 }: SettingsProps) {
   const { theme, setTheme } = useTheme();
@@ -38,6 +51,8 @@ export function Settings({
   const items: { id: SettingsSection; label: string }[] = [
     { id: "general", label: "General" },
     { id: "cli", label: "Command line" },
+    { id: "lockfiles", label: "Lockfiles" },
+    { id: "ai", label: "AI" },
   ];
 
   return (
@@ -81,8 +96,12 @@ export function Settings({
               />
             </label>
           </section>
-        ) : (
+        ) : section === "cli" ? (
           <CommandLine api={cliApi} onChanged={onCliChanged} />
+        ) : section === "lockfiles" ? (
+          <Lockfiles api={lockfileApi} />
+        ) : (
+          <AiSettings api={aiApi} />
         )}
       </div>
     </div>

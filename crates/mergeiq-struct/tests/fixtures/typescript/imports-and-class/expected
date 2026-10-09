@@ -1,0 +1,9 @@
+import { A, B, C } from "a";
+
+export class S {
+  private x = 1;
+
+  run(): void {}
+
+  stop(): void {}
+}

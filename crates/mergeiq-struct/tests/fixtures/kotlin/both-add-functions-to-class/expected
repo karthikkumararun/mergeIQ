@@ -1,0 +1,10 @@
+class Foo {
+    fun run() {
+    }
+
+    fun a() {
+    }
+
+    fun b() {
+    }
+}

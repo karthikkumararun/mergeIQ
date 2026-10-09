@@ -120,7 +120,7 @@ impl GitExec {
         &self.path
     }
 
-    fn command<I, S>(&self, cwd: &Path, args: I) -> Command
+    pub(crate) fn command<I, S>(&self, cwd: &Path, args: I) -> Command
     where
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,

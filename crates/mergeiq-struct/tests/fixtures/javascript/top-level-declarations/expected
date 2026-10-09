@@ -1,0 +1,15 @@
+import a from "a";
+import o from "o";
+import t from "t";
+
+export function main() {
+  return a;
+}
+
+export function fromOurs() {
+  return o;
+}
+
+export function fromTheirs() {
+  return t;
+}

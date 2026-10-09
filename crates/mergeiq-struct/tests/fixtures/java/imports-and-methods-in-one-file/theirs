@@ -1,0 +1,10 @@
+import a.A;
+import c.C2;
+
+class C {
+    void m() {
+    }
+
+    void t() {
+    }
+}

@@ -1,4 +1,4 @@
-use crate::commands::{cli_setup, git, repos, requests};
+use crate::commands::{ai, cli_setup, git, repos, requests, special, structural};
 use crate::settings::{self, MergeEditorSettings, Settings};
 
 #[derive(Debug, Clone, serde::Serialize, specta::Type)]
@@ -107,13 +107,52 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
             requests::merge_request_analyze,
             requests::merge_request_save,
             requests::request_close,
+            structural::structural_resolve,
+            special::conflict_details,
+            special::conflict_stage_blob,
+            special::conflict_modify_delete_view,
+            special::conflict_use_side,
+            special::conflict_keep_and_edit,
+            special::conflict_working_text,
+            special::submodule_details,
+            special::rename_choose,
+            special::go_sum_preview,
+            special::go_sum_union,
+            special::get_lockfile_commands,
+            special::set_lockfile_command,
+            special::lockfile_regenerate,
+            special::lockfile_cancel,
+            special::open_working_file,
+            ai::ai_get_settings,
+            ai::ai_update_settings,
+            ai::ai_set_repo_decision,
+            ai::ai_key_info,
+            ai::ai_set_key,
+            ai::ai_delete_key,
+            ai::ai_test_connection,
+            ai::ai_usage,
+            ai::ai_reset_usage,
+            ai::ai_status,
+            ai::ai_preview,
+            ai::ai_estimate,
+            ai::ai_explain,
+            ai::ai_suggest,
+            ai::ai_cancel,
+            ai::ai_open_settings,
+            ai::take_pending_settings,
             cli_setup::cli_setup_info,
             cli_setup::cli_install,
             cli_setup::cli_add_to_path,
             cli_setup::git_mergetool_commands,
             cli_setup::git_mergetool_configure,
         ])
-        .events(tauri_specta::collect_events![git::RepoChanged])
+        .events(tauri_specta::collect_events![
+            git::RepoChanged,
+            special::LockfileOutput,
+            special::LockfileFinished,
+            ai::AiDelta,
+            ai::OpenSettings
+        ])
 }
 
 #[cfg(test)]
