@@ -27,7 +27,7 @@ Before any installer is built, the workflow SHALL fail if the tag version (witho
 - **THEN** the gate passes and the build jobs start
 
 ### Requirement: Installers per platform
-A successful release SHALL contain, for version `X.Y.Z`: a macOS universal `.dmg` (arm64 and x86_64 in one app), a Windows `.msi` and an NSIS `.exe` for x86_64, and a Linux x86_64 `.AppImage` and `.deb`. Asset file names SHALL include the product name, version, platform and architecture.
+A successful release SHALL contain, for version `X.Y.Z`: a macOS universal `.dmg` (arm64 and x86_64 in one app), a Windows `.msi` and an NSIS `.exe` for x86_64, and a Linux x86_64 `.AppImage` and `.deb`. Asset file names SHALL start with the product name and include the version and the architecture (`universal`, `x64`/`amd64`), as named by Tauri's bundler; the platform is identified by the file extension.
 
 #### Scenario: Complete asset set
 - **WHEN** a release for `v0.2.0` is published
