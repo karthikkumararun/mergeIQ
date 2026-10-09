@@ -47,6 +47,41 @@ async function root() {
       </div>
     );
   }
+  // Dev/test-only route: the open-repository home body against an in-memory backend.
+  if (
+    import.meta.env.VITE_IPC_MOCK === "1" &&
+    window.location.pathname.startsWith("/dev/home")
+  ) {
+    const params = new URLSearchParams(window.location.search);
+    document.documentElement.dataset.theme = params.get("theme") ?? "dark";
+    const [{ OpenRepository }, { createMockHomeApi }] = await Promise.all([
+      import("./repo/OpenRepository"),
+      import("./repo/mockHomeApi"),
+    ]);
+    const empty = params.get("recents") === "0";
+    const api = createMockHomeApi({
+      recents: empty ? [] : undefined,
+      repos: [
+        "/code/shop-web",
+        "/code/work/payments-service",
+        "/code/new-repo",
+      ],
+      picked: params.get("picked"),
+    });
+    return (
+      <div
+        style={{
+          padding: 24,
+          minHeight: "100vh",
+          background: "var(--bg)",
+          color: "var(--text)",
+          fontFamily: "var(--font-ui)",
+        }}
+      >
+        <OpenRepository api={api} />
+      </div>
+    );
+  }
   const merge = window.location.pathname.match(/^\/merge\/(\d+)$/);
   if (merge) {
     const { MergeRequestView } = await import("./requests/MergeRequestView");

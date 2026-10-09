@@ -5,6 +5,8 @@ import { ipcCliApi, type CliSetupApi } from "../settings/cliApi";
 import { useTheme } from "../theme/useTheme";
 import type { SettingsSection } from "./Settings";
 import { SetupCards } from "./SetupCards";
+import { OpenRepository } from "../repo/OpenRepository";
+import { ipcHomeApi, type HomeApi } from "../repo/homeApi";
 import styles from "./Home.module.css";
 
 const PLATFORM_LABEL: Record<string, string> = {
@@ -16,6 +18,7 @@ const PLATFORM_LABEL: Record<string, string> = {
 interface HomeProps {
   onOpenSettings: (section?: SettingsSection) => void;
   cliApi?: CliSetupApi;
+  homeApi?: HomeApi;
   /** Bumped when command-line setup changes, so the status cards reload. */
   cliVersion?: number;
 }
@@ -23,6 +26,7 @@ interface HomeProps {
 export function Home({
   onOpenSettings,
   cliApi = ipcCliApi,
+  homeApi = ipcHomeApi,
   cliVersion = 0,
 }: HomeProps) {
   const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
@@ -58,8 +62,9 @@ export function Home({
           </button>
         </div>
       </header>
-      {/* Open/drop/recents are built by repo-browser; the AI card by ai-assist. */}
+      {/* The AI card is built by ai-assist. */}
       <main className={styles.body}>
+        <OpenRepository api={homeApi} />
         <SetupCards
           api={cliApi}
           version={cliVersion}

@@ -6,8 +6,8 @@
 
 ## 2. Home view
 
-- [ ] 2.1 HomeView: folder picker (tauri dialog plugin), drag-and-drop, recents list with remove; not-a-repo error
-- [ ] 2.2 Playwright tests for open flows with IPC mock
+- [x] 2.1 HomeView: folder picker (tauri dialog plugin), drag-and-drop, recents list with remove; not-a-repo error
+- [x] 2.2 Playwright tests for open flows with IPC mock
 
 ## 3. Repository window
 
