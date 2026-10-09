@@ -6,6 +6,8 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    // Release tooling tests live next to their scripts (see docs/releasing.md).
+    include: ["src/**/*.test.{ts,tsx}", "../../scripts/**/*.test.mjs"],
     setupFiles: ["./src/test/setup.ts"],
   },
 });
