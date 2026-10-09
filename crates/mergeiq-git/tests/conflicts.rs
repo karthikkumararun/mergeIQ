@@ -129,6 +129,7 @@ fn symlink_and_gitlink_flags() {
 }
 
 #[test]
+#[cfg(unix)]
 fn non_utf8_path() {
     // Some filesystems (APFS) refuse non-UTF-8 names, so script the conflict in the index.
     use std::io::Write;
