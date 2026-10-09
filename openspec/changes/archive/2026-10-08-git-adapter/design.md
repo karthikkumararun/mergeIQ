@@ -53,3 +53,14 @@ paths.rs       RepoPath (bytes) + PathToken (base64 of bytes) for IPC
 ## Open Questions
 
 - Allow choosing a bundled git? Not now; require system git.
+
+## Implementation notes (resolved during apply)
+
+- **Reads use the `git` CLI, not `gix`.** Design said "reads with gix". Implemented with `git ls-files -u -z`, `git cat-file blob`, `git log`, `git rev-parse` instead: one dependency less (gix is large), identical semantics to the user's git (config, worktrees, submodules), and a handful of subprocesses per conflict load is well within budget. `gix` can replace `conflicts.rs`/`blobs.rs` internals later without API change. `GIT_LITERAL_PATHSPECS=1` is set for every invocation so paths are never globs.
+- **Single open repository.** IPC keeps one `Repo` + watcher in `GitState`; `repo_open` replaces it. Multi-repo (repo browser, change 6) can key by root later.
+- **`conflict_save(path, text, encoding, stage)`** takes editor text plus `EncodingInfo` and encodes with `mergeiq_core::encode`, rather than raw bytes, to avoid multi-MB JSON number arrays over IPC. `stage=true` is `save_resolved`, `false` is `save_unresolved`.
+- **Absent stages analysed as empty text** in `conflict_load` (BothAdded, DeletedBy*). Dedicated handling is `special-conflicts` (change 8). Symlink/gitlink conflicts return `analysis: null` with `analysis_error`.
+- **Core specta types**: `usize` fields in `mergeiq-core` IPC types are annotated `specta(type = u32)` (specta forbids BigInt export); text offsets and counts are far below 2^32.
+- **Rebase `onto` label** is resolved with `git name-rev`; falls back to short SHA when no branch/tag names the commit exactly.
+- **Not done:** LFS pointer detection (risk noted above) is deferred; `GitError` is the IPC error payload (`IpcError::Git`).
+- `accept_side` uses `git checkout --ours/--theirs` + `git add` (applies filters/EOL like git) and `git rm` when that side deleted the file.

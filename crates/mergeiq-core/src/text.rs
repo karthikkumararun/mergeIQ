@@ -42,8 +42,10 @@ impl Terminator {
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Line {
     /// Byte offset of the line's first content byte.
+    #[cfg_attr(feature = "specta", specta(type = u32))]
     pub start: usize,
     /// Byte offset just past the line's last content byte (terminator excluded).
+    #[cfg_attr(feature = "specta", specta(type = u32))]
     pub end: usize,
     /// This line's original terminator.
     pub term: Terminator,

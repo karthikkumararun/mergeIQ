@@ -16,8 +16,10 @@ pub enum TokenKind {
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Token {
     /// Byte offset of the token's first byte.
+    #[cfg_attr(feature = "specta", specta(type = u32))]
     pub start: usize,
     /// Byte offset just past the token's last byte.
+    #[cfg_attr(feature = "specta", specta(type = u32))]
     pub end: usize,
     /// This token's class.
     pub kind: TokenKind,

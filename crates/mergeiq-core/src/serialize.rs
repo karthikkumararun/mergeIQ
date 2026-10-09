@@ -22,6 +22,7 @@ pub struct UnresolvedConflict {
     /// The chunk this conflict came from.
     pub chunk_id: u32,
     /// Index into `lines` (given to [`serialize`]) where this conflict belongs.
+    #[cfg_attr(feature = "specta", specta(type = u32))]
     pub at: usize,
     /// Label for the `<<<<<<<` marker line.
     pub ours_label: String,

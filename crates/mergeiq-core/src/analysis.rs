@@ -117,6 +117,7 @@ pub struct Options {
     /// How line content is normalized for equality when diffing.
     pub whitespace: WhitespacePolicy,
     /// Chunks spanning more lines than this (per side) skip fine-grained diffing.
+    #[cfg_attr(feature = "specta", specta(type = u32))]
     pub fine_diff_max_lines: usize,
 }
 

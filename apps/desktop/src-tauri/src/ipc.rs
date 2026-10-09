@@ -1,3 +1,4 @@
+use crate::commands::git;
 use crate::settings::{self, Settings};
 
 #[derive(Debug, Clone, serde::Serialize, specta::Type)]
@@ -23,6 +24,10 @@ pub fn app_info() -> AppInfo {
 pub enum IpcError {
     #[error("failed to save settings: {0}")]
     Settings(String),
+    #[error("{0}")]
+    Git(#[from] mergeiq_git::GitError),
+    #[error("no repository is open")]
+    NoRepo,
 }
 
 /// Typed IPC view of [`Settings`]; unknown keys in the settings file are preserved on
@@ -57,11 +62,22 @@ pub fn update_settings(settings: SettingsDto) -> Result<SettingsDto, IpcError> {
 }
 
 pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
-    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
-        app_info,
-        get_settings,
-        update_settings
-    ])
+    tauri_specta::Builder::<tauri::Wry>::new()
+        .commands(tauri_specta::collect_commands![
+            app_info,
+            get_settings,
+            update_settings,
+            git::repo_open,
+            git::repo_status,
+            git::conflict_load,
+            git::conflict_save,
+            git::conflict_accept_side,
+            git::conflict_restore,
+            git::op_continue,
+            git::op_abort,
+            git::op_skip,
+        ])
+        .events(tauri_specta::collect_events![git::RepoChanged])
 }
 
 #[cfg(test)]
