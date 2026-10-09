@@ -52,9 +52,9 @@ describe("Whitespace policy switch", () => {
   it("re-analyses through conflict_analyze", async () => {
     const analysis = fixture("simple-conflict");
     conflictAnalyze.mockResolvedValue({ status: "ok", data: analysis });
-    const reanalyze = reanalyzeViaIpc("token");
+    const reanalyze = reanalyzeViaIpc(3, "token");
     expect(await reanalyze("TrimTrailing")).toBe(analysis);
-    expect(conflictAnalyze).toHaveBeenCalledWith("token", "TrimTrailing");
+    expect(conflictAnalyze).toHaveBeenCalledWith(3, "token", "TrimTrailing");
   });
 
   it("reports git failures", async () => {
@@ -65,7 +65,7 @@ describe("Whitespace policy switch", () => {
         message: { kind: "Unsupported", what: "binary file" },
       },
     });
-    await expect(reanalyzeViaIpc("token")("Exact")).rejects.toThrow(
+    await expect(reanalyzeViaIpc(3, "token")("Exact")).rejects.toThrow(
       "binary file",
     );
   });

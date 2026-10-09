@@ -1,8 +1,8 @@
 ## 1. Backend window management
 
-- [ ] 1.1 `RepoRegistry`: canonical root → window; `repo_open` focuses or creates window; per-window watcher wiring for `repo-changed`
-- [ ] 1.2 Recents in settings (max 15, dedupe, missing-path detection); commands `recents_list`, `recents_remove`
-- [ ] 1.3 Wire `mergeiq open <dir>` request to `repo_open`
+- [x] 1.1 `RepoRegistry`: canonical root → window; `repo_open` focuses or creates window; per-window watcher wiring for `repo-changed`
+- [x] 1.2 Recents in settings (max 15, dedupe, missing-path detection); commands `recents_list`, `recents_remove`
+- [x] 1.3 Wire `mergeiq open <dir>` request to `repo_open`
 
 ## 2. Home view
 

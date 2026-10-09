@@ -39,6 +39,7 @@ mergeiq-core = { path = "../../../crates/mergeiq-core", features = ["specta"] }
 mergeiq-git = { path = "../../../crates/mergeiq-git", features = ["specta"] }
 clap = { version = "4", features = ["derive"] }
 interprocess = "2"
+tauri-plugin-dialog = "2"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration

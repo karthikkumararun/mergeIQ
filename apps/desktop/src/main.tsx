@@ -47,15 +47,10 @@ async function root() {
       </div>
     );
   }
-  const request = window.location.pathname.match(/^\/(merge|repo)\/(\d+)$/);
-  if (request) {
-    const id = Number(request[2]);
-    if (request[1] === "merge") {
-      const { MergeRequestView } = await import("./requests/MergeRequestView");
-      return <MergeRequestView id={id} />;
-    }
-    const { RepoRequestView } = await import("./requests/RepoRequestView");
-    return <RepoRequestView id={id} />;
+  const merge = window.location.pathname.match(/^\/merge\/(\d+)$/);
+  if (merge) {
+    const { MergeRequestView } = await import("./requests/MergeRequestView");
+    return <MergeRequestView id={Number(merge[1])} />;
   }
   return <App />;
 }

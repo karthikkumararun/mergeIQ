@@ -10,21 +10,29 @@ export const commands = {
 	updateSettings: (settings: SettingsDto) => typedError<SettingsDto, IpcError>(__TAURI_INVOKE("update_settings", { settings })),
 	getMergeEditorSettings: () => __TAURI_INVOKE<MergeEditorSettings>("get_merge_editor_settings"),
 	updateMergeEditorSettings: (settings: MergeEditorSettings) => typedError<MergeEditorSettings, IpcError>(__TAURI_INVOKE("update_merge_editor_settings", { settings })),
-	repoOpen: (path: string) => typedError<RepoStatus, IpcError>(__TAURI_INVOKE("repo_open", { path })),
-	repoStatus: () => typedError<RepoStatus, IpcError>(__TAURI_INVOKE("repo_status")),
-	conflictLoad: (path: PathToken) => typedError<ConflictLoad, IpcError>(__TAURI_INVOKE("conflict_load", { path })),
+	/**  Opens (or focuses) a repository window. */
+	repoOpen: (path: string) => typedError<number, IpcError>(__TAURI_INVOKE("repo_open", { path })),
+	repoInfo: (repo: number) => typedError<RepoInfo, IpcError>(__TAURI_INVOKE("repo_info", { repo })),
+	recentsList: () => __TAURI_INVOKE<RecentRepoDto[]>("recents_list"),
+	recentsRemove: (path: string) => typedError<RecentRepoDto[], IpcError>(__TAURI_INVOKE("recents_remove", { path })),
+	repoStatus: (repo: number) => typedError<RepoStatus, IpcError>(__TAURI_INVOKE("repo_status", { repo })),
+	conflictLoad: (repo: number, path: PathToken) => typedError<ConflictLoad, IpcError>(__TAURI_INVOKE("conflict_load", { repo, path })),
 	/**
 	 *  Re-runs the merge analysis for one conflicted file with another whitespace policy
 	 *  (the merge editor's whitespace selector).
 	 */
-	conflictAnalyze: (path: PathToken, whitespace: WhitespacePolicy) => typedError<Analysis, IpcError>(__TAURI_INVOKE("conflict_analyze", { path, whitespace })),
+	conflictAnalyze: (repo: number, path: PathToken, whitespace: WhitespacePolicy) => typedError<Analysis, IpcError>(__TAURI_INVOKE("conflict_analyze", { repo, path, whitespace })),
 	/**  Saves editor text. With `stage` the path is also `git add`ed (resolved). */
-	conflictSave: (path: PathToken, text: string, encoding: EncodingInfo, stage: boolean) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_save", { path, text, encoding, stage })),
-	conflictAcceptSide: (path: PathToken, side: AcceptSide) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_accept_side", { path, side })),
-	conflictRestore: (path: PathToken) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_restore", { path })),
-	opContinue: () => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_continue")),
-	opAbort: () => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_abort")),
-	opSkip: () => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_skip")),
+	conflictSave: (repo: number, path: PathToken, text: string, encoding: EncodingInfo, stage: boolean) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_save", { repo, path, text, encoding, stage })),
+	conflictAcceptSide: (repo: number, path: PathToken, side: AcceptSide) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_accept_side", { repo, path, side })),
+	/**  Accepts one side for several files. Every path is tried; failures are reported per path. */
+	conflictAcceptMany: (repo: number, paths: PathToken[], side: AcceptSide) => typedError<BatchResult, IpcError>(__TAURI_INVOKE("conflict_accept_many", { repo, paths, side })),
+	/**  Resolves a conflict by deleting the file. */
+	conflictDelete: (repo: number, path: PathToken) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_delete", { repo, path })),
+	conflictRestore: (repo: number, path: PathToken) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_restore", { repo, path })),
+	opContinue: (repo: number) => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_continue", { repo })),
+	opAbort: (repo: number) => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_abort", { repo })),
+	opSkip: (repo: number) => typedError<ControlOutcome, IpcError>(__TAURI_INVOKE("op_skip", { repo })),
 	mergeRequestLoad: (id: number) => typedError<MergeRequestDoc, IpcError>(__TAURI_INVOKE("merge_request_load", { id })),
 	mergeRequestAnalyze: (id: number, whitespace: WhitespacePolicy) => typedError<Analysis, IpcError>(__TAURI_INVOKE("merge_request_analyze", { id, whitespace })),
 	/**
@@ -33,8 +41,7 @@ export const commands = {
 	 */
 	mergeRequestSave: (id: number, text: string, encoding: EncodingInfo, mode: SaveMode) => typedError<null, IpcError>(__TAURI_INVOKE("merge_request_save", { id, text, encoding, mode })),
 	/**  Closes a request's window; its client gets the recorded exit code (1 if none). */
-	requestClose: (id: number, kind: RequestWindow) => typedError<null, IpcError>(__TAURI_INVOKE("request_close", { id, kind })),
-	repoRequestLoad: (id: number) => typedError<RepoRequestDoc, IpcError>(__TAURI_INVOKE("repo_request_load", { id })),
+	requestClose: (id: number) => typedError<null, IpcError>(__TAURI_INVOKE("request_close", { id })),
 	cliSetupInfo: () => typedError<CliSetupInfo, IpcError>(__TAURI_INVOKE("cli_setup_info")),
 	/**
 	 *  Installs the command into `dir` (macOS/Linux: a symlink; Windows: nothing to copy, the
@@ -85,6 +92,18 @@ export type AppInfo = {
 	name: string,
 	version: string,
 	platform: string,
+};
+
+/**  One path a batch action could not apply to. */
+export type BatchFailure = {
+	path: PathToken,
+	message: string,
+};
+
+/**  Outcome of a multi-file action: what was applied and what failed (the rest still ran). */
+export type BatchResult = {
+	done: PathToken[],
+	failed: BatchFailure[],
 };
 
 /**
@@ -348,6 +367,8 @@ export type MergeEditorSettings = {
 	syncScroll?: boolean,
 	/**  Whitespace policy used when analysing a file. */
 	whitespacePolicy?: WhitespacePolicy,
+	/**  In a repository window, open the next unresolved file after a resolved save. */
+	autoAdvanceAfterSave?: boolean,
 };
 
 /**  Left/right labels for the editor headers. */
@@ -402,19 +423,30 @@ export type PathHint = {
 /**  Opaque, URL-safe base64 of a [`RepoPath`]'s bytes. Pass back to the adapter unchanged. */
 export type PathToken = string;
 
-/**  Emitted (as `repo-changed`) when the index or operation state changes outside the app. */
+/**  A remembered repository, as the home view lists it. */
+export type RecentRepoDto = {
+	name: string,
+	path: string,
+	openedAt: number,
+	/**  `false` when the folder no longer exists. */
+	exists: boolean,
+};
+
+/**  Emitted (as `repo-changed`) to a repository's window when its index or operation state changes. */
 export type RepoChanged = null;
 
-/**  What the repository window needs (placeholder until `repo-browser`). */
-export type RepoRequestDoc = {
-	/**  The directory to open. */
-	dir: string,
+/**  The repository a window was opened for. */
+export type RepoInfo = {
+	name: string,
+	path: string,
 };
 
 /**  Snapshot of a repository's conflict state. */
 export type RepoStatus = {
 	/**  Worktree root (lossy display form). */
 	root: string,
+	/**  Checked-out branch, or `None` when HEAD is detached (e.g. mid-rebase). */
+	branch: string | null,
 	/**  Operation in progress. */
 	operation: Operation,
 	/**  Side labels for that operation. */
@@ -422,13 +454,6 @@ export type RepoStatus = {
 	/**  Unmerged paths. */
 	conflicts: ConflictEntry[],
 };
-
-/**  Which kind of request window to close. */
-export type RequestWindow = 
-/**  A merge editor window. */
-"merge" | 
-/**  A repository window. */
-"repo";
 
 /**  How the editor's Apply was chosen (mirrors the UI's `SaveMode`). */
 export type SaveMode = 

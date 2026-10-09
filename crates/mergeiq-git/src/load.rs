@@ -16,6 +16,8 @@ use crate::repo::Repo;
 pub struct RepoStatus {
     /// Worktree root (lossy display form).
     pub root: String,
+    /// Checked-out branch, or `None` when HEAD is detached (e.g. mid-rebase).
+    pub branch: Option<String>,
     /// Operation in progress.
     pub operation: Operation,
     /// Side labels for that operation.
@@ -48,6 +50,7 @@ impl Repo {
         let operation = self.operation()?;
         Ok(RepoStatus {
             root: self.root.display().to_string(),
+            branch: self.git_text_opt(["symbolic-ref", "-q", "--short", "HEAD"]),
             labels: self.side_labels(&operation)?,
             operation,
             conflicts: self.list_conflicts()?,

@@ -1,95 +1,35 @@
 //! IPC commands wrapping `mergeiq-git`. One repository is open at a time.
 
-use std::path::{Path, PathBuf};
-use std::sync::Mutex;
-
 use mergeiq_core::{Analysis, EncodingInfo, Options, WhitespacePolicy};
-use mergeiq_git::{
-    AcceptSide, ConflictLoad, ControlOutcome, GitExec, PathToken, Repo, RepoStatus, RepoWatcher,
-};
-use tauri::{AppHandle, State};
-use tauri_specta::Event;
+use mergeiq_git::{AcceptSide, ConflictLoad, ControlOutcome, PathToken, Repo, RepoStatus};
+use tauri::State;
 
 use crate::ipc::IpcError;
-use crate::settings;
+use crate::repo_service::{self, BatchResult};
+use crate::repos::Repos;
 
-/// Emitted (as `repo-changed`) when the index or operation state changes outside the app.
+/// Emitted (as `repo-changed`) to a repository's window when its index or operation state changes.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type, tauri_specta::Event)]
 pub struct RepoChanged;
 
-struct Session {
-    repo: Repo,
-    _watcher: RepoWatcher,
-}
-
-/// The currently open repository and its watcher.
-#[derive(Default)]
-pub struct GitState {
-    session: Mutex<Option<Session>>,
-}
-
-impl GitState {
-    fn repo(&self) -> Result<Repo, IpcError> {
-        self.session
-            .lock()
-            .ok()
-            .and_then(|s| s.as_ref().map(|s| s.repo.clone()))
-            .ok_or(IpcError::NoRepo)
-    }
-}
-
-fn configured_git() -> Option<PathBuf> {
-    let settings = settings::load();
-    settings
-        .extra
-        .get("gitPath")
-        .and_then(|v| v.as_str())
-        .map(PathBuf::from)
-}
-
-fn open_session(app: &AppHandle, path: &Path) -> Result<Session, IpcError> {
-    let exec = GitExec::locate(configured_git().as_deref())?;
-    let repo = Repo::open(exec, path)?;
-    let handle = app.clone();
-    let watcher = repo.watch(move || {
-        if let Err(err) = RepoChanged.emit(&handle) {
-            tracing::warn!(error = %err, "failed to emit repo-changed");
-        }
-    })?;
-    Ok(Session {
-        repo,
-        _watcher: watcher,
-    })
+fn repo_of(repos: &Repos, id: u32) -> Result<Repo, IpcError> {
+    repos.get(id).ok_or(IpcError::NoRepo)
 }
 
 #[tauri::command]
 #[specta::specta]
-pub async fn repo_open(
-    app: AppHandle,
-    state: State<'_, GitState>,
-    path: String,
-) -> Result<RepoStatus, IpcError> {
-    let session = open_session(&app, Path::new(&path))?;
-    let status = session.repo.status()?;
-    if let Ok(mut slot) = state.session.lock() {
-        *slot = Some(session);
-    }
-    Ok(status)
-}
-
-#[tauri::command]
-#[specta::specta]
-pub async fn repo_status(state: State<'_, GitState>) -> Result<RepoStatus, IpcError> {
-    Ok(state.repo()?.status()?)
+pub async fn repo_status(repos: State<'_, Repos>, repo: u32) -> Result<RepoStatus, IpcError> {
+    Ok(repo_of(&repos, repo)?.status()?)
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn conflict_load(
-    state: State<'_, GitState>,
+    repos: State<'_, Repos>,
+    repo: u32,
     path: PathToken,
 ) -> Result<ConflictLoad, IpcError> {
-    Ok(state.repo()?.load_conflict(&path, &Options::default())?)
+    Ok(repo_of(&repos, repo)?.load_conflict(&path, &Options::default())?)
 }
 
 /// Re-runs the merge analysis for one conflicted file with another whitespace policy
@@ -97,7 +37,8 @@ pub async fn conflict_load(
 #[tauri::command]
 #[specta::specta]
 pub async fn conflict_analyze(
-    state: State<'_, GitState>,
+    repos: State<'_, Repos>,
+    repo: u32,
     path: PathToken,
     whitespace: WhitespacePolicy,
 ) -> Result<Analysis, IpcError> {
@@ -105,7 +46,7 @@ pub async fn conflict_analyze(
         whitespace,
         ..Options::default()
     };
-    let load = state.repo()?.load_conflict(&path, &opts)?;
+    let load = repo_of(&repos, repo)?.load_conflict(&path, &opts)?;
     load.analysis.ok_or_else(|| {
         IpcError::Git(mergeiq_git::GitError::Unsupported {
             what: load
@@ -119,13 +60,14 @@ pub async fn conflict_analyze(
 #[tauri::command]
 #[specta::specta]
 pub async fn conflict_save(
-    state: State<'_, GitState>,
+    repos: State<'_, Repos>,
+    repo: u32,
     path: PathToken,
     text: String,
     encoding: EncodingInfo,
     stage: bool,
 ) -> Result<(), IpcError> {
-    let repo = state.repo()?;
+    let repo = repo_of(&repos, repo)?;
     let path = path.decode()?;
     let bytes = mergeiq_core::encode(&text, &encoding);
     if stage {
@@ -139,33 +81,65 @@ pub async fn conflict_save(
 #[tauri::command]
 #[specta::specta]
 pub async fn conflict_accept_side(
-    state: State<'_, GitState>,
+    repos: State<'_, Repos>,
+    repo: u32,
     path: PathToken,
     side: AcceptSide,
 ) -> Result<(), IpcError> {
-    Ok(state.repo()?.accept_side(&path.decode()?, side)?)
+    Ok(repo_of(&repos, repo)?.accept_side(&path.decode()?, side)?)
 }
 
 #[tauri::command]
 #[specta::specta]
-pub async fn conflict_restore(state: State<'_, GitState>, path: PathToken) -> Result<(), IpcError> {
-    Ok(state.repo()?.restore_conflict(&path.decode()?)?)
+pub async fn conflict_restore(
+    repos: State<'_, Repos>,
+    repo: u32,
+    path: PathToken,
+) -> Result<(), IpcError> {
+    Ok(repo_of(&repos, repo)?.restore_conflict(&path.decode()?)?)
 }
 
 #[tauri::command]
 #[specta::specta]
-pub async fn op_continue(state: State<'_, GitState>) -> Result<ControlOutcome, IpcError> {
-    Ok(state.repo()?.op_continue()?)
+pub async fn op_continue(repos: State<'_, Repos>, repo: u32) -> Result<ControlOutcome, IpcError> {
+    Ok(repo_of(&repos, repo)?.op_continue()?)
 }
 
 #[tauri::command]
 #[specta::specta]
-pub async fn op_abort(state: State<'_, GitState>) -> Result<ControlOutcome, IpcError> {
-    Ok(state.repo()?.op_abort()?)
+pub async fn op_abort(repos: State<'_, Repos>, repo: u32) -> Result<ControlOutcome, IpcError> {
+    Ok(repo_of(&repos, repo)?.op_abort()?)
 }
 
 #[tauri::command]
 #[specta::specta]
-pub async fn op_skip(state: State<'_, GitState>) -> Result<ControlOutcome, IpcError> {
-    Ok(state.repo()?.op_skip()?)
+pub async fn op_skip(repos: State<'_, Repos>, repo: u32) -> Result<ControlOutcome, IpcError> {
+    Ok(repo_of(&repos, repo)?.op_skip()?)
+}
+
+/// Accepts one side for several files. Every path is tried; failures are reported per path.
+#[tauri::command]
+#[specta::specta]
+pub async fn conflict_accept_many(
+    repos: State<'_, Repos>,
+    repo: u32,
+    paths: Vec<PathToken>,
+    side: AcceptSide,
+) -> Result<BatchResult, IpcError> {
+    Ok(repo_service::accept_many(
+        &repo_of(&repos, repo)?,
+        &paths,
+        side,
+    ))
+}
+
+/// Resolves a conflict by deleting the file.
+#[tauri::command]
+#[specta::specta]
+pub async fn conflict_delete(
+    repos: State<'_, Repos>,
+    repo: u32,
+    path: PathToken,
+) -> Result<(), IpcError> {
+    Ok(repo_of(&repos, repo)?.delete_resolved(&path.decode()?)?)
 }

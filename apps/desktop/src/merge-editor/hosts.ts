@@ -60,10 +60,11 @@ export async function saveMergeSettings(
 
 /** `MergeEditor`'s `reanalyze` prop for a conflicted file in the open repository. */
 export function reanalyzeViaIpc(
+  repo: number,
   path: PathToken,
 ): (policy: WhitespacePolicy) => Promise<Analysis> {
   return async (policy) => {
-    const result = await commands.conflictAnalyze(path, policy);
+    const result = await commands.conflictAnalyze(repo, path, policy);
     if (result.status === "error") throw new Error(describeError(result.error));
     return result.data;
   };

@@ -16,8 +16,6 @@ pub const EXIT_CANCELLED: i32 = 1;
 pub enum WindowKind {
     /// The merge editor (`/merge/<id>`).
     Merge,
-    /// The repository window (`/repo/<id>`).
-    Repo,
 }
 
 impl WindowKind {
@@ -25,7 +23,6 @@ impl WindowKind {
     pub fn prefix(self) -> &'static str {
         match self {
             WindowKind::Merge => "merge",
-            WindowKind::Repo => "repo",
         }
     }
 }

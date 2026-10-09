@@ -167,6 +167,24 @@ impl Repo {
         result.map(|_| ())
     }
 
+    /// Resolves a conflict by deleting the file (`git rm`), from the working tree and index.
+    pub fn delete_resolved(&self, path: &RepoPath) -> Result<()> {
+        self.conflict_entry(path)?
+            .ok_or_else(|| GitError::NoSuchConflict {
+                path: path.display(),
+            })?;
+        self.note_mutation();
+        let result = self.git([
+            "rm".into(),
+            "-f".into(),
+            "-q".into(),
+            "--".into(),
+            path.to_os_string()?,
+        ]);
+        self.note_mutation();
+        result.map(|_| ())
+    }
+
     /// Recreates the conflicted state (stages 1-3 and markers) for a resolved path.
     pub fn restore_conflict(&self, path: &RepoPath) -> Result<()> {
         self.note_mutation();

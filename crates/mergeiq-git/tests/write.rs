@@ -132,3 +132,24 @@ fn paths_with_leading_dashes_and_globs_are_literal() {
     s.repo().save_resolved(&p, b"resolved\n").unwrap();
     assert_eq!(s.git(&["diff", "--cached", "--name-only"]), "-weird*.txt");
 }
+
+#[test]
+fn delete_resolved_removes_file_and_stages_deletion() {
+    let s = Scenario::new();
+    s.merge_conflict();
+    s.repo().delete_resolved(&a()).unwrap();
+    assert!(!s.path("a.txt").exists());
+    assert!(stages(&s).is_empty());
+}
+
+#[test]
+fn delete_resolved_requires_a_conflict() {
+    let s = Scenario::new();
+    s.write_commit("b.txt", "x\n", "init");
+    let err = s
+        .repo()
+        .delete_resolved(&RepoPath::from_bytes(b"b.txt".to_vec()))
+        .unwrap_err();
+    assert!(matches!(err, mergeiq_git::GitError::NoSuchConflict { .. }));
+    assert!(s.path("b.txt").exists());
+}
