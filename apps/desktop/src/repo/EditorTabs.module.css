@@ -1,0 +1,227 @@
+.wrap {
+  height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.strip {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  min-height: 38px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.current {
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 4px 0 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: 13px var(--font-ui);
+  cursor: pointer;
+}
+
+.name {
+  font-family: var(--font-code);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.close {
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--surface-2);
+}
+
+.body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.pane {
+  position: absolute;
+  inset: 0;
+}
+
+.hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.paneInner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--warn-bg);
+  border-bottom: 1px solid var(--warn-border);
+  font-size: 13px;
+}
+
+.noticeActions {
+  display: flex;
+  gap: 8px;
+}
+
+.notice button {
+  font: 500 12px var(--font-ui);
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.message {
+  margin: 0;
+  padding: 24px;
+  color: var(--muted);
+}
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--muted);
+}
+
+.empty h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.link {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: 600 14px var(--font-code);
+  cursor: pointer;
+  padding: 0;
+}
+
+.nonText {
+  padding: 28px;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nonTextTitle {
+  margin: 0;
+  font: 600 16px var(--font-code);
+}
+
+.nonTextKind,
+.nonTextNote {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.sides {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 20px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.sides dt {
+  color: var(--muted);
+}
+
+.sides dd {
+  margin: 0;
+}
+
+.nonTextActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nonTextActions button {
+  font: 500 13px var(--font-ui);
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.nonTextActions .dangerButton {
+  color: var(--danger-fg);
+  border-color: var(--danger-border);
+}
+
+.tabButton:focus-visible,
+.close:focus-visible,
+.link:focus-visible,
+.notice button:focus-visible,
+.nonTextActions button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

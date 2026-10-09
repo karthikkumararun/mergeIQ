@@ -84,6 +84,8 @@ export interface MergeSettings {
   collapseUnchanged: boolean;
   syncScroll: boolean;
   whitespacePolicy: WhitespacePolicy;
+  /** In a repository window, open the next unresolved file after a resolved save. */
+  autoAdvanceAfterSave: boolean;
 }
 
 export const DEFAULT_SETTINGS: MergeSettings = {
@@ -92,4 +94,5 @@ export const DEFAULT_SETTINGS: MergeSettings = {
   collapseUnchanged: false,
   syncScroll: true,
   whitespacePolicy: "Exact",
+  autoAdvanceAfterSave: true,
 };

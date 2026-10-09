@@ -1,0 +1,101 @@
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+
+.sentence {
+  flex: 1 1 420px;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.mono {
+  font-family: var(--font-code);
+  font-weight: 600;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ok {
+  color: var(--ok-fg);
+  font-size: 13px;
+}
+
+.output {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.output summary {
+  cursor: pointer;
+}
+
+.output pre {
+  margin: 8px 0 0;
+  max-height: 180px;
+  max-width: 100%;
+  overflow: auto;
+  font: 12px/1.6 var(--font-code);
+  white-space: pre-wrap;
+  color: var(--text);
+}
+
+.output .errorText {
+  color: var(--danger-fg);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font: 500 13px var(--font-ui);
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.danger {
+  color: var(--danger-fg);
+  border-color: var(--danger-border);
+}
+
+.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
