@@ -2986,6 +2986,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "directories",
+ "dunce",
  "interprocess",
  "libc",
  "mergeiq-ai",
@@ -3016,6 +3017,7 @@ name = "mergeiq-git"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
+ "dunce",
  "mergeiq-core",
  "notify",
  "serde",

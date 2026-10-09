@@ -54,7 +54,7 @@ impl Repo {
     {
         let (tx, rx) = mpsc::channel::<()>();
         let git_dir = self.git_dir.clone();
-        let canonical = git_dir.canonicalize().unwrap_or_else(|_| git_dir.clone());
+        let canonical = dunce::canonicalize(&git_dir).unwrap_or_else(|_| git_dir.clone());
         let mut watcher =
             notify::recommended_watcher(move |res: notify::Result<notify::Event>| {
                 if let Ok(event) = res {

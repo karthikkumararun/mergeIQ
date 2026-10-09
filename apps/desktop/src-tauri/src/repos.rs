@@ -44,10 +44,7 @@ impl RepoRegistry {
         watch: impl FnOnce(u32, &Repo) -> Result<RepoWatcher, GitError>,
     ) -> Result<Opened, GitError> {
         let repo = Repo::open(exec, path)?;
-        let key = repo
-            .root()
-            .canonicalize()
-            .unwrap_or_else(|_| repo.root().to_path_buf());
+        let key = dunce::canonicalize(repo.root()).unwrap_or_else(|_| repo.root().to_path_buf());
         let mut inner = self.inner.lock().expect("repo registry lock");
         if let Some(&id) = inner.by_root.get(&key) {
             return Ok(Opened { id, created: false });
@@ -123,7 +120,7 @@ mod tests {
     #[test]
     fn open_via_cli_focuses_the_existing_window() {
         let tmp = tempfile::tempdir().unwrap();
-        let root = tmp.path().canonicalize().unwrap();
+        let root = dunce::canonicalize(tmp.path()).unwrap();
         git_repo(&root);
         std::fs::create_dir_all(root.join("src/deep")).unwrap();
         let reg = RepoRegistry::default();
