@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { createMockHomeApi } from "../repo/mockHomeApi";
 import { createMockCliApi } from "../settings/mockCliApi";
 import { Home } from "./Home";
 
@@ -20,7 +21,13 @@ vi.mock("../ipc/bindings", () => ({
 
 describe("Home", () => {
   it("shows the app name, version chip and theme control", async () => {
-    render(<Home onOpenSettings={() => {}} cliApi={createMockCliApi()} />);
+    render(
+      <Home
+        onOpenSettings={() => {}}
+        cliApi={createMockCliApi()}
+        homeApi={createMockHomeApi()}
+      />,
+    );
 
     expect(screen.getByText("MergeIQ")).toBeInTheDocument();
     await waitFor(() =>
@@ -38,7 +45,13 @@ describe("Home › Set up cards", () => {
   it("shows Not installed / Not configured and opens the Command line settings", async () => {
     const onOpenSettings = vi.fn();
     const api = createMockCliApi();
-    render(<Home onOpenSettings={onOpenSettings} cliApi={api} />);
+    render(
+      <Home
+        onOpenSettings={onOpenSettings}
+        cliApi={api}
+        homeApi={createMockHomeApi()}
+      />,
+    );
     expect(await screen.findByText("Not installed")).toBeInTheDocument();
     expect(screen.getByText("Not configured")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Configure…" }));
@@ -47,7 +60,13 @@ describe("Home › Set up cards", () => {
 
   it("shows Installed / Configured when set up", async () => {
     const api = createMockCliApi({ installed: true, configured: true });
-    render(<Home onOpenSettings={() => {}} cliApi={api} />);
+    render(
+      <Home
+        onOpenSettings={() => {}}
+        cliApi={api}
+        homeApi={createMockHomeApi()}
+      />,
+    );
     expect(await screen.findByText("Installed")).toBeInTheDocument();
     expect(screen.getByText("Configured")).toBeInTheDocument();
   });
