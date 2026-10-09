@@ -16,6 +16,37 @@ async function root() {
     const { DevMerge } = await import("./merge-editor/DevMerge");
     return <DevMerge />;
   }
+  // Dev/test-only route: Settings › Command line against an in-memory backend.
+  if (
+    import.meta.env.VITE_IPC_MOCK === "1" &&
+    window.location.pathname.startsWith("/dev/cli")
+  ) {
+    const params = new URLSearchParams(window.location.search);
+    document.documentElement.dataset.theme = params.get("theme") ?? "dark";
+    const [{ CommandLine }, { createMockCliApi }] = await Promise.all([
+      import("./settings/CommandLine"),
+      import("./settings/mockCliApi"),
+    ]);
+    const api = createMockCliApi({
+      platform: params.get("platform") ?? "macos",
+      onPath: params.get("onPath") !== "0",
+      installed: params.get("installed") === "1",
+      configured: params.get("configured") === "1",
+    });
+    return (
+      <div
+        style={{
+          padding: 24,
+          minHeight: "100vh",
+          background: "var(--bg)",
+          color: "var(--text)",
+          fontFamily: "var(--font-ui)",
+        }}
+      >
+        <CommandLine api={api} />
+      </div>
+    );
+  }
   const request = window.location.pathname.match(/^\/(merge|repo)\/(\d+)$/);
   if (request) {
     const id = Number(request[2]);
