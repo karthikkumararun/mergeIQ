@@ -5,12 +5,14 @@ import { DEFAULT_SETTINGS, type MergeSettings } from "./model/types";
 
 const MOCK_KEY = "mergeiq.mock.mergeEditorSettings";
 
-function describeError(error: IpcError): string {
+export function describeError(error: IpcError): string {
   switch (error.kind) {
     case "Settings":
       return error.message;
     case "NoRepo":
       return "no repository is open";
+    case "Request":
+      return error.message;
     case "Git": {
       const g = error.message;
       switch (g.kind) {

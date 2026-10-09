@@ -2,5 +2,7 @@
 
 pub mod args;
 pub mod console;
+pub mod host;
 pub mod ipc_socket;
+pub mod prepare;
 pub mod requests;

@@ -115,6 +115,15 @@ impl<P> Registry<P> {
     }
 }
 
+impl<P: Prepared> Registry<P> {
+    /// Completes request `id` with the code its window recorded (cancelled if none).
+    /// Returns that code, or `None` if `id` was already finished.
+    pub fn close(&self, id: u32) -> Option<i32> {
+        let code = self.get(id)?.outcome().unwrap_or(EXIT_CANCELLED);
+        self.finish(id, code).map(|_| code)
+    }
+}
+
 /// Serves socket requests (and the primary's own request) by opening one window each.
 pub struct Dispatcher<P: Prepared> {
     pub registry: Arc<Registry<P>>,
@@ -125,7 +134,11 @@ pub struct Dispatcher<P: Prepared> {
 impl<P: Prepared> Dispatcher<P> {
     /// Prepares and opens `request`, returning its id and exit-code channel.
     pub fn open(&self, request: &Request) -> Result<(u32, Receiver<i32>), Response> {
-        let prepared = (self.prepare)(request)?;
+        self.open_prepared((self.prepare)(request)?)
+    }
+
+    /// Opens a window for an already prepared request.
+    pub fn open_prepared(&self, prepared: P) -> Result<(u32, Receiver<i32>), Response> {
         let (kind, title) = (prepared.kind(), prepared.title());
         let (id, rx) = self.registry.register(prepared, kind);
         if let Err(message) = self.host.open(id, kind, &title) {
@@ -136,15 +149,6 @@ impl<P: Prepared> Dispatcher<P> {
             ));
         }
         Ok((id, rx))
-    }
-
-    /// Completes `id` with the code its window recorded (cancelled if none).
-    pub fn close(&self, id: u32) -> Option<i32> {
-        let code = self
-            .registry
-            .get(id)
-            .map(|p| p.outcome().unwrap_or(EXIT_CANCELLED))?;
-        self.registry.finish(id, code).map(|_| code)
     }
 }
 
@@ -209,11 +213,11 @@ mod tests {
         let d = dispatcher();
         let (id, rx) = d.open(&request()).unwrap();
         assert_eq!(d.registry.open_count(), 1);
-        assert_eq!(d.close(id), Some(1));
+        assert_eq!(d.registry.close(id), Some(1));
         assert_eq!(rx.recv().unwrap(), 1);
         assert_eq!(d.registry.open_count(), 0);
         // Idempotent.
-        assert_eq!(d.close(id), None);
+        assert_eq!(d.registry.close(id), None);
     }
 
     #[test]
@@ -221,7 +225,7 @@ mod tests {
         let d = dispatcher();
         let (id, rx) = d.open(&request()).unwrap();
         *d.registry.get(id).unwrap().outcome.lock().unwrap() = Some(0);
-        d.close(id);
+        d.registry.close(id);
         assert_eq!(rx.recv().unwrap(), 0);
     }
 
@@ -234,7 +238,7 @@ mod tests {
         while d.registry.open_count() == 0 {
             std::thread::sleep(std::time::Duration::from_millis(5));
         }
-        d.close(1);
+        d.registry.close(1);
         assert_eq!(t.join().unwrap().exit_code, 1);
     }
 

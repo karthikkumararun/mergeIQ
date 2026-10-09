@@ -6,16 +6,16 @@
 ## 2. Instance routing
 
 - [x] 2.1 `cli/ipc_socket.rs`: length-prefixed JSON protocol v1, client + listener using `interprocess`, per-user path, 0600/0700 perms (unix), DACL (windows); tests for round-trip, version mismatch, stale socket
-- [ ] 2.2 Primary/secondary startup flow in `main.rs` with 2 s connect timeout
-- [ ] 2.3 `cli/requests.rs`: request registry, window per request, exit-code oneshot, `launchedForCli` lifecycle
+- [x] 2.2 Primary/secondary startup flow in `main.rs` with 2 s connect timeout
+- [x] 2.3 `cli/requests.rs`: request registry, window per request, exit-code oneshot, `launchedForCli` lifecycle
 
 ## 3. Merge and resolve flows
 
-- [ ] 3.1 `merge` request: read 4 paths, empty base fallback, analyze, labels from git-adapter when MERGED is in a repo with an operation, else Local/Remote
-- [ ] 3.2 `merge_request_load` IPC + UI route `/merge/:requestId` embedding `<MergeEditor>`; save writes MERGED atomically; exit codes 0/1
-- [ ] 3.3 `resolve` request: index stages via git-adapter (save stages) or marker parse (save writes only); "no conflicts" exit 2
-- [ ] 3.4 `open` request: route to repo browser placeholder (filled by `repo-browser`)
-- [ ] 3.5 Integration test: script repo with conflict, run `git -c mergetool.mergeiq.cmd=... mergetool` with a test hook that auto-saves via IPC, assert exit and staged file
+- [x] 3.1 `merge` request: read 4 paths, empty base fallback, analyze, labels from git-adapter when MERGED is in a repo with an operation, else Local/Remote
+- [x] 3.2 `merge_request_load` IPC + UI route `/merge/:requestId` embedding `<MergeEditor>`; save writes MERGED atomically; exit codes 0/1
+- [x] 3.3 `resolve` request: index stages via git-adapter (save stages) or marker parse (save writes only); "no conflicts" exit 2
+- [x] 3.4 `open` request: route to repo browser placeholder (filled by `repo-browser`)
+- [x] 3.5 Integration test: script repo with conflict, run `git -c mergetool.mergeiq.cmd=... mergetool` with a test hook that auto-saves via IPC, assert exit and staged file
 
 ## 4. Helpers and docs
 
