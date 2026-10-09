@@ -20,9 +20,9 @@
 ## 4. Helpers and docs
 
 - [x] 4.1 `cli/install.rs`: symlink install (macOS/Linux), PATH check, admin prompt for /usr/local/bin; Windows installer PATH option in NSIS/WiX config
-- [ ] 4.2 `cli/git_config.rs`: show commands, execute after confirm; settings UI entries
+- [x] 4.2 `cli/git_config.rs`: show commands, execute after confirm; settings UI entries
 - [x] 4.3 Docs `docs/git-integration.md`: git config snippets for macOS/Windows, VS Code (`git.mergeEditor` off + terminal `git mergetool`) usage
 
 ## 5. UI
 
-- [ ] 5.1 Settings › Command line per `ui/CliSetup.dc.html` (install select + PATH warning, git config command block + confirm, usage list) and home "Set up" card status; Playwright test with IPC mock for install-not-on-PATH and confirmed git config flows
+- [x] 5.1 Settings › Command line per `ui/CliSetup.dc.html` (install select + PATH warning, git config command block + confirm, usage list) and home "Set up" card status; Playwright test with IPC mock for install-not-on-PATH and confirmed git config flows

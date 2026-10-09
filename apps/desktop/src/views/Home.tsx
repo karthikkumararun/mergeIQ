@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { commands, type AppInfo } from "../ipc/bindings";
 import { ThemeSwitch } from "../components/ThemeSwitch";
+import { ipcCliApi, type CliSetupApi } from "../settings/cliApi";
 import { useTheme } from "../theme/useTheme";
+import type { SettingsSection } from "./Settings";
+import { SetupCards } from "./SetupCards";
 import styles from "./Home.module.css";
 
 const PLATFORM_LABEL: Record<string, string> = {
@@ -11,10 +14,17 @@ const PLATFORM_LABEL: Record<string, string> = {
 };
 
 interface HomeProps {
-  onOpenSettings: () => void;
+  onOpenSettings: (section?: SettingsSection) => void;
+  cliApi?: CliSetupApi;
+  /** Bumped when command-line setup changes, so the status cards reload. */
+  cliVersion?: number;
 }
 
-export function Home({ onOpenSettings }: HomeProps) {
+export function Home({
+  onOpenSettings,
+  cliApi = ipcCliApi,
+  cliVersion = 0,
+}: HomeProps) {
   const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
   const { theme, setTheme } = useTheme();
 
@@ -42,15 +52,20 @@ export function Home({ onOpenSettings }: HomeProps) {
             type="button"
             className={styles.iconButton}
             aria-label="Settings"
-            onClick={onOpenSettings}
+            onClick={() => onOpenSettings()}
           >
             <SettingsIcon />
           </button>
         </div>
       </header>
-      {/* Open/drop/recents and "Set up" cards are built by repo-browser, mergetool-cli
-          and ai-assist — this change only provides the shell. */}
-      <main className={styles.body} />
+      {/* Open/drop/recents are built by repo-browser; the AI card by ai-assist. */}
+      <main className={styles.body}>
+        <SetupCards
+          api={cliApi}
+          version={cliVersion}
+          onOpen={() => onOpenSettings("cli")}
+        />
+      </main>
     </div>
   );
 }

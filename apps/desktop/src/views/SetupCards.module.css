@@ -1,0 +1,83 @@
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  max-width: 420px;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.todo,
+.done {
+  font-size: 12px;
+}
+
+.todo {
+  color: var(--accent);
+}
+
+.done {
+  color: var(--muted);
+}
+
+.text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.text code {
+  font-family: var(--font-code);
+}
+
+.btn {
+  align-self: flex-start;
+  font: 500 13px var(--font-ui);
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--surface-2);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

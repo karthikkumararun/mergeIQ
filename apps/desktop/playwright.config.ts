@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 1430;
+const PORT = Number(process.env.MERGEIQ_E2E_PORT ?? 1430);
 
 export default defineConfig({
   testDir: "./e2e",
