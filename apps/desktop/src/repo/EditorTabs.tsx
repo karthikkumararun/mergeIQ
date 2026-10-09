@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import type { ConflictLoad } from "../ipc/bindings";
+import type { ConflictLoad, RenameOutcome } from "../ipc/bindings";
 import { MergeEditor } from "../merge-editor/MergeEditor";
 import { renderSaveText } from "../merge-editor/model/serialize";
 import type { MergeSettings, SaveResult } from "../merge-editor/model/types";
-import { NonTextPanel } from "./NonTextPanel";
+import { SpecialConflictPanel } from "../special/SpecialConflictPanel";
 import { toDocument } from "./toDocument";
-import { opensInEditor, splitPath } from "./describe";
+import { isLockfile, opensInEditor, splitPath } from "./describe";
 import type { AcceptSide, RepoApi } from "./repoApi";
 import type { ResolutionMethod, Tab } from "./repoStore";
 import styles from "./EditorTabs.module.css";
@@ -26,7 +26,12 @@ interface Props {
   onClose: (path: string) => void;
   onOpen: (path: string) => void;
   onDirty: (path: string, dirty: boolean) => void;
+  /** Absolute path of the repository root (shown as a lockfile command's directory). */
+  repoRoot: string;
   onResolved: (path: string, method: ResolutionMethod) => Promise<void>;
+  /** Records `path` as resolved without closing its tab. */
+  onLogResolved: (path: string, method: ResolutionMethod) => void;
+  onRenameChosen: (path: string, outcome: RenameOutcome) => Promise<void>;
   onRefresh: () => Promise<void>;
   onReload: (path: string) => void;
   onAccept: (path: string, side: AcceptSide) => void;
@@ -143,6 +148,8 @@ type Loaded =
 function TabPane(props: Props & { tab: Tab }) {
   const { tab, api } = props;
   const [loaded, setLoaded] = useState<Loaded>({ state: "loading" });
+  // A lockfile shows its regenerate panel first; "Merge by hand" switches to the editor.
+  const [byHand, setByHand] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -209,7 +216,9 @@ function TabPane(props: Props & { tab: Tab }) {
           </p>
         )}
         {loaded.state === "ready" &&
-          (doc && opensInEditor(loaded.load.entry) ? (
+          (doc &&
+          opensInEditor(loaded.load.entry) &&
+          (!isLockfile(loaded.load.entry) || byHand) ? (
             <MergeEditor
               key={`${tab.path}:${tab.epoch}`}
               doc={doc}
@@ -222,10 +231,23 @@ function TabPane(props: Props & { tab: Tab }) {
               reanalyze={(policy) => api.analyze(tab.path, policy)}
             />
           ) : (
-            <NonTextPanel
+            <SpecialConflictPanel
+              key={`${tab.path}:${tab.epoch}`}
               load={loaded.load}
+              api={api}
+              repoRoot={props.repoRoot}
+              onBack={() => props.onClose(tab.path)}
+              onResolved={(method) => props.onResolved(tab.path, method)}
               onAccept={(side) => props.onAccept(tab.path, side)}
               onDelete={() => props.onDelete(tab.path)}
+              onStaged={async () => {
+                props.onLogResolved(tab.path, "Regenerated");
+                await props.onRefresh();
+              }}
+              onRenameChosen={(outcome) =>
+                props.onRenameChosen(tab.path, outcome)
+              }
+              onMergeByHand={() => setByHand(true)}
             />
           ))}
       </div>

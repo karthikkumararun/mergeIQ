@@ -37,6 +37,8 @@ tracing-appender = "0.2.5"
 thiserror.workspace = true
 mergeiq-core = { path = "../../../crates/mergeiq-core", features = ["specta"] }
 mergeiq-git = { path = "../../../crates/mergeiq-git", features = ["specta"] }
+mergeiq-struct = { path = "../../../crates/mergeiq-struct", features = ["specta"] }
+mergeiq-ai = { path = "../../../crates/mergeiq-ai", features = ["specta"] }
 clap = { version = "4", features = ["derive"] }
 interprocess = "2"
 tauri-plugin-dialog = "2"
@@ -52,6 +54,7 @@ strip = true
 
 [dev-dependencies]
 tempfile = "3.27.0"
+tokio = { version = "1.53.2", features = ["macros", "rt-multi-thread", "time"] }
 
 [target."cfg(windows)".dependencies]
 widestring = "1"

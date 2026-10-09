@@ -73,6 +73,32 @@ Approved screens are in `ui/`; how to read them and precedence rules: `openspec/
   - Ollama form: no API key row.
   - Price table editor (`UsageTable`).
 
+## As built
+
+Where the implementation differs from, or settles, what is written above.
+
+**Crate.** `mergeiq-ai` has the modules listed under Decisions plus `http.rs` (client, retry with `retry-after`, status mapping), `sse.rs` (SSE and NDJSON parsers), `models.rs` (capability table), `privacy.rs`, `validate.rs`, `service.rs` (settings, gates, `AiFailure`, provider factory) and `logging.rs` (a log writer that redacts credentials). `eventsource-stream` was not needed: the SSE parser is about 80 lines and is tested against arbitrary chunking.
+
+**Providers.** Anthropic sends `cache_control` on the file-level block (system and file context are the cached prefix), `thinking: {type: "adaptive"}`, `output_config.effort` clamped to what the model accepts, `output_config.format` for Suggest, and `fallbacks: "default"` plus the beta header only for the models in the capability table. `stop_reason` is read before the text is used (`refusal`, `max_tokens`, context overflow). The test-connection request is deliberately minimal (no thinking, 16 tokens). OpenAI uses strict `json_schema` where the model supports it; GitHub Models and models without schema support use JSON mode, the schema in the prompt, and client-side validation. Ollama passes the schema as `format` and sizes `num_ctx` to the request, because its 4096-token default silently truncates prompts. Every provider's Suggest is retried once when the answer fails schema validation.
+
+**Prompts.** One static system prompt serves both tasks; the task text sits in the chunk section so the cached prefix is shared. Closing tags (and the opening tags that cannot be real HTML/XML) are escaped in untrusted content so a file cannot end its own section or fake a `<task>`. A snapshot test pins the system prompt, and tests assert that two chunks of one file produce a byte-identical file section.
+
+**Context budget.** The estimate is characters / 3.5. Trimming order is as specified; the surrounding context is halved repeatedly until it fits, never below zero lines, and the chunk is always sent in full (the result then reports `over_budget`). Surrounding lines come from the Result document, so they reflect what the user would see; a `<current>` block is included only when the user already edited the region. The trimming decision is made per chunk, so a very large chunk can drop the full files for itself only.
+
+**Output limit.** `max_tokens` is 8192 for Explain and between 8192 and 32000 for Suggest, scaled to the chunk, instead of a fixed 16000, because thinking tokens count against the limit.
+
+**Checks on a suggestion.** Beyond schema validation the backend removes a code fence the model wrapped around the whole answer, converts line endings to the file's, restores a missing trailing line break, flags conflict markers, and runs the syntax check against the file with the suggestion applied. None of this applies anything.
+
+**IPC and consent.** The frontend sends the file texts, the chunk's line ranges and the current Result; the backend derives commits (subjects and up to 2000 characters of body, cached by sha) and the consent scope from the repository id, so neither can be spoofed from the page. Gates run in a fixed order and each has its own card in the panel: not configured, data-sharing notice, repository opt-in, repository declined, excluded path. Accepting a notice or allowing a repository resumes the action that triggered it. Standalone (command-line) merge windows share one consent scope. "Preview request" is refused only for excluded paths. `ai_estimate` backs the token estimate next to the toolbar button, and `ai_open_settings` focuses (or creates) the home window on Settings › AI.
+
+**Editor.** The extension hook gained `sidePanel`, rendered to the right of the panes. Each unresolved conflict gets a ✦ marker in the Result gutter (next to the structural "S"), and the open conflict is outlined with `--ai-accent`. Apply goes through `applyReplacement(kind "ai")` for exactly the chunk, so it is one undo step. With no provider configured the markers and the toolbar button are replaced by a "Set up AI" link. "Suggest remaining" runs three requests at a time in document order; the review stepper offers Apply, Dismiss, Edit (hands the conflict back) and Regenerate, and the counter follows each decision. A gate or Cancel all ends the run.
+
+**Settings.** The AI section autosaves; text fields commit on blur or Enter. `confirmed` records that the user chose a provider, which is how Ollama (no key) counts as set up. The key row shows only the last four characters and the store's name; the key goes over IPC once, when saved or tested, and is never returned. The default price table is only a starting point and is editable (US dollars per million tokens).
+
+**Credentials and logs.** Keys live under service `dev.mergeiq.app`, one account per provider. `x-api-key` is marked sensitive on the request, no adapter logs headers, and the app's log writer redacts header values and key-shaped strings from every line; a test makes a failing request at `trace` level and checks the log.
+
+**Demos and tests.** `MERGEIQ_AI_MOCK=1` makes the real app use the offline mock provider (it answers deterministically from the prompt and skips the key and notice gates, not the repository opt-in). Provider tests run against recorded-format SSE and NDJSON streams served by a local TCP server. Live checks live in `crates/mergeiq-ai/tests/live.rs`, ignored by default and gated by `MERGEIQ_LIVE_AI=1`; they have not been run in CI and need a real key or a local Ollama.
+
 ## Risks / Trade-offs
 
 - [Wrong but plausible suggestions] → always preview with diff, confidence, risks; syntax check; never bulk-apply.

@@ -1,0 +1,10 @@
+class C {
+    fun f(a: Int) {
+    }
+
+    fun f(s: String) {
+    }
+
+    fun f(l: Long) {
+    }
+}

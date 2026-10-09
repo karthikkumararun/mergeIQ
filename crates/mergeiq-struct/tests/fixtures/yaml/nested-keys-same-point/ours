@@ -1,0 +1,5 @@
+apiVersion: apps/v1
+spec:
+  replicas: 2
+  paused: true
+  image: app:1

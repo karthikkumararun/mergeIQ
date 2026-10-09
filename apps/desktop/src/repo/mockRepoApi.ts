@@ -1,13 +1,29 @@
 import type {
   Analysis,
+  ConflictClass,
+  ConflictDetails,
   ConflictEntry,
   ConflictLoad,
   ConflictType,
+  LockfileCommand,
   Operation,
   SideLabel,
+  StageMeta,
 } from "../ipc/bindings";
 import { mockMergeDocument } from "../ipc/mock";
-import type { RepoApi, RepoStatus } from "./repoApi";
+import {
+  LOCKFILE_FAIL_LINES,
+  LOCKFILE_OK_LINES,
+  specialConflicts,
+  stagesOf,
+  type MockSpecial,
+} from "./mockSpecial";
+import type {
+  LockfileRun,
+  RegenerateOutcome,
+  RepoApi,
+  RepoStatus,
+} from "./repoApi";
 import { RepoError } from "./repoApi";
 
 declare global {
@@ -25,13 +41,17 @@ declare global {
 }
 
 export type ScenarioName =
-  "merge3" | "rebase2" | "modifydelete" | "clean" | "many";
+  "merge3" | "rebase2" | "modifydelete" | "clean" | "many" | "special";
 
 interface MockConflict {
   display: string;
   type: ConflictType;
   /** Fixture that supplies the merge analysis; `null` for non-text files. */
   fixture: string | null;
+  /** Conflict class (default text). */
+  cls?: ConflictClass;
+  /** Data for the special-conflict panels. */
+  special?: MockSpecial;
 }
 
 interface MockStep {
@@ -118,6 +138,14 @@ function steps(name: ScenarioName): MockStep[] {
           ),
         },
       ];
+    case "special":
+      return [
+        {
+          operation: { kind: "Merge" },
+          subject: "Promo code stacking",
+          conflicts: specialConflicts(),
+        },
+      ];
     case "clean":
       return [{ operation: { kind: "None" }, subject: "", conflicts: [] }];
   }
@@ -133,24 +161,44 @@ export interface MockRepoOptions {
   scenario?: ScenarioName;
   /** Make `continue` fail with this git output. */
   failContinue?: string;
+  /**
+   * How a mocked lockfile command ends: `ok` (exit 0, staged), `fail` (exit 1), `hang`
+   * (runs until cancelled) or `missing` (the program is not installed).
+   */
+  lockfile?: "ok" | "fail" | "hang" | "missing";
 }
 
 /** A scripted in-memory repository for UI tests (dev route and Vitest). */
 export function createMockRepoApi(options: MockRepoOptions = {}): RepoApi {
   const script = steps(options.scenario ?? "merge3");
   let step = 0;
-  const entry = (c: MockConflict): ConflictEntry => ({
-    path: `mock:${c.display}`,
-    display: c.display,
-    conflictType: c.type,
-    stages: [
-      { stage: 1, oid: `b-${c.display}`, mode: "100644" },
-      { stage: 2, oid: `o-${c.display}`, mode: "100644" },
-      { stage: 3, oid: `t-${c.display}`, mode: "100644" },
-    ],
-    hasSymlink: false,
-    hasGitlink: false,
-  });
+  const stageMetas = (c: MockConflict): StageMeta[] =>
+    stagesOf(c.type).map((n) => {
+      const over = c.special?.stages?.[n] ?? {};
+      const isLink = c.cls?.class === "Symlink";
+      const isGit = c.cls?.class === "Submodule";
+      return {
+        stage: n,
+        mode: isGit ? "160000" : isLink ? "120000" : "100644",
+        oid: `${"bot"[n - 1]}-${c.display}`,
+        size: isGit ? null : 1024,
+        symlinkTarget: null,
+        lfs: null,
+        ...over,
+      };
+    });
+  const entry = (c: MockConflict): ConflictEntry => {
+    const metas = stageMetas(c);
+    return {
+      path: `mock:${c.display}`,
+      display: c.display,
+      conflictType: c.type,
+      stages: metas.map((m) => ({ stage: m.stage, oid: m.oid, mode: m.mode })),
+      hasSymlink: c.cls?.class === "Symlink",
+      hasGitlink: c.cls?.class === "Submodule",
+      class: c.cls ?? { class: "Text" },
+    };
+  };
   // Conflicts still unresolved in the current step, keyed by path token.
   let open = new Map<string, MockConflict>();
   const reset = () => {
@@ -279,6 +327,176 @@ export function createMockRepoApi(options: MockRepoOptions = {}): RepoApi {
       const original = all.get(path);
       if (original) open.set(path, original);
       notify();
+      return Promise.resolve();
+    },
+    details: (path) => {
+      const c = requireConflict(path);
+      const base = mockMergeDocument(c.fixture ?? "simple-conflict");
+      const details: ConflictDetails = {
+        entry: entry(c),
+        labels: status().labels,
+        context: base.context ?? { ours: [], theirs: [] },
+        stages: stageMetas(c),
+        renames: c.special?.rename?.renames ?? [],
+        renamePair: c.special?.rename?.pair ?? null,
+      };
+      return Promise.resolve(details);
+    },
+    stageBlob: (path, stage) => {
+      const c = requireConflict(path);
+      const blob = c.special?.images?.[stage as 1 | 2 | 3];
+      return blob
+        ? Promise.resolve(blob)
+        : Promise.reject(new RepoError("that side has no file content"));
+    },
+    modifyDeleteView: (path) => {
+      const c = requireConflict(path);
+      if (c.type !== "DeletedByUs" && c.type !== "DeletedByThem")
+        return Promise.reject(
+          new RepoError("this is not a modify/delete conflict"),
+        );
+      return Promise.resolve(
+        c.special?.modifyDelete ?? {
+          deletedBy:
+            c.type === "DeletedByUs" ? ("Ours" as const) : ("Theirs" as const),
+          baseText: "one\ntwo\nthree\n",
+          survivorText: "one\nTWO\nthree\n",
+          hunks: [
+            { before: { start: 1, end: 2 }, after: { start: 1, end: 2 } },
+          ],
+          note: null,
+        },
+      );
+    },
+    useSide: (path, side) => {
+      record(`useSide ${side} ${path}`);
+      resolve(path);
+      return Promise.resolve();
+    },
+    keepAndEdit: (path, side) => {
+      record(`keepAndEdit ${side} ${path}`);
+      const c = requireConflict(path);
+      return Promise.resolve({
+        text: c.special?.workingText ?? "",
+        encoding: { encoding: "Utf8", bom: false },
+      });
+    },
+    workingText: (path) => {
+      const c = requireConflict(path);
+      return Promise.resolve({
+        text: c.special?.workingText ?? "",
+        encoding: { encoding: "Utf8", bom: false },
+      });
+    },
+    submoduleDetails: (path) => {
+      const d = requireConflict(path).special?.submodule;
+      return d
+        ? Promise.resolve(d)
+        : Promise.reject(new RepoError("this is not a submodule conflict"));
+    },
+    renameChoose: (path) => {
+      record(`renameChoose ${path}`);
+      const c = [...open.values()].find((x) => x.special?.rename);
+      const pair = c?.special?.rename?.pair;
+      if (!c || !pair)
+        return Promise.reject(new RepoError("no rename conflict"));
+      for (const display of [pair.from, pair.ours.to, pair.theirs.to])
+        open.delete(`mock:${display}`);
+      if (pair.contentsDiffer) {
+        const merged: MockConflict = {
+          display: path.replace(/^mock:/, ""),
+          type: "BothModified",
+          fixture: "mixed-changes",
+        };
+        open.set(path, merged);
+        all.set(path, merged);
+      }
+      notify();
+      return Promise.resolve({ chosen: path, needsMerge: pair.contentsDiffer });
+    },
+    goSumPreview: (path) => {
+      const g = requireConflict(path).special?.goSum;
+      return g
+        ? Promise.resolve(g)
+        : Promise.reject(new RepoError("this is not a go.sum conflict"));
+    },
+    goSumUnion: (path) => {
+      record(`goSumUnion ${path}`);
+      resolve(path);
+      return Promise.resolve();
+    },
+    lockfileCommands: () => {
+      const defaults: [LockfileCommand["kind"], string][] = [
+        ["Npm", "npm install --package-lock-only"],
+        ["Pnpm", "pnpm install --lockfile-only"],
+        ["Yarn", "yarn install --mode update-lockfile"],
+        ["Poetry", "poetry lock --no-update"],
+        ["Cargo", "cargo update --workspace"],
+        ["Gradle", "./gradlew dependencies --write-locks"],
+      ];
+      return Promise.resolve(
+        defaults.map(([kind, command]) => ({
+          kind,
+          command,
+          defaultCommand: command,
+          custom: false,
+        })),
+      );
+    },
+    lockfileRegenerate: (path, side, command, onOutput) => {
+      record(`lockfile ${side} ${path} ${command}`);
+      requireConflict(path);
+      const mode = options.lockfile ?? "ok";
+      if (mode === "missing")
+        return Promise.reject(
+          new RepoError(`\`${command.split(" ")[0]}\` was not found`),
+        );
+      let cancelled = false;
+      let wake: (() => void) | null = null;
+      const pause = (ms: number) =>
+        new Promise<void>((r) => {
+          const t = setTimeout(r, ms);
+          wake = () => {
+            clearTimeout(t);
+            r();
+          };
+        });
+      const done = (async (): Promise<RegenerateOutcome> => {
+        const lines = mode === "fail" ? LOCKFILE_FAIL_LINES : LOCKFILE_OK_LINES;
+        for (const line of lines) {
+          await pause(15);
+          if (cancelled) break;
+          onOutput(mode === "fail" ? "Stderr" : "Stdout", line);
+        }
+        if (mode === "hang" && !cancelled)
+          await new Promise<void>((r) => (wake = r));
+        const ok = mode === "ok" && !cancelled;
+        // Like the real backend, our own staging does not notify the window: the panel
+        // refreshes after it has recorded the resolution.
+        if (ok) open.delete(path);
+        return {
+          error: null,
+          result: {
+            staged: ok,
+            run: {
+              exitCode: cancelled ? null : ok ? 0 : 1,
+              cancelled,
+              durationMs: cancelled ? 900 : 4200,
+            },
+          },
+        };
+      })();
+      const run: LockfileRun = {
+        done,
+        cancel: () => {
+          cancelled = true;
+          wake?.();
+        },
+      };
+      return Promise.resolve(run);
+    },
+    openWorkingFile: (path) => {
+      record(`open ${path}`);
       return Promise.resolve();
     },
     continueOperation: () => {

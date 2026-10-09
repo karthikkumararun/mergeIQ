@@ -1,0 +1,5 @@
+interface Props {
+  title: string;
+  onClose: () => void;
+  open: boolean;
+}

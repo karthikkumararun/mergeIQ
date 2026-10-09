@@ -176,6 +176,11 @@ fn start(launch: Launch) -> ! {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .manage(repos)
+        .manage(std::sync::Arc::new(
+            commands::special::LockfileRuns::default(),
+        ))
+        .manage(std::sync::Arc::new(commands::ai::AiState::new()))
+        .manage(commands::ai::PendingSettings::default())
         .manage(requests)
         .invoke_handler(builder.invoke_handler())
         .on_window_event(move |window, event| {

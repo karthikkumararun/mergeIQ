@@ -1,0 +1,11 @@
+@app.route("/")
+def index():
+    return 1
+
+@app.route("/a")
+def a():
+    return 2
+
+@app.route("/b")
+def b():
+    return 3

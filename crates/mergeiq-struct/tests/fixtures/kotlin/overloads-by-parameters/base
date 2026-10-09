@@ -1,0 +1,4 @@
+class C {
+    fun f(a: Int) {
+    }
+}

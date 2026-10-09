@@ -42,6 +42,71 @@ export const commands = {
 	mergeRequestSave: (id: number, text: string, encoding: EncodingInfo, mode: SaveMode) => typedError<null, IpcError>(__TAURI_INVOKE("merge_request_save", { id, text, encoding, mode })),
 	/**  Closes a request's window; its client gets the recorded exit code (1 if none). */
 	requestClose: (id: number) => typedError<null, IpcError>(__TAURI_INVOKE("request_close", { id })),
+	/**
+	 *  Syntax-aware resolution proposals for the conflict chunks of `analysis`. Runs on the
+	 *  blocking pool; never blocks the UI thread.
+	 */
+	structuralResolve: (path: string, analysis: Analysis) => typedError<StructuralResolve, IpcError>(__TAURI_INVOKE("structural_resolve", { path, analysis })),
+	conflictDetails: (repo: number, path: PathToken) => typedError<ConflictDetails, IpcError>(__TAURI_INVOKE("conflict_details", { repo, path })),
+	/**  A stage's bytes for an image preview (capped at 20 MB). */
+	conflictStageBlob: (repo: number, path: PathToken, stage: number) => typedError<StageBlob, IpcError>(__TAURI_INVOKE("conflict_stage_blob", { repo, path, stage })),
+	conflictModifyDeleteView: (repo: number, path: PathToken) => typedError<ModifyDeleteView, IpcError>(__TAURI_INVOKE("conflict_modify_delete_view", { repo, path })),
+	/**  Takes one side byte for byte and stages it (deleting the path if that side deleted it). */
+	conflictUseSide: (repo: number, path: PathToken, side: AcceptSide) => typedError<null, IpcError>(__TAURI_INVOKE("conflict_use_side", { repo, path, side })),
+	/**  "Keep and edit": writes the surviving side unstaged and returns its text. */
+	conflictKeepAndEdit: (repo: number, path: PathToken, side: AcceptSide) => typedError<WorkingText, IpcError>(__TAURI_INVOKE("conflict_keep_and_edit", { repo, path, side })),
+	/**  The working-tree text of a file (for the plain editor tab). */
+	conflictWorkingText: (repo: number, path: PathToken) => typedError<WorkingText, IpcError>(__TAURI_INVOKE("conflict_working_text", { repo, path })),
+	submoduleDetails: (repo: number, path: PathToken) => typedError<SubmoduleDetails, IpcError>(__TAURI_INVOKE("submodule_details", { repo, path })),
+	/**  Chooses the final path of a rename/rename conflict. */
+	renameChoose: (repo: number, path: PathToken) => typedError<RenameOutcome, IpcError>(__TAURI_INVOKE("rename_choose", { repo, path })),
+	goSumPreview: (repo: number, path: PathToken) => typedError<GoSumMerge, IpcError>(__TAURI_INVOKE("go_sum_preview", { repo, path })),
+	/**  Writes the `go.sum` union merge and stages it. */
+	goSumUnion: (repo: number, path: PathToken) => typedError<null, IpcError>(__TAURI_INVOKE("go_sum_union", { repo, path })),
+	getLockfileCommands: () => __TAURI_INVOKE<LockfileCommand[]>("get_lockfile_commands"),
+	/**  Sets (or, with `None`, resets) the regeneration command for a lockfile kind. */
+	setLockfileCommand: (kind: LockfileKind, command: string | null) => typedError<LockfileCommand[], IpcError>(__TAURI_INVOKE("set_lockfile_command", { kind, command })),
+	/**
+	 *  Takes `side`'s lockfile, then runs `command` (already confirmed by the user) in the
+	 *  lockfile's directory. Returns the run id at once; output arrives as `lockfile-output`
+	 *  events and the end as `lockfile-finished`, both to the calling window.
+	 */
+	lockfileRegenerate: (repo: number, path: PathToken, side: AcceptSide, command: string) => typedError<number, IpcError>(__TAURI_INVOKE("lockfile_regenerate", { repo, path, side, command })),
+	/**  Stops a running lockfile command (the lockfile stays unstaged). */
+	lockfileCancel: (run: number) => __TAURI_INVOKE<void>("lockfile_cancel", { run }),
+	/**  Opens the working-tree file in the system's default application. */
+	openWorkingFile: (repo: number, path: PathToken) => typedError<null, IpcError>(__TAURI_INVOKE("open_working_file", { repo, path })),
+	aiGetSettings: () => __TAURI_INVOKE<AiSettings>("ai_get_settings"),
+	aiUpdateSettings: (settings: AiSettings) => typedError<AiSettings, AiFailure>(__TAURI_INVOKE("ai_update_settings", { settings })),
+	/**  Records (or clears, with `None`) the AI decision for a repository root. */
+	aiSetRepoDecision: (scope: string, decision: 
+/**  AI actions may send this repository's code. */
+"Allowed" | 
+/**  The user declined; no request is sent. */
+"Declined" | null) => typedError<AiSettings, AiFailure>(__TAURI_INVOKE("ai_set_repo_decision", { scope, decision })),
+	aiKeyInfo: (provider: ProviderKind) => typedError<KeyInfo, AiFailure>(__TAURI_INVOKE("ai_key_info", { provider })),
+	aiSetKey: (provider: ProviderKind, key: string) => typedError<KeyInfo, AiFailure>(__TAURI_INVOKE("ai_set_key", { provider, key })),
+	aiDeleteKey: (provider: ProviderKind) => typedError<KeyInfo, AiFailure>(__TAURI_INVOKE("ai_delete_key", { provider })),
+	/**  "Test connection" with the form's current values; a typed `key` is used without being stored. */
+	aiTestConnection: (provider: ProviderKind, settings: ProviderSettings, key: string | null) => typedError<TestReport, AiFailure>(__TAURI_INVOKE("ai_test_connection", { provider, settings, key })),
+	aiUsage: () => __TAURI_INVOKE<SessionUsage>("ai_usage"),
+	aiResetUsage: () => __TAURI_INVOKE<void>("ai_reset_usage"),
+	/**  Which controls to offer for `path`, and why requests would be refused. */
+	aiStatus: (repo: number | null, path: string) => typedError<AiStatus, AiFailure>(__TAURI_INVOKE("ai_status", { repo, path })),
+	/**  The exact text a request would send. Only the exclusion list can refuse a preview. */
+	aiPreview: (repo: number | null, input: ContextInput, task: AiTask) => typedError<AiPreview, AiFailure>(__TAURI_INVOKE("ai_preview", { repo, input, task })),
+	/**  Estimated input tokens of suggesting every chunk in `chunks`. */
+	aiEstimate: (repo: number | null, input: ContextInput, chunks: ChunkSpans[]) => typedError<AiEstimate, AiFailure>(__TAURI_INVOKE("ai_estimate", { repo, input, chunks })),
+	/**  Streams an explanation of the chunk to the calling window (`ai-delta` events). */
+	aiExplain: (repo: number | null, requestId: string, input: ContextInput) => typedError<AiExplained, AiFailure>(__TAURI_INVOKE("ai_explain", { repo, requestId, input })),
+	/**  Requests a checked suggestion for the chunk. */
+	aiSuggest: (repo: number | null, requestId: string, input: ContextInput) => typedError<AiSuggested, AiFailure>(__TAURI_INVOKE("ai_suggest", { repo, requestId, input })),
+	/**  Cancels a running request. Unknown ids are ignored. */
+	aiCancel: (requestId: string) => __TAURI_INVOKE<void>("ai_cancel", { requestId }),
+	/**  Brings up Settings in the home window (creating it if only repository windows are open). */
+	aiOpenSettings: (section: string) => typedError<null, AiFailure>(__TAURI_INVOKE("ai_open_settings", { section })),
+	/**  The section requested while the home window did not exist yet, once. */
+	takePendingSettings: () => __TAURI_INVOKE<string | null>("take_pending_settings"),
 	cliSetupInfo: () => typedError<CliSetupInfo, IpcError>(__TAURI_INVOKE("cli_setup_info")),
 	/**
 	 *  Installs the command into `dir` (macOS/Linux: a symlink; Windows: nothing to copy, the
@@ -58,6 +123,10 @@ export const commands = {
 
 /** Events */
 export const events = {
+	aiDelta: makeEvent<AiDelta>("ai-delta"),
+	lockfileFinished: makeEvent<LockfileFinished>("lockfile-finished"),
+	lockfileOutput: makeEvent<LockfileOutput>("lockfile-output"),
+	openSettings: makeEvent<OpenSettings>("open-settings"),
 	repoChanged: makeEvent<RepoChanged>("repo-changed"),
 };
 
@@ -68,6 +137,133 @@ export type AcceptSide =
 "Ours" | 
 /**  Stage 3. */
 "Theirs";
+
+/**  A streamed piece of an explanation (emitted as `ai-delta` to the requesting window). */
+export type AiDelta = {
+	requestId: string,
+	text: string,
+};
+
+/**  Pre-flight numbers for "suggest remaining". */
+export type AiEstimate = {
+	perChunk: number[],
+	totalTokens: number,
+	overBudget: boolean,
+	provider: ProviderKind,
+	model: string,
+	/**  Dollars for the input alone, when the model has a price. */
+	inputCost: number | null,
+};
+
+/**  A finished explanation. */
+export type AiExplained = {
+	text: string,
+	record: UsageRecord,
+	session: UsageSummary,
+	/**  What the context builder left out. */
+	notes: string[],
+};
+
+/**  The error type the UI receives from AI commands. */
+export type AiFailure = 
+/**  No provider or key is set up. */
+{ code: "notConfigured" } | 
+/**  The data-sharing notice must be accepted first. */
+{ code: "noticeRequired" } | 
+/**  The repository needs an opt-in decision. */
+{ code: "repoUnasked" } | 
+/**  AI is disabled for this repository. */
+{ code: "repoDeclined" } | 
+/**  The file matches an exclusion glob. */
+{ code: "excluded" } | 
+/**  The provider rejected the credentials. */
+{ code: "auth"; 
+/**  The provider's message. */
+message: string } | 
+/**  Too many requests. */
+{ code: "rateLimited"; 
+/**  Seconds the provider asked us to wait. */
+retryAfterSecs: number | null } | 
+/**  The model declined. */
+{ code: "refused"; 
+/**  Refusal category. */
+category: string | null; 
+/**  Explanation, when given. */
+explanation: string | null } | 
+/**  The response hit the output limit. */
+{ code: "truncated" } | 
+/**  The model's answer did not match the schema, even after a retry. */
+{ code: "schema"; 
+/**  What was wrong. */
+message: string } | 
+/**  The provider could not be reached. */
+{ code: "network"; 
+/**  What failed. */
+message: string } | 
+/**  An error response. */
+{ code: "http"; 
+/**  Status code. */
+status: number; 
+/**  The provider's message. */
+message: string } | 
+/**  The user cancelled. */
+{ code: "cancelled" } | 
+/**  Something local failed. */
+{ code: "internal"; 
+/**  What failed. */
+message: string };
+
+/**  The exact text a request would send. */
+export type AiPreview = {
+	text: string,
+	estimatedTokens: number,
+	notes: string[],
+	overBudget: boolean,
+	/**  Host the request goes to. */
+	destination: string,
+};
+
+/**  Everything the user configures for AI. Stored in `settings.json`; contains no key material. */
+export type AiSettings = {
+	/**  The active provider. */
+	provider?: ProviderKind,
+	/**  The user has saved a provider choice (so Ollama, which needs no key, counts as set up). */
+	confirmed?: boolean,
+	/**  The one-time data-sharing notice was accepted. */
+	noticeAccepted?: boolean,
+	/**  Provider id to its settings; missing entries use defaults. */
+	providers?: { [key in string]: ProviderSettings },
+	/**  Exclusion globs and per-repository consent. */
+	privacy?: PrivacySettings,
+	/**  Context limits. */
+	context?: ContextSettings,
+	/**  Editable price table. */
+	prices?: PriceTable,
+};
+
+/**  What the editor needs to decide which AI controls to show. */
+export type AiStatus = {
+	/**  Why requests are not possible right now, if they are not. */
+	blocked: AiFailure | null,
+	provider: ProviderKind,
+	model: string,
+	effort: Effort,
+	/**  Requests stay on this machine. */
+	local: boolean,
+	storeName: string,
+};
+
+/**  A finished suggestion, checked but not applied. */
+export type AiSuggested = {
+	checked: Checked,
+	record: UsageRecord,
+	session: UsageSummary,
+	notes: string[],
+	estimatedTokens: number,
+};
+
+/**  Which action a preview is for. */
+export type AiTask = "explain" | "suggest";
 
 /**  The full result of a 3-way merge analysis: decoded sides plus classified chunks. */
 export type Analysis = {
@@ -104,6 +300,16 @@ export type BatchFailure = {
 export type BatchResult = {
 	done: PathToken[],
 	failed: BatchFailure[],
+};
+
+/**  A suggestion with its checks. */
+export type Checked = {
+	/**  The suggestion, with a cleaned `resolution`. */
+	suggestion: Suggestion,
+	/**  Set when the file with the suggestion applied has more syntax errors than any input. */
+	syntaxWarning: string | null,
+	/**  Other things worth showing: conflict markers, changes made to the model's text. */
+	notes: string[],
 };
 
 /**
@@ -146,6 +352,18 @@ export type ChunkKind =
 /**  Both sides changed this region differently, or touched it at the same point. */
 "Conflict";
 
+/**  Where the chunk lives in each text. */
+export type ChunkSpans = {
+	/**  In the base. */
+	base: Span,
+	/**  In the left side. */
+	left: Span,
+	/**  In the right side. */
+	right: Span,
+	/**  In the result document: the range a resolution replaces. */
+	result: Span,
+};
+
 /**  What the Command line settings page needs to render. */
 export type CliSetupInfo = {
 	/**  `"macos"`, `"windows"` or `"linux"`. */
@@ -156,6 +374,16 @@ export type CliSetupInfo = {
 	installedAt: string | null,
 	/**  git's global config already registers MergeIQ as the merge tool. */
 	mergetoolConfigured: boolean,
+};
+
+/**  A commit that touched the file on one side. */
+export type CommitInput = {
+	/**  Abbreviated id. */
+	shortSha: string,
+	/**  Subject line. */
+	subject: string,
+	/**  Message body, if loaded. */
+	body?: string | null,
 };
 
 /**  One commit in a side's history. */
@@ -172,6 +400,52 @@ export type CommitSummary = {
 	date: string,
 };
 
+/**  How sure the model is. */
+export type Confidence = 
+/**  Confident. */
+"high" | 
+/**  Reasonably sure. */
+"medium" | 
+/**  A guess. */
+"low";
+
+/**  What kind of conflict a path is, independent of which stages exist. */
+export type ConflictClass = 
+/**  Ordinary text: opens in the merge editor. */
+{ class: "Text" } | 
+/**  Binary content on some stage. */
+{ class: "Binary"; 
+/**  The file name says it is an image the UI can preview. */
+isImage: boolean } | 
+/**  Some stage is a symbolic link. */
+{ class: "Symlink" } | 
+/**  Some stage is a submodule commit. */
+{ class: "Submodule" } | 
+/**  Some stage is a Git LFS pointer file. */
+{ class: "LfsPointer" } | 
+/**  Some stage is larger than [`OVERSIZED_BYTES`]. */
+{ class: "Oversized" } | 
+/**  A known lockfile. */
+{ class: "Lockfile"; 
+/**  Which lockfile. */
+kind: LockfileKind };
+
+/**  Everything the special-conflict panels need beyond the index entry. */
+export type ConflictDetails = {
+	/**  The index entry, including its class. */
+	entry: ConflictEntry,
+	/**  Side labels. */
+	labels: SideLabels,
+	/**  Commits per side touching the file. */
+	context: FileContext,
+	/**  Per-stage facts, in stage order. */
+	stages: StageMeta[],
+	/**  Renames that created or removed this path. */
+	renames: RenameInfo[],
+	/**  Set when both sides renamed the same file to different paths. */
+	renamePair: RenamePair | null,
+};
+
 /**  A conflicted path. */
 export type ConflictEntry = {
 	/**  Opaque path token for other calls. */
@@ -186,6 +460,8 @@ export type ConflictEntry = {
 	hasSymlink: boolean,
 	/**  Any stage is a gitlink / submodule (mode 160000). */
 	hasGitlink: boolean,
+	/**  What kind of conflict this is (binary, symlink, lockfile, ...), see `classify`. */
+	class: ConflictClass,
 };
 
 /**  Everything the merge editor needs for one conflicted file. */
@@ -222,6 +498,30 @@ export type ConflictType =
 /**  Stage 1 only. */
 "BothDeleted";
 
+/**  Everything known about one conflict. */
+export type ContextInput = {
+	/**  Repository-relative path. */
+	path: string,
+	/**  The common ancestor's whole file. */
+	base: string,
+	/**  The left side. */
+	left: SideInput,
+	/**  The right side. */
+	right: SideInput,
+	/**  The result document as it is now. */
+	result: string,
+	/**  The chunk's ranges. */
+	chunk: ChunkSpans,
+};
+
+/**  User-tunable limits. */
+export type ContextSettings = {
+	/**  Lines of context before and after the chunk. */
+	surroundingLines?: number,
+	/**  Estimated input tokens allowed. */
+	tokenBudget?: number,
+};
+
 /**  What happened after a control command. */
 export type ControlOutcome = {
 	/**  The operation is no longer in progress. */
@@ -229,6 +529,19 @@ export type ControlOutcome = {
 	/**  Combined git output, for display. */
 	message: string,
 };
+
+/**  How hard a model should think (where the provider has such a control). */
+export type Effort = 
+/**  Fastest and cheapest. */
+"low" | 
+/**  Balanced. */
+"medium" | 
+/**  Thorough (the default). */
+"high" | 
+/**  Extra thorough. */
+"xhigh" | 
+/**  Maximum. */
+"max";
 
 /**  A text encoding [`decode`]/[`encode`] can round-trip. */
 export type Encoding = 
@@ -310,6 +623,33 @@ stderr: string } |
 /**  The underlying error text. */
 message: string };
 
+/**  One line of the `go.sum` merge preview. */
+export type GoSumLine = {
+	/**  The line without its terminator. */
+	text: string,
+	/**  What happened to it. */
+	mark: GoSumMark,
+};
+
+/**  How a line of the merged `go.sum` came about. */
+export type GoSumMark = 
+/**  Present in the result and not changed by either side. */
+"Unchanged" | 
+/**  Added by the left side only. */
+"LeftAdded" | 
+/**  Added by the right side only. */
+"RightAdded" | 
+/**  Dropped: one side removed it and the other left it unchanged. */
+"Removed";
+
+/**  The union merge of three `go.sum` versions. */
+export type GoSumMerge = {
+	/**  Result lines (sorted) followed by the removed ones, each marked. */
+	lines: GoSumLine[],
+	/**  The merged file content. */
+	result: string,
+};
+
 /**  A folder the command can be installed into. */
 export type InstallDir = {
 	path: string,
@@ -328,6 +668,21 @@ export type InstallOutcome = {
 
 export type IpcError = { kind: "Settings"; message: string } | { kind: "Git"; message: GitError } | { kind: "NoRepo" } | { kind: "Request"; message: string };
 
+/**  Credential information; the key itself never leaves the credential store. */
+export type KeyInfo = {
+	present: boolean,
+	last4: string | null,
+	storeName: string,
+};
+
+/**  A parsed Git LFS pointer. */
+export type LfsPointer = {
+	/**  Object id as written in the pointer, e.g. `sha256:4d7a…`. */
+	oid: string,
+	/**  Size of the real content in bytes. */
+	size: number | null,
+};
+
 /**
  *  A line's content range `[start, end)` (byte offsets, terminator excluded) plus its
  *  original terminator.
@@ -342,6 +697,18 @@ export type Line = {
 };
 
 /**
+ *  A changed region: `before`/`after` are half-open line-index ranges into the two
+ *  key lists given to [`diff_lines`]. An empty range on either side means a pure
+ *  insertion or pure removal.
+ */
+export type LineHunk = {
+	/**  Range into the "before" key list. */
+	before: Range<number>,
+	/**  Range into the "after" key list. */
+	after: Range<number>,
+};
+
+/**
  *  A half-open `[start, end)` line-index range. An empty range (`start == end`)
  *  represents an insertion point.
  */
@@ -350,6 +717,47 @@ export type LineRange = {
 	start: number,
 	/**  Line index just past the range's end. */
 	end: number,
+};
+
+/**  A lockfile kind with its default and effective regeneration command. */
+export type LockfileCommand = {
+	kind: LockfileKind,
+	defaultCommand: string,
+	/**  The command that will be proposed (the default unless customised). */
+	command: string,
+	custom: boolean,
+};
+
+/**  A lockfile command ended (emitted as `lockfile-finished`). */
+export type LockfileFinished = {
+	run: number,
+	/**  Set unless the run could not even start (see `error`). */
+	result: RegenerateResult | null,
+	error: string | null,
+};
+
+/**  Lockfiles with a known regeneration command (and `go.sum`, which merges by union). */
+export type LockfileKind = 
+/**  `package-lock.json`. */
+"Npm" | 
+/**  `pnpm-lock.yaml`. */
+"Pnpm" | 
+/**  `yarn.lock`. */
+"Yarn" | 
+/**  `poetry.lock`. */
+"Poetry" | 
+/**  `Cargo.lock`. */
+"Cargo" | 
+/**  `gradle.lockfile`. */
+"Gradle" | 
+/**  `go.sum`. */
+"GoSum";
+
+/**  One line of a running lockfile command (emitted as `lockfile-output`). */
+export type LockfileOutput = {
+	run: number,
+	stream: OutputStream,
+	line: string,
 };
 
 /**
@@ -391,6 +799,25 @@ export type MergeRequestDoc = {
 	context: FileContext | null,
 };
 
+/**  The surviving side of a modify/delete conflict compared with the base. */
+export type ModifyDeleteView = {
+	/**  Which side deleted the file. */
+	deletedBy: RenameSide,
+	/**  The base text. */
+	baseText: string | null,
+	/**  The surviving side's text. */
+	survivorText: string | null,
+	/**  Changed line ranges (`before` in the base, `after` in the survivor). */
+	hunks: LineHunk[],
+	/**  Why no text diff is available (binary, too large, ...). */
+	note: string | null,
+};
+
+/**  Asks the home window to show a settings section (emitted as `open-settings`). */
+export type OpenSettings = {
+	section: string,
+};
+
 /**  The operation that produced (or may produce) conflicts. */
 export type Operation = 
 /**  Nothing in progress. */
@@ -414,6 +841,22 @@ onto: string } |
 /**  Conflicts exist but no state file explains them (e.g. `git stash pop`). */
 { kind: "Unknown" };
 
+/**  The result of asking for structural proposals. */
+export type Outcome = 
+/**  The file type is not supported (or its grammar cannot parse these versions reliably). */
+"Unsupported" | 
+/**  Zero or more proposals. */
+{ Proposals: Proposal[] } | 
+/**  The deadline passed before the analysis finished; no proposals are offered. */
+"TimedOut";
+
+/**  Output stream a line came from. */
+export type OutputStream = 
+/**  Standard output. */
+"Stdout" | 
+/**  Standard error. */
+"Stderr";
+
 /**  A line to add to a shell start-up file when the folder is not on PATH. */
 export type PathHint = {
 	rcFile: string,
@@ -422,6 +865,81 @@ export type PathHint = {
 
 /**  Opaque, URL-safe base64 of a [`RepoPath`]'s bytes. Pass back to the adapter unchanged. */
 export type PathToken = string;
+
+/**  US dollars per million tokens. */
+export type Price = {
+	/**  Uncached input. */
+	input: number | null,
+	/**  Output. */
+	output: number | null,
+	/**  Cache reads. */
+	cacheRead: number | null,
+	/**  Cache writes. */
+	cacheWrite: number | null,
+};
+
+/**
+ *  Prices by model id. Lookups use the longest entry that is a prefix of the model id, so
+ *  dated or suffixed ids still match.
+ */
+export type PriceTable = {
+	/**  Model id (or prefix) to price. */
+	entries: { [key in string]: Price },
+};
+
+/**  Privacy settings. */
+export type PrivacySettings = {
+	/**  Glob patterns of paths never sent. */
+	excludeGlobs?: string[],
+	/**  Repository root (display form) to decision. */
+	repos?: { [key in string]: RepoDecision },
+};
+
+/**  A syntax-aware resolution proposal covering one or more chunks. */
+export type Proposal = {
+	/**  The chunks this proposal resolves (all must be unresolved to apply it). */
+	chunk_ids: number[],
+	/**  Covered lines in the base text. */
+	base_range: LineRange,
+	/**  Covered lines in the ours text. */
+	ours_range: LineRange,
+	/**  Covered lines in the theirs text. */
+	theirs_range: LineRange,
+	/**  The replacement for the covered base lines, with line terminators. */
+	text: string,
+	/**  A one-paragraph explanation of what was combined. */
+	explanation: string,
+	/**  Human-readable name of the innermost merged container ("" = file level). */
+	container: string,
+};
+
+/**  The supported providers. */
+export type ProviderKind = 
+/**  Anthropic Messages API. */
+"anthropic" | 
+/**  OpenAI Chat Completions. */
+"openai" | 
+/**  GitHub Models (OpenAI-compatible). */
+"github-models" | 
+/**  A local (or self-hosted) Ollama server. */
+"ollama" | 
+/**  Fixture-driven provider for tests; never offered in the UI. */
+"mock";
+
+/**  Per-provider connection settings (never credentials). */
+export type ProviderSettings = {
+	/**  Base URL. */
+	baseUrl: string,
+	/**  Model id. */
+	model: string,
+	/**  Effort, where the provider has one. */
+	effort: Effort,
+};
+
+export type Range<T> = {
+	start: T,
+	end: T,
+};
 
 /**  A remembered repository, as the home view lists it. */
 export type RecentRepoDto = {
@@ -432,8 +950,62 @@ export type RecentRepoDto = {
 	exists: boolean,
 };
 
+/**  The outcome of "take a side and regenerate". */
+export type RegenerateResult = {
+	/**  How the command ended. */
+	run: RunResult,
+	/**  The lockfile was staged (only when the command exited 0). */
+	staged: boolean,
+};
+
+/**  A rename involving a conflicted path, for the UI. */
+export type RenameInfo = {
+	/**  Which side renamed. */
+	side: RenameSide,
+	/**  Old path (display form). */
+	from: string,
+	/**  New path (display form). */
+	to: string,
+	/**  Token of the new path. */
+	toPath: PathToken,
+};
+
+/**  The result of choosing a path for a rename/rename conflict. */
+export type RenameOutcome = {
+	/**  The chosen path. */
+	chosen: PathToken,
+	/**  The chosen path is now a text conflict to merge (otherwise it is resolved and staged). */
+	needsMerge: boolean,
+};
+
+/**  Both sides renamed the same file to different paths. */
+export type RenamePair = {
+	/**  The original path (display form). */
+	from: string,
+	/**  Where our side moved it. */
+	ours: RenameInfo,
+	/**  Where their side moved it. */
+	theirs: RenameInfo,
+	/**  The two destinations hold different content, so a text merge is needed after choosing. */
+	contentsDiffer: boolean,
+};
+
+/**  Which side renamed a file. */
+export type RenameSide = 
+/**  The current / working side (left). */
+"Ours" | 
+/**  The incoming side (right). */
+"Theirs";
+
 /**  Emitted (as `repo-changed`) to a repository's window when its index or operation state changes. */
 export type RepoChanged = null;
+
+/**  The user's decision for one repository. */
+export type RepoDecision = 
+/**  AI actions may send this repository's code. */
+"Allowed" | 
+/**  The user declined; no request is sent. */
+"Declined";
 
 /**  The repository a window was opened for. */
 export type RepoInfo = {
@@ -455,6 +1027,16 @@ export type RepoStatus = {
 	conflicts: ConflictEntry[],
 };
 
+/**  How a command run ended. */
+export type RunResult = {
+	/**  The exit code (`None` if killed by a signal or cancelled). */
+	exitCode: number | null,
+	/**  The user cancelled the run. */
+	cancelled: boolean,
+	/**  Wall-clock duration in milliseconds. */
+	durationMs: number | null,
+};
+
 /**  How the editor's Apply was chosen (mirrors the UI's `SaveMode`). */
 export type SaveMode = 
 /**  Everything resolved. */
@@ -463,6 +1045,18 @@ export type SaveMode =
 "markers" | 
 /**  "Mark as resolved anyway". */
 "force";
+
+/**  Usage since the app started. */
+export type SessionUsage = {
+	/**  Number of requests. */
+	requests: number,
+	/**  Summed tokens. */
+	totals: Usage,
+	/**  Summed estimated cost over the requests that had a price. */
+	cost: number | null,
+	/**  Every request, oldest first. */
+	records: UsageRecord[],
+};
 
 /**
  *  Typed IPC view of [`Settings`]; unknown keys in the settings file are preserved on
@@ -478,6 +1072,16 @@ export type SideFineDiff = {
 	base_ranges: Utf16Range[],
 	/**  Ranges within this side's text that differ from base. */
 	side_ranges: Utf16Range[],
+};
+
+/**  One side of the merge. */
+export type SideInput = {
+	/**  Contextual label (branch name, "HEAD", a commit subject…). */
+	label: string,
+	/**  The side's whole file. */
+	text: string,
+	/**  Newest-first commits touching the file. */
+	commits?: CommitInput[],
 };
 
 /**  What one side of the conflict means to the user. */
@@ -522,6 +1126,24 @@ export type SimpleResolution =
 /**  Token-level edits overlapped or touched; needs a human. */
 "Unresolvable";
 
+/**  A half-open line range `[start, end)`; empty means an insertion point. */
+export type Span = {
+	/**  First line index. */
+	start: number,
+	/**  One past the last line index. */
+	end: number,
+};
+
+/**  A blob prepared for the UI (an image preview). */
+export type StageBlob = {
+	/**  MIME type derived from the file extension. */
+	mime: string,
+	/**  Blob size in bytes. */
+	size: number | null,
+	/**  Standard base64 of the bytes. */
+	base64: string,
+};
+
 /**  One index stage of a conflicted path. */
 export type StageEntry = {
 	/**  1 = base, 2 = ours, 3 = theirs. */
@@ -530,6 +1152,92 @@ export type StageEntry = {
 	mode: string,
 	/**  Blob (or gitlink commit) id. */
 	oid: string,
+};
+
+/**  Facts about one index stage. */
+export type StageMeta = {
+	/**  1 = base, 2 = ours, 3 = theirs. */
+	stage: number,
+	/**  Octal file mode. */
+	mode: string,
+	/**  Blob (or gitlink commit) id. */
+	oid: string,
+	/**  Blob size in bytes (`None` for a gitlink). */
+	size: number | null,
+	/**  Link target when the stage is a symlink. */
+	symlinkTarget: string | null,
+	/**  The pointer when the stage is a Git LFS pointer file. */
+	lfs: LfsPointer | null,
+};
+
+/**  How the resolution relates to the two sides. */
+export type Strategy = 
+/**  The left side as is. */
+"left" | 
+/**  The right side as is. */
+"right" | 
+/**  Both sides' changes, concatenated or interleaved. */
+"both" | 
+/**  Both sides' intent merged into new code. */
+"combined" | 
+/**  Something else. */
+"new";
+
+/**  The answer to [`structural_resolve`]. */
+export type StructuralResolve = {
+	/**  Proposals, or why there are none. */
+	outcome: Outcome,
+	/**  Wall-clock time spent computing, in milliseconds. */
+	elapsed_ms: number,
+};
+
+/**  A submodule commit, with details when the submodule is checked out and has the commit. */
+export type SubmoduleCommit = {
+	/**  Full commit id. */
+	sha: string,
+	/**  Subject line, if known. */
+	subject: string | null,
+	/**  Author date (ISO 8601), if known. */
+	date: string | null,
+};
+
+/**  Facts shown by the submodule panel. */
+export type SubmoduleDetails = {
+	/**  The submodule has a working tree here. */
+	checkedOut: boolean,
+	/**  The merge base's commit. */
+	base: SubmoduleCommit | null,
+	/**  Our (left) commit. */
+	left: SubmoduleCommit | null,
+	/**  Their (right) commit. */
+	right: SubmoduleCommit | null,
+	/**  How left and right relate. */
+	relation: SubmoduleRelation,
+};
+
+/**  How the two sides' commits relate. */
+export type SubmoduleRelation = 
+/**  The left commit is an ancestor of the right one (right is newer). */
+"LeftAncestorOfRight" | 
+/**  The right commit is an ancestor of the left one (left is newer). */
+"RightAncestorOfLeft" | 
+/**  Neither contains the other. */
+"Diverged" | 
+/**  Cannot tell (submodule not checked out, or a commit is missing). */
+"Unknown";
+
+/**  A suggested resolution for one conflict chunk. */
+export type Suggestion = {
+	/**  The text that replaces the chunk's result range. */
+	resolution: string,
+	/**  A short explanation of the choice. */
+	explanation: string,
+	/**  The model's confidence. */
+	confidence: Confidence,
+	/**  How the resolution was derived. */
+	strategy: Strategy,
+	/**  Things the user should double-check. */
+	risks: string[],
 };
 
 /**  A line's original terminator, preserved for byte-exact round-tripping. */
@@ -542,6 +1250,47 @@ export type Terminator =
 "Cr" | 
 /**  The final line of a file with no trailing terminator. */
 "None";
+
+/**  The result of "Test connection". */
+export type TestReport = {
+	/**  The model that answered. */
+	model: string,
+	/**  Round-trip time in milliseconds. */
+	latencyMs: number,
+};
+
+/**  Token usage and latency of one request. */
+export type Usage = {
+	/**  Input tokens that were not served from the cache. */
+	inputTokens: number,
+	/**  Output tokens. */
+	outputTokens: number,
+	/**  Input tokens read from the prompt cache. */
+	cacheReadTokens: number,
+	/**  Input tokens written to the prompt cache. */
+	cacheCreationTokens: number,
+	/**  Wall-clock time in milliseconds. */
+	latencyMs: number,
+};
+
+/**  One finished request. */
+export type UsageRecord = {
+	/**  The provider. */
+	provider: ProviderKind,
+	/**  The model. */
+	model: string,
+	/**  What it used. */
+	usage: Usage,
+	/**  Estimated dollars, when a price is known. */
+	cost: number | null,
+};
+
+/**  Session totals without the per-request list. */
+export type UsageSummary = {
+	requests: number,
+	totals: Usage,
+	cost: number | null,
+};
 
 /**  A UTF-16 code-unit range `[start, end)`, matching JavaScript string indexing. */
 export type Utf16Range = {
@@ -564,6 +1313,12 @@ export type WhitespacePolicy =
 "IgnoreAmount" | 
 /**  All whitespace is ignored. */
 "IgnoreAll";
+
+/**  Current text of a working-tree file, for the plain editor. */
+export type WorkingText = {
+	text: string,
+	encoding: EncodingInfo,
+};
 
 /* Tauri Specta runtime */
 async function typedError<T, E>(result: Promise<T>): Promise<{ status: "ok"; data: T } | { status: "error"; error: E }> {

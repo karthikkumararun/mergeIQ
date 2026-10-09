@@ -12,7 +12,7 @@ use crate::repos::Repos;
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type, tauri_specta::Event)]
 pub struct RepoChanged;
 
-fn repo_of(repos: &Repos, id: u32) -> Result<Repo, IpcError> {
+pub(crate) fn repo_of(repos: &Repos, id: u32) -> Result<Repo, IpcError> {
     repos.get(id).ok_or(IpcError::NoRepo)
 }
 

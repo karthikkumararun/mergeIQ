@@ -1,0 +1,11 @@
+package p;
+
+public class Foo {
+    private int x;
+
+    public void run() {
+    }
+
+    public void a() {
+    }
+}

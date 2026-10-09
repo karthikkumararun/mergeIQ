@@ -1,0 +1,7 @@
+package main
+
+func Z() {}
+
+func A() {}
+
+func B() {}

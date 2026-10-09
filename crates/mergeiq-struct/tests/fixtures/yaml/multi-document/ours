@@ -1,0 +1,6 @@
+kind: A
+name: one
+extra: x
+---
+kind: B
+name: two

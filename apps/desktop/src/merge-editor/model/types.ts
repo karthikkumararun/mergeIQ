@@ -17,7 +17,15 @@ export type Side = "left" | "right";
 export type SideStatus = "pending" | "applied" | "ignored" | "na";
 
 export type ResolutionKind =
-  "none" | "applied" | "edited" | "auto" | "whole-file";
+  | "none"
+  | "applied"
+  | "edited"
+  | "auto"
+  | "whole-file"
+  /** A syntax-aware proposal from `structural-merge` was applied. */
+  | "structural"
+  /** An AI suggestion from `ai-assist` was applied. */
+  | "ai";
 
 /** The mutable part of a chunk's session state (everything except its position). */
 export interface ChunkStatus {

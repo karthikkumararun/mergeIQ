@@ -1,0 +1,184 @@
+.bulk {
+  font: 500 13px/1 var(--font-ui);
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--mod-fg) 55%, transparent);
+  background: var(--mod-bg);
+  color: var(--mod-fg);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.bulk:hover {
+  background: var(--mod-em);
+}
+
+.bulk:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.status {
+  font-size: 12px;
+  color: var(--faint);
+  margin-left: 6px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.popover {
+  position: absolute;
+  right: 12px;
+  width: min(480px, calc(100% - 24px));
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--mod-fg) 55%, transparent);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 14px 32px var(--shadow);
+  color: var(--text);
+  font-family: var(--font-ui);
+  pointer-events: auto;
+}
+
+/* Focused programmatically so Escape works and screen readers announce the dialog. */
+.popover:focus-visible {
+  outline: none;
+}
+
+.head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mono {
+  font-family: var(--font-code);
+}
+
+.explain {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.explain code {
+  font-family: var(--font-code);
+  color: var(--text-2);
+}
+
+.diff {
+  padding: 12px 0;
+  font: 13px/22px var(--font-code);
+  overflow: auto;
+  min-height: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  white-space: pre;
+}
+
+.mark {
+  text-align: center;
+}
+
+.del {
+  background: var(--danger-bg);
+}
+
+.del .mark {
+  color: var(--danger-fg);
+}
+
+.add {
+  background: var(--ins-bg);
+}
+
+.add .mark {
+  color: var(--ok-fg);
+}
+
+.add .em {
+  background: var(--ins-em);
+}
+
+.del .em {
+  background: var(--con-em);
+}
+
+.facts {
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.actions {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn {
+  font: 500 13px/1 var(--font-ui);
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--surface-2);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.primary:hover {
+  background: var(--accent-hover);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

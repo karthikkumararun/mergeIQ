@@ -1,0 +1,2 @@
+import { a, b, c } from "m";
+import x from "x";

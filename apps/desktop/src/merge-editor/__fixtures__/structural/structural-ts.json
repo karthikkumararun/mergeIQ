@@ -1,0 +1,486 @@
+{
+  "analysis": {
+    "base": {
+      "lines": [
+        {
+          "end": 24,
+          "start": 0,
+          "term": "Lf"
+        },
+        {
+          "end": 25,
+          "start": 25,
+          "term": "Lf"
+        },
+        {
+          "end": 52,
+          "start": 26,
+          "term": "Lf"
+        },
+        {
+          "end": 68,
+          "start": 53,
+          "term": "Lf"
+        },
+        {
+          "end": 70,
+          "start": 69,
+          "term": "Lf"
+        },
+        {
+          "end": 71,
+          "start": 71,
+          "term": "Lf"
+        },
+        {
+          "end": 90,
+          "start": 72,
+          "term": "Lf"
+        },
+        {
+          "end": 98,
+          "start": 91,
+          "term": "Lf"
+        },
+        {
+          "end": 105,
+          "start": 99,
+          "term": "Lf"
+        },
+        {
+          "end": 107,
+          "start": 106,
+          "term": "Lf"
+        },
+        {
+          "end": 108,
+          "start": 108,
+          "term": "Lf"
+        },
+        {
+          "end": 140,
+          "start": 109,
+          "term": "Lf"
+        },
+        {
+          "end": 152,
+          "start": 141,
+          "term": "Lf"
+        },
+        {
+          "end": 154,
+          "start": 153,
+          "term": "Lf"
+        }
+      ],
+      "text": "import { a } from \"./a\";\n\nexport interface Options {\n  name: string;\n}\n\nexport enum Mode {\n  Fast,\n  Safe\n}\n\nexport function run(): number {\n  return 1;\n}\n"
+    },
+    "chunks": [
+      {
+        "base": {
+          "end": 1,
+          "start": 0
+        },
+        "fine": {
+          "ours": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 13,
+                "start": 10
+              }
+            ]
+          },
+          "theirs": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 13,
+                "start": 10
+              }
+            ]
+          }
+        },
+        "fine_diff_skipped": false,
+        "id": 0,
+        "kind": "Conflict",
+        "ours": {
+          "end": 1,
+          "start": 0
+        },
+        "simple": "Unresolvable",
+        "theirs": {
+          "end": 1,
+          "start": 0
+        }
+      },
+      {
+        "base": {
+          "end": 4,
+          "start": 4
+        },
+        "fine": {
+          "ours": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 19,
+                "start": 0
+              }
+            ]
+          },
+          "theirs": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 18,
+                "start": 0
+              }
+            ]
+          }
+        },
+        "fine_diff_skipped": false,
+        "id": 1,
+        "kind": "Conflict",
+        "ours": {
+          "end": 5,
+          "start": 4
+        },
+        "simple": "Unresolvable",
+        "theirs": {
+          "end": 5,
+          "start": 4
+        }
+      },
+      {
+        "base": {
+          "end": 9,
+          "start": 8
+        },
+        "fine": {
+          "ours": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 14,
+                "start": 6
+              }
+            ]
+          },
+          "theirs": {
+            "base_ranges": [],
+            "side_ranges": [
+              {
+                "end": 15,
+                "start": 6
+              }
+            ]
+          }
+        },
+        "fine_diff_skipped": false,
+        "id": 2,
+        "kind": "Conflict",
+        "ours": {
+          "end": 11,
+          "start": 9
+        },
+        "simple": "Unresolvable",
+        "theirs": {
+          "end": 11,
+          "start": 9
+        }
+      },
+      {
+        "base": {
+          "end": 13,
+          "start": 12
+        },
+        "fine": {
+          "ours": {
+            "base_ranges": [
+              {
+                "end": 10,
+                "start": 9
+              }
+            ],
+            "side_ranges": [
+              {
+                "end": 10,
+                "start": 9
+              }
+            ]
+          },
+          "theirs": {
+            "base_ranges": [
+              {
+                "end": 10,
+                "start": 9
+              }
+            ],
+            "side_ranges": [
+              {
+                "end": 10,
+                "start": 9
+              }
+            ]
+          }
+        },
+        "fine_diff_skipped": false,
+        "id": 3,
+        "kind": "Conflict",
+        "ours": {
+          "end": 15,
+          "start": 14
+        },
+        "simple": "Unresolvable",
+        "theirs": {
+          "end": 15,
+          "start": 14
+        }
+      }
+    ],
+    "dominant_eol": "Lf",
+    "encoding": {
+      "bom": false,
+      "encoding": "Utf8"
+    },
+    "ours": {
+      "lines": [
+        {
+          "end": 27,
+          "start": 0,
+          "term": "Lf"
+        },
+        {
+          "end": 28,
+          "start": 28,
+          "term": "Lf"
+        },
+        {
+          "end": 55,
+          "start": 29,
+          "term": "Lf"
+        },
+        {
+          "end": 71,
+          "start": 56,
+          "term": "Lf"
+        },
+        {
+          "end": 91,
+          "start": 72,
+          "term": "Lf"
+        },
+        {
+          "end": 93,
+          "start": 92,
+          "term": "Lf"
+        },
+        {
+          "end": 94,
+          "start": 94,
+          "term": "Lf"
+        },
+        {
+          "end": 113,
+          "start": 95,
+          "term": "Lf"
+        },
+        {
+          "end": 121,
+          "start": 114,
+          "term": "Lf"
+        },
+        {
+          "end": 129,
+          "start": 122,
+          "term": "Lf"
+        },
+        {
+          "end": 136,
+          "start": 130,
+          "term": "Lf"
+        },
+        {
+          "end": 138,
+          "start": 137,
+          "term": "Lf"
+        },
+        {
+          "end": 139,
+          "start": 139,
+          "term": "Lf"
+        },
+        {
+          "end": 171,
+          "start": 140,
+          "term": "Lf"
+        },
+        {
+          "end": 183,
+          "start": 172,
+          "term": "Lf"
+        },
+        {
+          "end": 185,
+          "start": 184,
+          "term": "Lf"
+        }
+      ],
+      "text": "import { a, c } from \"./a\";\n\nexport interface Options {\n  name: string;\n  verbose: boolean;\n}\n\nexport enum Mode {\n  Fast,\n  Safe,\n  Auto\n}\n\nexport function run(): number {\n  return 2;\n}\n"
+    },
+    "theirs": {
+      "lines": [
+        {
+          "end": 27,
+          "start": 0,
+          "term": "Lf"
+        },
+        {
+          "end": 28,
+          "start": 28,
+          "term": "Lf"
+        },
+        {
+          "end": 55,
+          "start": 29,
+          "term": "Lf"
+        },
+        {
+          "end": 71,
+          "start": 56,
+          "term": "Lf"
+        },
+        {
+          "end": 90,
+          "start": 72,
+          "term": "Lf"
+        },
+        {
+          "end": 92,
+          "start": 91,
+          "term": "Lf"
+        },
+        {
+          "end": 93,
+          "start": 93,
+          "term": "Lf"
+        },
+        {
+          "end": 112,
+          "start": 94,
+          "term": "Lf"
+        },
+        {
+          "end": 120,
+          "start": 113,
+          "term": "Lf"
+        },
+        {
+          "end": 128,
+          "start": 121,
+          "term": "Lf"
+        },
+        {
+          "end": 136,
+          "start": 129,
+          "term": "Lf"
+        },
+        {
+          "end": 138,
+          "start": 137,
+          "term": "Lf"
+        },
+        {
+          "end": 139,
+          "start": 139,
+          "term": "Lf"
+        },
+        {
+          "end": 171,
+          "start": 140,
+          "term": "Lf"
+        },
+        {
+          "end": 183,
+          "start": 172,
+          "term": "Lf"
+        },
+        {
+          "end": 185,
+          "start": 184,
+          "term": "Lf"
+        }
+      ],
+      "text": "import { a, b } from \"./a\";\n\nexport interface Options {\n  name: string;\n  retries: number;\n}\n\nexport enum Mode {\n  Fast,\n  Safe,\n  Debug\n}\n\nexport function run(): number {\n  return 3;\n}\n"
+    }
+  },
+  "path": "src/options.ts",
+  "resolve": {
+    "elapsed_ms": 12,
+    "outcome": {
+      "Proposals": [
+        {
+          "base_range": {
+            "end": 1,
+            "start": 0
+          },
+          "chunk_ids": [
+            0
+          ],
+          "container": "",
+          "explanation": "Both changed `./a` and the changes were combined.",
+          "ours_range": {
+            "end": 1,
+            "start": 0
+          },
+          "text": "import { a, b, c } from \"./a\";\n",
+          "theirs_range": {
+            "end": 1,
+            "start": 0
+          }
+        },
+        {
+          "base_range": {
+            "end": 4,
+            "start": 4
+          },
+          "chunk_ids": [
+            1
+          ],
+          "container": "Options",
+          "explanation": "Left added `verbose` and right added `retries`.",
+          "ours_range": {
+            "end": 5,
+            "start": 4
+          },
+          "text": "  verbose: boolean;\n  retries: number;\n",
+          "theirs_range": {
+            "end": 5,
+            "start": 4
+          }
+        },
+        {
+          "base_range": {
+            "end": 9,
+            "start": 8
+          },
+          "chunk_ids": [
+            2
+          ],
+          "container": "Mode",
+          "explanation": "Left added `Auto` and right added `Debug`.",
+          "ours_range": {
+            "end": 11,
+            "start": 9
+          },
+          "text": "  Safe,\n  Auto,\n  Debug\n",
+          "theirs_range": {
+            "end": 11,
+            "start": 9
+          }
+        }
+      ]
+    }
+  }
+}

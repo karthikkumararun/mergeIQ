@@ -63,6 +63,12 @@ pub struct Settings {
     /// Recently opened repositories, most recent first.
     #[serde(default)]
     pub recent_repos: Vec<crate::recents::RecentRepo>,
+    /// Lockfile regeneration commands the user customised, by lockfile kind (`"Pnpm"`, ...).
+    #[serde(default)]
+    pub lockfile_commands: BTreeMap<String, String>,
+    /// AI assistance settings (never contains credentials).
+    #[serde(default)]
+    pub ai: mergeiq_ai::service::AiSettings,
     #[serde(flatten)]
     pub extra: BTreeMap<String, Value>,
 }
@@ -73,6 +79,8 @@ impl Default for Settings {
             theme: default_theme(),
             merge_editor: MergeEditorSettings::default(),
             recent_repos: Vec::new(),
+            lockfile_commands: BTreeMap::new(),
+            ai: mergeiq_ai::service::AiSettings::default(),
             extra: BTreeMap::new(),
         }
     }
@@ -248,5 +256,49 @@ mod tests {
             mergeiq_core::WhitespacePolicy::IgnoreAll
         );
         assert_eq!(reloaded.extra.get("futureFeature"), Some(&Value::from(1)));
+    }
+
+    #[test]
+    fn ai_settings_persist_and_a_stored_key_never_reaches_the_file() {
+        use mergeiq_ai::privacy::RepoDecision;
+        use mergeiq_ai::secrets::{MemoryStore, SecretStore};
+        use mergeiq_ai::ProviderKind;
+
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        let key = "sk-ant-api03-very-secret-key-a9F2";
+        let store = MemoryStore::default();
+        store.set(ProviderKind::Anthropic.id(), key).unwrap();
+
+        let mut settings = load_from(&path);
+        settings.ai.confirmed = true;
+        settings.ai.notice_accepted = true;
+        settings.ai.provider = ProviderKind::Ollama;
+        settings
+            .ai
+            .privacy
+            .repos
+            .insert("/code/shop-web".into(), RepoDecision::Allowed);
+        settings.ai.privacy.exclude_globs.push("vendor/**".into());
+        settings.ai.context.surrounding_lines = 12;
+        save_to(&path, &settings).unwrap();
+
+        let text = fs::read_to_string(&path).unwrap();
+        assert!(!text.contains(key) && !text.contains("very-secret") && !text.contains("a9F2"));
+        assert!(!text.to_lowercase().contains("apikey") && !text.contains("api_key"));
+        let reloaded = load_from(&path);
+        assert_eq!(reloaded.ai, settings.ai);
+        assert_eq!(reloaded.ai.provider, ProviderKind::Ollama);
+        assert_eq!(reloaded.ai.context.surrounding_lines, 12);
+        assert_eq!(
+            reloaded.ai.privacy.repos["/code/shop-web"],
+            RepoDecision::Allowed
+        );
+        // A settings file from before AI existed still loads with the defaults.
+        fs::write(&path, r#"{"theme":"dark"}"#).unwrap();
+        assert_eq!(
+            load_from(&path).ai,
+            mergeiq_ai::service::AiSettings::default()
+        );
     }
 }

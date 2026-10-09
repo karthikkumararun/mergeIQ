@@ -68,3 +68,43 @@ fn context_is_capped_at_50_per_side() {
     assert_eq!(ctx.ours.len(), 50);
     assert_eq!(ctx.ours[0].subject, "o54");
 }
+
+#[test]
+fn commit_bodies_are_loaded_in_one_call() {
+    let s = Scenario::new();
+    s.write_commit("a.txt", "1\n2\n3\n", "base");
+    s.checkout_new("feature");
+    s.write("a.txt", "1\nT\n3\n");
+    s.git(&[
+        "commit",
+        "-qam",
+        "Change two\n\nBecause the old value was wrong.\n\nRefs #12",
+    ]);
+    s.checkout("main");
+    s.write_commit("a.txt", "1\nO\n3\n", "ours subject only");
+    s.expect_conflict(&["merge", "feature"]);
+
+    let repo = s.repo();
+    let ctx = repo.file_context(&a(), &repo.operation().unwrap()).unwrap();
+    let shas: Vec<String> = ctx
+        .ours
+        .iter()
+        .chain(&ctx.theirs)
+        .map(|c| c.sha.clone())
+        .collect();
+    let bodies = repo.commit_bodies(&shas).unwrap();
+    assert_eq!(
+        bodies.len(),
+        1,
+        "subject-only commits have no body: {bodies:?}"
+    );
+    assert_eq!(
+        bodies[&ctx.theirs[0].sha],
+        "Because the old value was wrong.\n\nRefs #12"
+    );
+    assert!(repo.commit_bodies(&[]).unwrap().is_empty());
+    assert!(repo
+        .commit_bodies(&["not-a-sha; rm -rf".to_string(), "deadbeef".to_string()])
+        .unwrap()
+        .is_empty());
+}

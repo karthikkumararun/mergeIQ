@@ -19,14 +19,12 @@ export interface ChunkPatch {
 
 export const patchChunks = StateEffect.define<ChunkPatch[]>();
 
+/** Resolutions that settle a chunk by themselves, whatever its side statuses are. */
+export const SETTLED_RESOLUTIONS: ReadonlySet<ChunkStatus["resolution"]> =
+  new Set(["edited", "auto", "whole-file", "structural", "ai"]);
+
 export function isResolved(c: ChunkState): boolean {
-  if (
-    c.resolution === "edited" ||
-    c.resolution === "auto" ||
-    c.resolution === "whole-file"
-  ) {
-    return true;
-  }
+  if (SETTLED_RESOLUTIONS.has(c.resolution)) return true;
   return c.leftStatus !== "pending" && c.rightStatus !== "pending";
 }
 

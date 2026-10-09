@@ -1,0 +1,7 @@
+class C {
+    void f(int a) {
+    }
+
+    void f(long l) {
+    }
+}

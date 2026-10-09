@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStore } from "zustand";
+import { ipcAiApi, type AiApi } from "../ai/api";
+import { AiHostContext } from "../ai/context";
 import { loadMergeSettings, saveMergeSettings } from "../merge-editor/hosts";
 import {
   DEFAULT_SETTINGS,
@@ -46,10 +48,19 @@ interface Props {
   api: RepoApi;
   /** Supplied by tests; otherwise a store is created for `api`. */
   store?: RepoStore;
+  /** The repository's id for AI requests (the backend derives consent and commits from it). */
+  aiRepo?: number;
+  /** Backend for the AI assistant; the real IPC unless a test or demo supplies one. */
+  aiApi?: AiApi;
 }
 
 /** A repository window: operation banner, conflicts panel, editor tabs. */
-export function RepoWindow({ api, store: injected }: Props) {
+export function RepoWindow({
+  api,
+  store: injected,
+  aiRepo,
+  aiApi = ipcAiApi,
+}: Props) {
   const store = useMemo(
     () => injected ?? createRepoStore(api),
     [api, injected],
@@ -172,6 +183,16 @@ export function RepoWindow({ api, store: injected }: Props) {
     ? (status.labels.theirs.refName ?? status.labels.theirs.role)
     : "";
   const opName = status ? operationName(status.operation) : "";
+  const root = status?.root ?? "";
+  const aiHost = useMemo(
+    () => ({
+      api: aiApi,
+      repo: aiRepo ?? null,
+      scope: root,
+      scopeName: root.split(/[\\/]/).filter(Boolean).pop() ?? "this repository",
+    }),
+    [aiApi, aiRepo, root],
+  );
 
   const confirm = () => {
     if (!pending) return null;
@@ -268,158 +289,166 @@ export function RepoWindow({ api, store: injected }: Props) {
 
   const first = conflicts[0] ?? null;
   return (
-    <div className={styles.shell}>
-      <header className={styles.header}>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="var(--accent)"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <path d="M5 3v5c0 4 7 4 7 8v5" />
-          <path d="M19 3v5c0 4-7 4-7 8" />
-        </svg>
-        <span className={styles.name}>{info?.name}</span>
-        <span className={styles.path}>{info?.path ?? status.root}</span>
-      </header>
+    <AiHostContext.Provider value={aiHost}>
+      <div className={styles.shell}>
+        <header className={styles.header}>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <path d="M5 3v5c0 4 7 4 7 8v5" />
+            <path d="M19 3v5c0 4-7 4-7 8" />
+          </svg>
+          <span className={styles.name}>{info?.name}</span>
+          <span className={styles.path}>{info?.path ?? status.root}</span>
+        </header>
 
-      <OperationBanner
-        status={status}
-        busy={state.opBusy}
-        gitOutput={state.gitOutput}
-        opError={state.opError}
-        onContinue={() =>
-          guard("continue", () => void store.runOperation("continue"))
-        }
-        onAbort={() => guard("abort", () => setPending({ kind: "abort" }))}
-        onSkip={() =>
-          guard("skip this commit", () => setPending({ kind: "skip" }))
-        }
-      />
-
-      {state.error && (
-        <div role="alert" className={styles.error}>
-          <span className={styles.errorText}>{state.error}</span>
-          <button type="button" onClick={store.dismissError}>
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      <div className={styles.split}>
-        <div className={styles.side} style={{ width }}>
-          <ConflictsPanel
-            status={status}
-            filter={state.filter}
-            view={state.view}
-            selection={state.selection}
-            activePath={state.activeTab}
-            resolved={state.resolved}
-            onFilter={store.setFilter}
-            onView={store.setView}
-            onToggle={store.toggleSelected}
-            onSelectAll={store.setSelection}
-            onClearSelection={store.clearSelection}
-            onOpen={store.openFile}
-            onAccept={requestAccept}
-            onReopen={(path) =>
-              setPending({
-                kind: "reopen",
-                path,
-                display:
-                  state.resolved.find((r) => r.path === path)?.display ?? path,
-              })
-            }
-          />
-        </div>
-        <div
-          role="separator"
-          aria-orientation="vertical"
-          aria-label="Resize conflicts panel"
-          aria-valuenow={width}
-          aria-valuemin={MIN_WIDTH}
-          aria-valuemax={MAX_WIDTH}
-          tabIndex={0}
-          className={styles.handle}
-          onPointerDown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}
-          onPointerMove={(e) => {
-            if (e.buttons === 1) resize(e.movementX);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowLeft") {
-              e.preventDefault();
-              resize(-24);
-            } else if (e.key === "ArrowRight") {
-              e.preventDefault();
-              resize(24);
-            }
-          }}
+        <OperationBanner
+          status={status}
+          busy={state.opBusy}
+          gitOutput={state.gitOutput}
+          opError={state.opError}
+          onContinue={() =>
+            guard("continue", () => void store.runOperation("continue"))
+          }
+          onAbort={() => guard("abort", () => setPending({ kind: "abort" }))}
+          onSkip={() =>
+            guard("skip this commit", () => setPending({ kind: "skip" }))
+          }
         />
-        <main className={styles.main}>
-          <EditorTabs
-            tabs={state.tabs}
-            activeTab={state.activeTab}
-            api={api}
-            settings={settings}
-            saveRequests={saveRequests}
-            firstUnresolved={
-              first ? { path: first.path, display: first.display } : null
+
+        {state.error && (
+          <div role="alert" className={styles.error}>
+            <span className={styles.errorText}>{state.error}</span>
+            <button type="button" onClick={store.dismissError}>
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        <div className={styles.split}>
+          <div className={styles.side} style={{ width }}>
+            <ConflictsPanel
+              status={status}
+              filter={state.filter}
+              view={state.view}
+              selection={state.selection}
+              activePath={state.activeTab}
+              resolved={state.resolved}
+              onFilter={store.setFilter}
+              onView={store.setView}
+              onToggle={store.toggleSelected}
+              onSelectAll={store.setSelection}
+              onClearSelection={store.clearSelection}
+              onOpen={store.openFile}
+              onAccept={requestAccept}
+              onReopen={(path) =>
+                setPending({
+                  kind: "reopen",
+                  path,
+                  display:
+                    state.resolved.find((r) => r.path === path)?.display ??
+                    path,
+                })
+              }
+            />
+          </div>
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize conflicts panel"
+            aria-valuenow={width}
+            aria-valuemin={MIN_WIDTH}
+            aria-valuemax={MAX_WIDTH}
+            tabIndex={0}
+            className={styles.handle}
+            onPointerDown={(e) =>
+              e.currentTarget.setPointerCapture(e.pointerId)
             }
-            allResolved={status.conflicts.length === 0}
-            noOperation={status.operation.kind === "None"}
-            branch={status.branch}
-            onSettingsChange={onSettingsChange}
-            onFocus={store.focusTab}
-            onClose={closeTab}
-            onOpen={store.openFile}
-            onDirty={store.setDirty}
-            onResolved={store.fileResolved}
-            onRefresh={store.refresh}
-            onReload={store.reloadTab}
-            onAccept={(path, side) => void store.acceptFile(path, side)}
-            onDelete={(path) =>
-              setPending({
-                kind: "delete",
-                path,
-                display: displayOf([path])[0],
-              })
-            }
+            onPointerMove={(e) => {
+              if (e.buttons === 1) resize(e.movementX);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                resize(-24);
+              } else if (e.key === "ArrowRight") {
+                e.preventDefault();
+                resize(24);
+              }
+            }}
           />
-        </main>
+          <main className={styles.main}>
+            <EditorTabs
+              tabs={state.tabs}
+              activeTab={state.activeTab}
+              api={api}
+              settings={settings}
+              saveRequests={saveRequests}
+              firstUnresolved={
+                first ? { path: first.path, display: first.display } : null
+              }
+              allResolved={status.conflicts.length === 0}
+              noOperation={status.operation.kind === "None"}
+              branch={status.branch}
+              onSettingsChange={onSettingsChange}
+              onFocus={store.focusTab}
+              onClose={closeTab}
+              onOpen={store.openFile}
+              onDirty={store.setDirty}
+              repoRoot={status.root}
+              onResolved={store.fileResolved}
+              onLogResolved={store.logResolved}
+              onRenameChosen={store.renameChosen}
+              onRefresh={store.refresh}
+              onReload={store.reloadTab}
+              onAccept={(path, side) => void store.acceptFile(path, side)}
+              onDelete={(path) =>
+                setPending({
+                  kind: "delete",
+                  path,
+                  display: displayOf([path])[0],
+                })
+              }
+            />
+          </main>
+        </div>
+
+        {confirm()}
+        {unsaved && (
+          <UnsavedDialog
+            files={unsaved.files}
+            action={unsaved.action}
+            onCancel={() => setUnsaved(null)}
+            onDiscard={() => {
+              const { proceed } = unsaved;
+              setUnsaved(null);
+              // Discarded edits no longer count as unsaved.
+              for (const t of store.getState().tabs)
+                store.setDirty(t.path, false);
+              proceed();
+            }}
+            onSave={() => {
+              // "Save…" brings up the editor's own Apply flow for the first unsaved file.
+              const tab = store.getState().tabs.find((t) => t.dirty);
+              setUnsaved(null);
+              if (tab) {
+                store.focusTab(tab.path);
+                setSaveRequests((r) => ({
+                  ...r,
+                  [tab.path]: (r[tab.path] ?? 0) + 1,
+                }));
+              }
+            }}
+          />
+        )}
       </div>
-
-      {confirm()}
-      {unsaved && (
-        <UnsavedDialog
-          files={unsaved.files}
-          action={unsaved.action}
-          onCancel={() => setUnsaved(null)}
-          onDiscard={() => {
-            const { proceed } = unsaved;
-            setUnsaved(null);
-            // Discarded edits no longer count as unsaved.
-            for (const t of store.getState().tabs)
-              store.setDirty(t.path, false);
-            proceed();
-          }}
-          onSave={() => {
-            // "Save…" brings up the editor's own Apply flow for the first unsaved file.
-            const tab = store.getState().tabs.find((t) => t.dirty);
-            setUnsaved(null);
-            if (tab) {
-              store.focusTab(tab.path);
-              setSaveRequests((r) => ({
-                ...r,
-                [tab.path]: (r[tab.path] ?? 0) + 1,
-              }));
-            }
-          }}
-        />
-      )}
-    </div>
+    </AiHostContext.Provider>
   );
 }

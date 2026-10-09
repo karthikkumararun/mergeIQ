@@ -149,18 +149,19 @@ test("Git errors are shown verbatim in the output panel", async ({ page }) => {
   );
 });
 
-test("Modify/delete row shows per-side changes and opens the non-text panel", async ({
+test("Modify/delete row shows per-side changes and opens the modify/delete panel", async ({
   page,
 }) => {
   await open(page, "modifydelete");
   const row = rows(page).filter({ hasText: "Coupon.kt" });
   await expect(row.getByLabel("Left: Deleted, Right: Modified")).toBeVisible();
   await row.getByRole("button", { name: /^Merge/ }).click();
-  const panel = page.getByRole("region", { name: "Non-text conflict" });
+  const panel = page.getByRole("region", { name: "Modify/delete conflict" });
   await expect(panel).toContainText("Deleted on left");
-  await panel.getByRole("button", { name: "Accept Right" }).click();
+  await panel.getByRole("button", { name: "Keep modified" }).click();
   await expect(rows(page)).toHaveCount(1);
-  await expect(page.getByRole("tab")).toHaveCount(0);
+  // The resolved file's tab is gone (auto-advance moves on to the remaining conflict).
+  await expect(page.getByRole("tab", { name: /Coupon/ })).toHaveCount(0);
 });
 
 test("Merge opens a tab; opening it again focuses the same tab", async ({

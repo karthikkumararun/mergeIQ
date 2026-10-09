@@ -16,6 +16,35 @@ async function root() {
     const { DevMerge } = await import("./merge-editor/DevMerge");
     return <DevMerge />;
   }
+  // Dev/test-only route: Settings › AI against an in-memory backend.
+  if (
+    import.meta.env.VITE_IPC_MOCK === "1" &&
+    window.location.pathname.startsWith("/dev/ai-settings")
+  ) {
+    const params = new URLSearchParams(window.location.search);
+    document.documentElement.dataset.theme = params.get("theme") ?? "dark";
+    document.body.style.margin = "0";
+    const [{ Settings }, { createMockAiApi }] = await Promise.all([
+      import("./views/Settings"),
+      import("./ai/mockApi"),
+    ]);
+    const api = createMockAiApi({
+      configured: params.get("configured") !== "0",
+      hasKey: params.get("key") !== "0",
+      notice: params.get("notice") !== "0",
+      provider:
+        (params.get("provider") as "anthropic" | "ollama") ?? "anthropic",
+      repos:
+        params.get("repos") === "0"
+          ? {}
+          : {
+              "/Users/ada/code/shop-web": "Allowed",
+              "/Users/ada/code/payments-service": "Declined",
+            },
+    });
+    (window as unknown as { __mergeiqAi: unknown }).__mergeiqAi = api;
+    return <Settings section="ai" aiApi={api} onClose={() => undefined} />;
+  }
   // Dev/test-only route: Settings › Command line against an in-memory backend.
   if (
     import.meta.env.VITE_IPC_MOCK === "1" &&
@@ -90,15 +119,27 @@ async function root() {
     const params = new URLSearchParams(window.location.search);
     document.documentElement.dataset.theme = params.get("theme") ?? "dark";
     document.body.style.margin = "0";
-    const [{ RepoWindow }, { createMockRepoApi }] = await Promise.all([
+    const [
+      { RepoWindow },
+      { createMockRepoApi },
+      { createMockAiApi, mockAiOptionsFromParams },
+    ] = await Promise.all([
       import("./repo/RepoWindow"),
       import("./repo/mockRepoApi"),
+      import("./ai/mockApi"),
     ]);
+    const aiApi = createMockAiApi({
+      ...mockAiOptionsFromParams(params),
+      // The mock repository window's root, as the mock repository reports it.
+      scope: "/code/shop-web",
+    });
+    (window as unknown as { __mergeiqAi: unknown }).__mergeiqAi = aiApi;
     const api = createMockRepoApi({
       scenario: (params.get("scenario") ?? "merge3") as never,
       failContinue: params.get("failContinue") ?? undefined,
+      lockfile: (params.get("lockfile") ?? undefined) as never,
     });
-    return <RepoWindow api={api} />;
+    return <RepoWindow api={api} aiApi={aiApi} />;
   }
   const repo = window.location.pathname.match(/^\/repo\/(\d+)$/);
   if (repo) {

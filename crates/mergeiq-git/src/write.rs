@@ -151,6 +151,14 @@ impl Repo {
             .ok_or_else(|| GitError::NoSuchConflict {
                 path: path.display(),
             })?;
+        // Binary files, symlinks, submodules, LFS pointers and huge files are taken byte for
+        // byte instead of going through checkout's filters.
+        if !matches!(
+            entry.class,
+            crate::ConflictClass::Text | crate::ConflictClass::Lockfile { .. }
+        ) {
+            return self.use_side_exact(path, side);
+        }
         let (stage, flag) = match side {
             AcceptSide::Ours => (2, "--ours"),
             AcceptSide::Theirs => (3, "--theirs"),

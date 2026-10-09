@@ -1,0 +1,4 @@
+interface Props {
+  title: string;
+  open: boolean;
+}

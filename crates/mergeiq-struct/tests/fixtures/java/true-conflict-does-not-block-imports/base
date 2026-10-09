@@ -1,0 +1,7 @@
+import a.A;
+
+class C {
+    int f() {
+        return 1;
+    }
+}

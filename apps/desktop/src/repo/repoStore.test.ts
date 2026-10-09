@@ -258,6 +258,72 @@ describe("repoStore", () => {
   });
 });
 
+describe("special conflicts", () => {
+  beforeEach(() => {
+    window.__mergeiqRepo = undefined;
+  });
+
+  it("logResolved records the resolution and keeps the tab open", async () => {
+    const store = await start({ scenario: "special" });
+    store.openFile(p("web/pnpm-lock.yaml"));
+    store.logResolved(p("web/pnpm-lock.yaml"), "Regenerated");
+    expect(store.getState().resolved).toEqual([
+      expect.objectContaining({
+        display: "web/pnpm-lock.yaml",
+        method: "Regenerated",
+      }),
+    ]);
+    expect(store.getState().tabs).toHaveLength(1);
+    // The file is staged out of band: the refresh that follows is not an outside change.
+    await store.api.useSide(p("web/pnpm-lock.yaml"), "Theirs");
+    await store.refresh();
+    expect(paths(store)).not.toContain("web/pnpm-lock.yaml");
+    expect(store.getState().tabs[0].notice).toBeNull();
+  });
+
+  it("without logResolved a vanished file is flagged as resolved outside", async () => {
+    const store = await start({ scenario: "special" });
+    store.openFile(p("web/pnpm-lock.yaml"));
+    await store.api.useSide(p("web/pnpm-lock.yaml"), "Theirs");
+    await store.refresh();
+    expect(store.getState().tabs[0].notice).toBe("resolved-outside");
+  });
+
+  it("renameChosen opens the chosen path when its contents must be merged", async () => {
+    const store = await start({ scenario: "special" });
+    store.openFile(p("src/promo/discount.ts"));
+    const outcome = await store.api.renameChoose(
+      p("src/cart/pricing/discount.ts"),
+    );
+    expect(outcome.needsMerge).toBe(true);
+    await store.renameChosen(p("src/promo/discount.ts"), outcome);
+    const s = store.getState();
+    expect(s.tabs.map((t) => t.path)).toEqual([
+      p("src/cart/pricing/discount.ts"),
+    ]);
+    expect(s.activeTab).toBe(p("src/cart/pricing/discount.ts"));
+    expect(paths(store)).toContain("src/cart/pricing/discount.ts");
+    expect(paths(store)).not.toContain("src/promo/discount.ts");
+    expect(paths(store)).not.toContain("src/cart/discount.ts");
+    expect(s.resolved).toEqual([]);
+  });
+
+  it("renameChosen logs the resolution when nothing is left to merge", async () => {
+    const store = await start({ scenario: "special" });
+    store.openFile(p("src/promo/discount.ts"));
+    // The backend has already staged the chosen path and removed the others.
+    await store.api.useSide(p("src/promo/discount.ts"), "Theirs");
+    await store.renameChosen(p("src/promo/discount.ts"), {
+      chosen: p("src/promo/discount.ts"),
+      needsMerge: false,
+    });
+    expect(store.getState().tabs).toEqual([]);
+    expect(store.getState().resolved).toEqual([
+      expect.objectContaining({ method: "Renamed" }),
+    ]);
+  });
+});
+
 describe("nextUnresolved", () => {
   const list = ["a", "b", "c"].map((d) => ({ path: d, display: d }) as never);
   it("takes the following entry, wrapping at the end", () => {

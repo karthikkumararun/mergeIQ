@@ -1,0 +1,489 @@
+/* AI surfaces use the violet --ai-* tokens so they are never mistaken for engine results. */
+
+.aiBtn {
+  font: 500 13px/1 var(--font-ui);
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--ai-border);
+  background: var(--ai-bg);
+  color: var(--ai-fg);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.aiBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.aiBtn:hover {
+  background: color-mix(in srgb, var(--ai-accent) 22%, var(--ai-bg));
+}
+
+.sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border-2);
+  margin: 0 4px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: 13px var(--font-ui);
+  color: var(--link);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+.panel {
+  flex: none;
+  width: clamp(380px, 32vw, 520px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bar);
+  border-left: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-ui);
+  height: 100%;
+}
+
+.panel:focus-visible {
+  outline: none;
+}
+
+.tabs {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  padding: 0 8px;
+}
+
+.tab {
+  font: 500 13px var(--font-ui);
+  height: 40px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--ai-accent);
+}
+
+.tabSpacer {
+  flex: 1;
+}
+
+.counter {
+  align-self: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-right: 6px;
+}
+
+.iconBtn {
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.conf,
+.strategy {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.conf {
+  font-weight: 600;
+}
+
+.confHigh {
+  background: var(--ok-bg);
+  color: var(--ok-fg);
+}
+
+.confMedium {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+}
+
+.confLow {
+  background: var(--danger-bg);
+  color: var(--danger-fg);
+}
+
+.strategy {
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--text-2);
+}
+
+.where {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.prose {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--code);
+  white-space: pre-wrap;
+}
+
+.prose code,
+.risks code {
+  font-family: var(--font-code);
+  font-size: 13px;
+}
+
+.streaming {
+  font-size: 12px;
+  color: var(--ai-accent);
+}
+
+.diffBox {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.diffHead {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.diff {
+  padding: 6px 0;
+  overflow-x: auto;
+  font: 12.5px/21px var(--font-code);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  white-space: pre;
+  color: var(--code);
+}
+
+.mark {
+  text-align: center;
+}
+
+.del {
+  background: var(--danger-bg);
+}
+
+.del .mark {
+  color: var(--danger-fg);
+}
+
+.del .em {
+  background: var(--con-em);
+}
+
+.add {
+  background: var(--ins-bg);
+}
+
+.add .mark {
+  color: var(--ok-fg);
+}
+
+.add .em {
+  background: var(--ins-em);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.alert,
+.errorBox,
+.card {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.alert {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--text);
+}
+
+.alert svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--warn-fg);
+}
+
+.errorBox {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--text);
+  flex-direction: column;
+  gap: 8px;
+}
+
+.errorTitle {
+  font-weight: 600;
+  color: var(--danger-fg);
+}
+
+.card {
+  background: var(--ai-bg);
+  border: 1px solid var(--ai-border);
+  color: var(--ai-fg);
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cardText {
+  margin: 0;
+  color: var(--text-2);
+}
+
+.cardList {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-2);
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.risksTitle {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.risks {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+.footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.grow {
+  flex: 1;
+}
+
+.btn {
+  font: 500 13px/1 var(--font-ui);
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn:hover {
+  background: var(--surface-2);
+}
+
+.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.primary:hover {
+  background: var(--accent-hover);
+}
+
+.ai {
+  border-color: var(--ai-border);
+  background: var(--ai-bg);
+  color: var(--ai-fg);
+}
+
+.usage {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  font: 12px var(--font-code);
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.usage span:last-child {
+  color: var(--faint);
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 50;
+}
+
+.modal {
+  width: min(780px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--ai-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 14px 32px var(--shadow);
+  color: var(--text);
+  font-family: var(--font-ui);
+}
+
+.modal:focus-visible {
+  outline: none;
+}
+
+.modalHead {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.modalNotes {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.payload {
+  margin: 0;
+  padding: 12px 16px;
+  overflow: auto;
+  min-height: 0;
+  font: 12px/1.5 var(--font-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--code);
+  background: var(--code-bg);
+}
+
+.modalFoot {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.aiBtn:focus-visible,
+.link:focus-visible,
+.tab:focus-visible,
+.btn:focus-visible,
+.iconBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

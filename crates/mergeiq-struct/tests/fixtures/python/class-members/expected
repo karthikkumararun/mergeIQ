@@ -1,0 +1,11 @@
+class C:
+    x = 1
+
+    def m(self):
+        pass
+
+    def a(self):
+        return 1
+
+    def b(self):
+        return 2

@@ -1,0 +1,6 @@
+package p
+
+import a.A
+import c.C
+
+class X

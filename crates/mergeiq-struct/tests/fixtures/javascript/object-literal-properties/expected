@@ -1,0 +1,6 @@
+const config = {
+  name: "app",
+  debug: false,
+  port: 80,
+  host: "x"
+};

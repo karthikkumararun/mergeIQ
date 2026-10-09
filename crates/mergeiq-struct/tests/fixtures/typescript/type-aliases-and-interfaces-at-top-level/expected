@@ -1,0 +1,7 @@
+export const a = 1;
+
+export interface FromOurs {
+  x: number;
+}
+
+export type FromTheirs = string;

@@ -6,4 +6,25 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+specta = { version = "2.0.0-rc.25", optional = true, features = ["derive"] }
+async-trait = "0.1.92"
+futures-util = "0.3.34"
+globset = "0.4.20"
+jsonschema = "0.58.6"
+keyring = "4.2.0"
+mergeiq-struct = { version = "0.1.0", path = "../mergeiq-struct" }
+reqwest = { version = "0.13.5", features = ["stream", "json"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
 thiserror.workspace = true
+tokio = { version = "1.53.2", features = ["rt-multi-thread", "macros", "time", "sync"] }
+tokio-util = { version = "0.7.20", features = ["rt"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.23"
+regex = "1.13.1"
+
+[dev-dependencies]
+insta = "1.49.0"
+
+[features]
+specta = ["dep:specta", "mergeiq-struct/specta"]

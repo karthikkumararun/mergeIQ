@@ -1,0 +1,9 @@
+class K {
+  m() {
+    return 1;
+  }
+
+  a() {
+    return 2;
+  }
+}

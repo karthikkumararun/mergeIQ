@@ -1,0 +1,6 @@
+package main
+
+var (
+	one = 1
+	three = 3
+)
