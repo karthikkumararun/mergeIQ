@@ -12,9 +12,9 @@
 
 ## 3. Conflicts and content
 
-- [ ] 3.1 `conflicts.rs`: unmerged entries → ConflictType, modes, symlink/gitlink flags; tests for all 7 types
-- [ ] 3.2 `blobs.rs`: stage bytes + working-tree bytes; test equality with `git show :N:path`
-- [ ] 3.3 `context.rs`: per-side commits since merge base touching path (cap 50); rebase/cherry-pick single commit; tests
+- [x] 3.1 `conflicts.rs`: unmerged entries → ConflictType, modes, symlink/gitlink flags; tests for all 7 types
+- [x] 3.2 `blobs.rs`: stage bytes + working-tree bytes; test equality with `git show :N:path`
+- [x] 3.3 `context.rs`: per-side commits since merge base touching path (cap 50); rebase/cherry-pick single commit; tests
 
 ## 4. Mutations
 
