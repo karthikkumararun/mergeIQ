@@ -1,4 +1,4 @@
-use crate::commands::{git, requests};
+use crate::commands::{cli_setup, git, requests};
 use crate::settings::{self, MergeEditorSettings, Settings};
 
 #[derive(Debug, Clone, serde::Serialize, specta::Type)]
@@ -103,6 +103,11 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
             requests::merge_request_save,
             requests::request_close,
             requests::repo_request_load,
+            cli_setup::cli_setup_info,
+            cli_setup::cli_install,
+            cli_setup::cli_add_to_path,
+            cli_setup::git_mergetool_commands,
+            cli_setup::git_mergetool_configure,
         ])
         .events(tauri_specta::collect_events![git::RepoChanged])
 }
