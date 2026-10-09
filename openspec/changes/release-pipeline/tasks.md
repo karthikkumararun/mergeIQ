@@ -5,7 +5,7 @@
 
 ## 2. Bundle configuration
 
-- [ ] 2.1 `tauri.conf.json`: explicit bundle targets (`dmg`, `msi`, `nsis`, `appimage`, `deb`), macOS minimum version, Linux deb metadata (description, section, depends); `tauri build` debug check stays green in CI
+- [x] 2.1 `tauri.conf.json`: explicit bundle targets (`dmg`, `msi`, `nsis`, `appimage`, `deb`), macOS minimum version, Linux deb metadata (description, section, depends); `tauri build` debug check stays green in CI
 - [ ] 2.2 Confirm the CLI binary is `mergeiq` inside the macOS `.app` (`Contents/MacOS/mergeiq`) and document that path in `docs/releasing.md`
 
 ## 3. Workflow
