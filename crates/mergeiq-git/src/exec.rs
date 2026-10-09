@@ -51,6 +51,7 @@ pub fn parse_version(text: &str) -> Option<GitVersion> {
 pub struct GitExec {
     path: PathBuf,
     version: GitVersion,
+    env: Vec<(OsString, OsString)>,
 }
 
 impl GitExec {
@@ -94,7 +95,19 @@ impl GitExec {
                 found: format!("{}.{}.{}", version.major, version.minor, version.patch),
             });
         }
-        Ok(Self { path, version })
+        Ok(Self {
+            path,
+            version,
+            env: Vec::new(),
+        })
+    }
+
+    /// Sets an extra environment variable for every invocation (e.g. `GIT_CONFIG_GLOBAL`
+    /// to point git at a scratch config).
+    #[must_use]
+    pub fn with_env(mut self, key: impl Into<OsString>, value: impl Into<OsString>) -> Self {
+        self.env.push((key.into(), value.into()));
+        self
     }
 
     /// The detected version.
@@ -123,6 +136,7 @@ impl GitExec {
             .env_remove("GIT_WORK_TREE")
             .env_remove("GIT_INDEX_FILE")
             .env_remove("GIT_PREFIX")
+            .envs(self.env.iter().map(|(k, v)| (k, v)))
             .stdin(Stdio::null());
         #[cfg(windows)]
         {

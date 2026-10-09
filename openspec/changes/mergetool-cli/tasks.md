@@ -19,9 +19,9 @@
 
 ## 4. Helpers and docs
 
-- [ ] 4.1 `cli/install.rs`: symlink install (macOS/Linux), PATH check, admin prompt for /usr/local/bin; Windows installer PATH option in NSIS/WiX config
+- [x] 4.1 `cli/install.rs`: symlink install (macOS/Linux), PATH check, admin prompt for /usr/local/bin; Windows installer PATH option in NSIS/WiX config
 - [ ] 4.2 `cli/git_config.rs`: show commands, execute after confirm; settings UI entries
-- [ ] 4.3 Docs `docs/git-integration.md`: git config snippets for macOS/Windows, VS Code (`git.mergeEditor` off + terminal `git mergetool`) usage
+- [x] 4.3 Docs `docs/git-integration.md`: git config snippets for macOS/Windows, VS Code (`git.mergeEditor` off + terminal `git mergetool`) usage
 
 ## 5. UI
 

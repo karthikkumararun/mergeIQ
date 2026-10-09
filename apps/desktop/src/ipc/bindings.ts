@@ -35,6 +35,18 @@ export const commands = {
 	/**  Closes a request's window; its client gets the recorded exit code (1 if none). */
 	requestClose: (id: number, kind: RequestWindow) => typedError<null, IpcError>(__TAURI_INVOKE("request_close", { id, kind })),
 	repoRequestLoad: (id: number) => typedError<RepoRequestDoc, IpcError>(__TAURI_INVOKE("repo_request_load", { id })),
+	cliSetupInfo: () => typedError<CliSetupInfo, IpcError>(__TAURI_INVOKE("cli_setup_info")),
+	/**
+	 *  Installs the command into `dir` (macOS/Linux: a symlink; Windows: nothing to copy, the
+	 *  install folder just needs to be on PATH) and reports whether `dir` is on PATH.
+	 */
+	cliInstall: (dir: string, admin: boolean) => typedError<InstallOutcome, IpcError>(__TAURI_INVOKE("cli_install", { dir, admin })),
+	/**  Windows: adds `dir` to the user PATH. */
+	cliAddToPath: (dir: string) => typedError<null, IpcError>(__TAURI_INVOKE("cli_add_to_path", { dir })),
+	/**  The `git config --global` commands, as displayed. */
+	gitMergetoolCommands: (noBackup: boolean) => __TAURI_INVOKE<string[]>("git_mergetool_commands", { noBackup }),
+	/**  Runs the commands. Only invoked after the user confirms in the UI. */
+	gitMergetoolConfigure: (noBackup: boolean) => typedError<null, IpcError>(__TAURI_INVOKE("git_mergetool_configure", { noBackup })),
 };
 
 /** Events */
@@ -114,6 +126,18 @@ export type ChunkKind =
 "BothSame" | 
 /**  Both sides changed this region differently, or touched it at the same point. */
 "Conflict";
+
+/**  What the Command line settings page needs to render. */
+export type CliSetupInfo = {
+	/**  `"macos"`, `"windows"` or `"linux"`. */
+	platform: string,
+	/**  Folders offered in the picker (on Windows: the install folder only). */
+	dirs: InstallDir[],
+	/**  Where the `mergeiq` command is already installed, if anywhere we looked. */
+	installedAt: string | null,
+	/**  git's global config already registers MergeIQ as the merge tool. */
+	mergetoolConfigured: boolean,
+};
 
 /**  One commit in a side's history. */
 export type CommitSummary = {
@@ -267,6 +291,22 @@ stderr: string } |
 /**  The underlying error text. */
 message: string };
 
+/**  A folder the command can be installed into. */
+export type InstallDir = {
+	path: string,
+	/**  Shown in the picker, e.g. `~/.local/bin`. */
+	label: string,
+	/**  Installing here needs an administrator prompt. */
+	needsAdmin: boolean,
+};
+
+/**  Result of installing the command. */
+export type InstallOutcome = {
+	linkPath: string,
+	onPath: boolean,
+	pathHint: PathHint | null,
+};
+
 export type IpcError = { kind: "Settings"; message: string } | { kind: "Git"; message: GitError } | { kind: "NoRepo" } | { kind: "Request"; message: string };
 
 /**
@@ -352,6 +392,12 @@ onto: string } |
 { kind: "Am" } | 
 /**  Conflicts exist but no state file explains them (e.g. `git stash pop`). */
 { kind: "Unknown" };
+
+/**  A line to add to a shell start-up file when the folder is not on PATH. */
+export type PathHint = {
+	rcFile: string,
+	line: string,
+};
 
 /**  Opaque, URL-safe base64 of a [`RepoPath`]'s bytes. Pass back to the adapter unchanged. */
 export type PathToken = string;
