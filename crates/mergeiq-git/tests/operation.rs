@@ -71,7 +71,21 @@ fn am_in_progress() {
     let patch = s.git(&["format-patch", "--stdout", "-1", "feature"]);
     let patch_file = s.root.parent().unwrap().join("x.patch");
     std::fs::write(&patch_file, patch + "\n").unwrap();
-    s.expect_conflict(&["am", "--3way", patch_file.to_str().unwrap()]);
+    let out = s.git_raw(&["am", "--3way", patch_file.to_str().unwrap()]);
+    let git_dir = s.root.join(".git");
+    let listing: Vec<_> = std::fs::read_dir(&git_dir)
+        .unwrap()
+        .map(|e| e.unwrap().file_name())
+        .collect();
+    eprintln!("DIAG am status={:?}", out.status);
+    eprintln!("DIAG am stdout={}", String::from_utf8_lossy(&out.stdout));
+    eprintln!("DIAG am stderr={}", String::from_utf8_lossy(&out.stderr));
+    eprintln!("DIAG .git={listing:?}");
+    eprintln!(
+        "DIAG patch={:?}",
+        std::fs::read_to_string(&patch_file).unwrap()
+    );
+    assert!(!out.status.success());
     assert_eq!(s.repo().operation().unwrap(), Operation::Am);
 }
 

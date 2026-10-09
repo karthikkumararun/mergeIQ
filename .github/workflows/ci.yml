@@ -7,6 +7,8 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  # Smaller debug info keeps linker memory/disk use down (rust-lld hit a bus error on ubuntu-latest).
+  CARGO_PROFILE_DEV_DEBUG: line-tables-only
 
 jobs:
   ci:
@@ -62,14 +64,14 @@ jobs:
       # apps/desktop/src/ipc/bindings.ts is stale relative to the Rust command definitions.
       - name: cargo nextest run
         if: matrix.platform != 'windows-latest'
-        run: cargo nextest run
+        run: cargo nextest run --no-fail-fast
 
       # mergeiq-desktop's test binary aborts on Windows with 0xc0000139 (entry point not
       # found) when listed by nextest — see design.md Risks/Trade-offs. Still compiled on
       # Windows via the tauri build step below; its tests run on macOS and Ubuntu.
       - name: cargo nextest run (excluding mergeiq-desktop on Windows)
         if: matrix.platform == 'windows-latest'
-        run: cargo nextest run --workspace --exclude mergeiq-desktop
+        run: cargo nextest run --workspace --exclude mergeiq-desktop --no-fail-fast
 
       - name: pnpm lint
         run: pnpm --filter desktop lint
