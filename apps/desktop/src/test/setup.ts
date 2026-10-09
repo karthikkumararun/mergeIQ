@@ -1,7 +1,8 @@
 import "@testing-library/jest-dom/vitest";
 
 // jsdom doesn't implement matchMedia; tests that care about its behavior stub it themselves.
-if (!window.matchMedia) {
+// (Skipped for the node-environment release script tests.)
+if (typeof window !== "undefined" && !window.matchMedia) {
   window.matchMedia = (query: string) =>
     ({
       matches: false,

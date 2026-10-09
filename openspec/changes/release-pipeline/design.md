@@ -41,3 +41,8 @@
 
 - Which minimum macOS version? Default to Tauri's (10.13) unless a dependency needs more; set `bundle.macOS.minimumSystemVersion` explicitly after checking.
 - Should the Linux `.deb` also be signed or hosted in an apt repo? Not now.
+
+## Implementation notes (resolved during apply)
+
+- **Script tests run under the existing vitest setup.** There is no root `package.json`, and a second runner would be a second `pnpm test`. `apps/desktop/vitest.config.ts` therefore also includes `../../scripts/**/*.test.mjs`; those files opt into the node environment with `// @vitest-environment node` (and `src/test/setup.ts` skips its jsdom shim when there is no `window`). `pnpm --filter desktop test` and CI's `pnpm test` step run them with everything else.
+- **`bump-version` edits `Cargo.lock` directly** (workspace crates are the `[[package]]` entries without a `source`) instead of running `cargo update -w`, so it is deterministic, offline and testable; the CLI then runs `cargo metadata --offline --no-deps` as the spec's "cargo metadata succeeds" check (`--no-verify` skips it). All new contents are computed before any file is written, so a failure leaves the tree untouched.

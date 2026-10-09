@@ -1,7 +1,7 @@
 ## 1. Version tooling
 
-- [ ] 1.1 `scripts/release/read-versions.mjs`: read versions from `tauri.conf.json`, `apps/desktop/package.json`, workspace `Cargo.toml`; vitest-style unit tests for parsing and mismatch reporting
-- [ ] 1.2 `scripts/release/bump-version.mjs`: semver validation, update the three files and `Cargo.lock` workspace entries; tests for success and invalid input leaving files untouched
+- [x] 1.1 `scripts/release/read-versions.mjs`: read versions from `tauri.conf.json`, `apps/desktop/package.json`, workspace `Cargo.toml`; vitest-style unit tests for parsing and mismatch reporting
+- [x] 1.2 `scripts/release/bump-version.mjs`: semver validation, update the three files and `Cargo.lock` workspace entries; tests for success and invalid input leaving files untouched
 
 ## 2. Bundle configuration
 
