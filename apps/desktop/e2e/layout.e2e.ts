@@ -59,7 +59,7 @@ test("Panes default to equal widths and are resizable", async ({ page }) => {
   expect(await width("right")).toBeLessThan(x - 20);
 });
 
-test("Chunk highlighting: conflict colors and non-color marks", async ({
+test("Conflict colors: unresolved conflicts carry the conflict style and a non-color mark", async ({
   page,
 }) => {
   await open(page, "mixed-changes");
