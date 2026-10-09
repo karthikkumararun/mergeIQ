@@ -6,7 +6,7 @@ use mergeiq_core::{Analysis, EncodingInfo, WhitespacePolicy};
 use tauri::{AppHandle, Manager, State};
 
 use crate::cli::host::request_id;
-use crate::cli::prepare::{MergeRequestDoc, RepoRequestDoc, RequestPrepared, SaveMode};
+use crate::cli::prepare::{MergeRequestDoc, RequestPrepared, SaveMode};
 use crate::cli::requests::{Registry, WindowKind};
 use crate::ipc::IpcError;
 
@@ -63,8 +63,8 @@ pub fn merge_request_save(
 /// Closes a request's window; its client gets the recorded exit code (1 if none).
 #[tauri::command]
 #[specta::specta]
-pub fn request_close(app: AppHandle, id: u32, kind: RequestWindow) -> Result<(), IpcError> {
-    let label = format!("{}-{id}", WindowKind::from(kind).prefix());
+pub fn request_close(app: AppHandle, id: u32) -> Result<(), IpcError> {
+    let label = format!("{}-{id}", WindowKind::Merge.prefix());
     debug_assert_eq!(request_id(&label), Some(id));
     if let Some(window) = app.get_webview_window(&label) {
         window
@@ -72,34 +72,4 @@ pub fn request_close(app: AppHandle, id: u32, kind: RequestWindow) -> Result<(),
             .map_err(|e| IpcError::Request(e.to_string()))?;
     }
     Ok(())
-}
-
-#[tauri::command]
-#[specta::specta]
-pub fn repo_request_load(
-    requests: State<'_, Requests>,
-    id: u32,
-) -> Result<RepoRequestDoc, IpcError> {
-    get(&requests, id)?
-        .repo_doc()
-        .ok_or_else(|| IpcError::Request(format!("request {id} is not a repository")))
-}
-
-/// Which kind of request window to close.
-#[derive(Debug, Clone, Copy, serde::Deserialize, specta::Type)]
-#[serde(rename_all = "lowercase")]
-pub enum RequestWindow {
-    /// A merge editor window.
-    Merge,
-    /// A repository window.
-    Repo,
-}
-
-impl From<RequestWindow> for WindowKind {
-    fn from(kind: RequestWindow) -> Self {
-        match kind {
-            RequestWindow::Merge => WindowKind::Merge,
-            RequestWindow::Repo => WindowKind::Repo,
-        }
-    }
 }

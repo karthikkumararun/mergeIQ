@@ -56,14 +56,6 @@ pub struct MergeRequestDoc {
     pub context: Option<FileContext>,
 }
 
-/// What the repository window needs (placeholder until `repo-browser`).
-#[derive(Debug, Clone, serde::Serialize, specta::Type)]
-#[serde(rename_all = "camelCase")]
-pub struct RepoRequestDoc {
-    /// The directory to open.
-    pub dir: String,
-}
-
 enum Source {
     Bytes {
         base: Vec<u8>,
@@ -83,8 +75,6 @@ enum Target {
     File(PathBuf),
     /// Write and stage through the repository.
     Index { repo: Repo, path: RepoPath },
-    /// Nothing to save.
-    None,
 }
 
 /// A prepared request, held by the registry while its window is open.
@@ -92,7 +82,6 @@ pub struct RequestPrepared {
     kind: WindowKind,
     title: String,
     merge: Option<MergeRequestDoc>,
-    repo_dir: Option<PathBuf>,
     source: Option<Source>,
     target: Target,
     outcome: Mutex<Option<i32>>,
@@ -171,6 +160,15 @@ fn run_analysis(
     Ok(analysis)
 }
 
+/// Checks that `dir` can be opened as a repository window (exit 2 with a message if not).
+pub fn check_open(dir: &Path) -> Result<(), Response> {
+    let exec = GitExec::locate(configured_git().as_deref())
+        .map_err(|e| invalid(format!("mergeiq: {e}")))?;
+    Repo::open(exec, dir)
+        .map(|_| ())
+        .map_err(|e| invalid(format!("mergeiq: {}: {e}", dir.display())))
+}
+
 /// Prepares `request`, or returns the response (exit 2 + message) explaining why not.
 pub fn prepare(request: &Request) -> Result<RequestPrepared, Response> {
     match &request.kind {
@@ -181,20 +179,9 @@ pub fn prepare(request: &Request) -> Result<RequestPrepared, Response> {
             merged,
         } => prepare_merge(base, local, remote, merged),
         RequestKind::Resolve { path } => prepare_resolve(path),
-        RequestKind::Open { dir } => {
-            if !dir.is_dir() {
-                return Err(invalid(format!("{} is not a directory", dir.display())));
-            }
-            Ok(RequestPrepared {
-                kind: WindowKind::Repo,
-                title: format!("MergeIQ — {}", dir.display()),
-                merge: None,
-                repo_dir: Some(dir.clone()),
-                source: None,
-                target: Target::None,
-                outcome: Mutex::new(None),
-            })
-        }
+        RequestKind::Open { .. } => Err(invalid(
+            "open requests open a repository window and have no merge document",
+        )),
     }
 }
 
@@ -242,7 +229,6 @@ fn prepare_merge(
             labels,
             context,
         }),
-        repo_dir: None,
         source: Some(Source::Bytes {
             base: base_bytes,
             ours,
@@ -288,7 +274,6 @@ fn prepare_resolve(path: &Path) -> Result<RequestPrepared, Response> {
                         },
                         context: Some(load.context),
                     }),
-                    repo_dir: None,
                     source: Some(Source::Index {
                         repo: repo.clone(),
                         token,
@@ -332,7 +317,6 @@ fn prepare_markers(path: &Path) -> Result<RequestPrepared, Response> {
             },
             context: None,
         }),
-        repo_dir: None,
         source: Some(Source::Bytes {
             base,
             ours,
@@ -348,13 +332,6 @@ impl RequestPrepared {
     /// The merge window's document.
     pub fn merge_doc(&self) -> Option<&MergeRequestDoc> {
         self.merge.as_ref()
-    }
-
-    /// The repository window's document.
-    pub fn repo_doc(&self) -> Option<RepoRequestDoc> {
-        self.repo_dir.as_ref().map(|d| RepoRequestDoc {
-            dir: d.display().to_string(),
-        })
     }
 
     /// Re-runs the engine with another whitespace policy.
@@ -391,7 +368,6 @@ impl RequestPrepared {
                 SaveMode::Markers => repo.save_unresolved(path, &bytes),
             }
             .map_err(|e| e.to_string())?,
-            Target::None => return Err("this request cannot be saved".to_string()),
         }
         let code = match mode {
             SaveMode::Resolved | SaveMode::Force => EXIT_RESOLVED,
@@ -399,5 +375,30 @@ impl RequestPrepared {
         };
         *self.outcome.lock().expect("outcome lock") = Some(code);
         Ok(code)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn open_of_a_folder_that_is_not_a_repo_exits_2() {
+        let tmp = tempfile::tempdir().unwrap();
+        let err = check_open(tmp.path()).unwrap_err();
+        assert_eq!(err.exit_code, EXIT_INVALID);
+        assert!(err.message.unwrap().contains("not a git repository"));
+    }
+
+    #[test]
+    fn open_of_a_repo_is_accepted() {
+        let tmp = tempfile::tempdir().unwrap();
+        let out = std::process::Command::new("git")
+            .current_dir(tmp.path())
+            .args(["init", "-q"])
+            .output()
+            .unwrap();
+        assert!(out.status.success());
+        assert!(check_open(tmp.path()).is_ok());
     }
 }

@@ -27,5 +27,5 @@ export async function saveAndClose(id: number, result: SaveResult) {
     result.mode,
   );
   if (saved.status === "error") fail(saved.error);
-  await commands.requestClose(id, "merge");
+  await commands.requestClose(id);
 }

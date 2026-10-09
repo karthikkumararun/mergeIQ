@@ -36,7 +36,7 @@ describe("saveAndClose", () => {
       { encoding: "Utf8", bom: false },
       "resolved",
     );
-    expect(commands.requestClose).toHaveBeenCalledWith(7, "merge");
+    expect(commands.requestClose).toHaveBeenCalledWith(7);
   });
 
   it("keeps the window open when saving fails", async () => {

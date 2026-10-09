@@ -1,4 +1,4 @@
-use crate::commands::{cli_setup, git, requests};
+use crate::commands::{cli_setup, git, repos, requests};
 use crate::settings::{self, MergeEditorSettings, Settings};
 
 #[derive(Debug, Clone, serde::Serialize, specta::Type)]
@@ -88,12 +88,17 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
             update_settings,
             get_merge_editor_settings,
             update_merge_editor_settings,
-            git::repo_open,
+            repos::repo_open,
+            repos::repo_info,
+            repos::recents_list,
+            repos::recents_remove,
             git::repo_status,
             git::conflict_load,
             git::conflict_analyze,
             git::conflict_save,
             git::conflict_accept_side,
+            git::conflict_accept_many,
+            git::conflict_delete,
             git::conflict_restore,
             git::op_continue,
             git::op_abort,
@@ -102,7 +107,6 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
             requests::merge_request_analyze,
             requests::merge_request_save,
             requests::request_close,
-            requests::repo_request_load,
             cli_setup::cli_setup_info,
             cli_setup::cli_install,
             cli_setup::cli_add_to_path,

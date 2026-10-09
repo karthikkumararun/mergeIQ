@@ -30,6 +30,9 @@ pub struct MergeEditorSettings {
     pub sync_scroll: bool,
     /// Whitespace policy used when analysing a file.
     pub whitespace_policy: mergeiq_core::WhitespacePolicy,
+    /// In a repository window, open the next unresolved file after a resolved save.
+    #[serde(default = "default_true")]
+    pub auto_advance_after_save: bool,
 }
 
 impl Default for MergeEditorSettings {
@@ -40,6 +43,7 @@ impl Default for MergeEditorSettings {
             collapse_unchanged: false,
             sync_scroll: true,
             whitespace_policy: mergeiq_core::WhitespacePolicy::Exact,
+            auto_advance_after_save: true,
         }
     }
 }
@@ -56,6 +60,9 @@ pub struct Settings {
     /// Merge editor preferences.
     #[serde(default)]
     pub merge_editor: MergeEditorSettings,
+    /// Recently opened repositories, most recent first.
+    #[serde(default)]
+    pub recent_repos: Vec<crate::recents::RecentRepo>,
     #[serde(flatten)]
     pub extra: BTreeMap<String, Value>,
 }
@@ -65,6 +72,7 @@ impl Default for Settings {
         Self {
             theme: default_theme(),
             merge_editor: MergeEditorSettings::default(),
+            recent_repos: Vec::new(),
             extra: BTreeMap::new(),
         }
     }
@@ -194,6 +202,19 @@ mod tests {
         save_to(&path, &settings).unwrap();
         let reloaded = load_from(&path);
         assert_eq!(reloaded, settings);
+    }
+
+    #[test]
+    fn recent_repos_persist_and_default_to_empty() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        fs::write(&path, r#"{"theme":"dark"}"#).unwrap();
+        let mut settings = load_from(&path);
+        assert!(settings.recent_repos.is_empty());
+        assert!(settings.merge_editor.auto_advance_after_save);
+        crate::recents::push(&mut settings.recent_repos, "/code/a", 5);
+        save_to(&path, &settings).unwrap();
+        assert_eq!(load_from(&path).recent_repos.len(), 1);
     }
 
     #[test]

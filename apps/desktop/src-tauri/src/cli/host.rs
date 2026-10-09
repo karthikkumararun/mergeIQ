@@ -27,11 +27,9 @@ impl WindowHost for TauriHost {
     }
 }
 
-/// Parses a request window label (`merge-3`, `repo-4`) back into its request id.
+/// Parses a request window label (`merge-3`) back into its request id.
 pub fn request_id(label: &str) -> Option<u32> {
-    let (prefix, id) = label.split_once('-')?;
-    matches!(prefix, "merge" | "repo").then_some(())?;
-    id.parse().ok()
+    label.strip_prefix("merge-")?.parse().ok()
 }
 
 #[cfg(test)]
@@ -41,7 +39,7 @@ mod tests {
     #[test]
     fn labels_map_back_to_request_ids() {
         assert_eq!(request_id("merge-12"), Some(12));
-        assert_eq!(request_id("repo-3"), Some(3));
+        assert_eq!(request_id("repo-3"), None);
         assert_eq!(request_id("main"), None);
         assert_eq!(request_id("merge-x"), None);
     }

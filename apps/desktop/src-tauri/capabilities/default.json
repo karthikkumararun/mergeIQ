@@ -5,6 +5,9 @@
   "windows": ["main", "merge-*", "repo-*"],
   "permissions": [
     "core:default",
-    "opener:default"
+    "opener:default",
+    "dialog:default",
+    "core:window:allow-destroy",
+    "core:window:allow-close"
   ]
 }

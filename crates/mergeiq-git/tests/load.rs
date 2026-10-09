@@ -105,3 +105,13 @@ fn conflict_load_honours_the_whitespace_policy() {
         ChunkKind::TheirsOnly
     );
 }
+
+#[test]
+fn repo_status_reports_branch_or_detached() {
+    let s = Scenario::new();
+    s.merge_conflict();
+    assert_eq!(s.repo().status().unwrap().branch.as_deref(), Some("main"));
+    let s = Scenario::new();
+    s.rebase_conflict();
+    assert_eq!(s.repo().status().unwrap().branch, None);
+}

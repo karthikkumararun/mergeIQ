@@ -56,7 +56,7 @@ export function MergeRequestView({ id }: { id: number }) {
         settings={settings}
         onSettingsChange={(next) => void saveMergeSettings(next)}
         onSave={(result) => saveAndClose(id, result)}
-        onCancel={() => void commands.requestClose(id, "merge")}
+        onCancel={() => void commands.requestClose(id)}
         reanalyze={reanalyze}
       />
     </div>
