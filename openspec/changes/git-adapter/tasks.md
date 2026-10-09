@@ -1,8 +1,8 @@
 ## 1. Foundations
 
-- [ ] 1.1 `exec.rs`: locate git (setting → PATH), parse `git --version`, enforce ≥2.30, run with arg arrays, `LC_ALL=C`, `GIT_TERMINAL_PROMPT=0`; tests with fake binary path
-- [ ] 1.2 `paths.rs`: RepoPath + PathToken (base64url) + lossy display; tests incl. non-UTF-8 bytes (unix only)
-- [ ] 1.3 Test support: `tests/support/scenario.rs` builder that scripts temp repos (init, commits, branches, merge/rebase/cherry-pick/revert producing conflicts)
+- [x] 1.1 `exec.rs`: locate git (setting → PATH), parse `git --version`, enforce ≥2.30, run with arg arrays, `LC_ALL=C`, `GIT_TERMINAL_PROMPT=0`; tests with fake binary path
+- [x] 1.2 `paths.rs`: RepoPath + PathToken (base64url) + lossy display; tests incl. non-UTF-8 bytes (unix only)
+- [x] 1.3 Test support: `tests/support/scenario.rs` builder that scripts temp repos (init, commits, branches, merge/rebase/cherry-pick/revert producing conflicts)
 
 ## 2. Repository and operation state
 
