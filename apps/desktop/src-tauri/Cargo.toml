@@ -8,6 +8,10 @@ description = "MergeIQ desktop application"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "mergeiq"
+path = "src/main.rs"
+
 [lib]
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
@@ -33,6 +37,8 @@ tracing-appender = "0.2.5"
 thiserror.workspace = true
 mergeiq-core = { path = "../../../crates/mergeiq-core", features = ["specta"] }
 mergeiq-git = { path = "../../../crates/mergeiq-git", features = ["specta"] }
+clap = { version = "4", features = ["derive"] }
+interprocess = "2"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
@@ -45,3 +51,10 @@ strip = true
 
 [dev-dependencies]
 tempfile = "3.27.0"
+
+[target."cfg(windows)".dependencies]
+widestring = "1"
+windows-sys = { version = "0.61", features = ["Win32_System_Console", "Win32_Foundation"] }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"

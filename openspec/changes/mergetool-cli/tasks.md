@@ -1,7 +1,7 @@
 ## 1. Argument parsing
 
-- [ ] 1.1 `cli/args.rs` with clap: merge, resolve, open, --version, --help; exit 2 on invalid args; unit tests
-- [ ] 1.2 Windows AttachConsole for text output; set `mainBinaryName` to `mergeiq`
+- [x] 1.1 `cli/args.rs` with clap: merge, resolve, open, --version, --help; exit 2 on invalid args; unit tests
+- [x] 1.2 Windows AttachConsole for text output; set `mainBinaryName` to `mergeiq`
 
 ## 2. Instance routing
 
