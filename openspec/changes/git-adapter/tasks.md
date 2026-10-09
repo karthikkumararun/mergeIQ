@@ -18,9 +18,9 @@
 
 ## 4. Mutations
 
-- [ ] 4.1 `write.rs`: atomic write with mode preservation; EOL conversion per autocrlf/eol attrs; save_resolved/save_unresolved; tests incl. autocrlf=true
-- [ ] 4.2 accept_side incl. delete handling; restore_conflict via `git checkout -m`; tests
-- [ ] 4.3 `control.rs`: continue/abort/skip per operation; UnresolvedPaths guard; tests for merge continue and rebase continue
+- [x] 4.1 `write.rs`: atomic write with mode preservation; EOL conversion per autocrlf/eol attrs; save_resolved/save_unresolved; tests incl. autocrlf=true
+- [x] 4.2 accept_side incl. delete handling; restore_conflict via `git checkout -m`; tests
+- [x] 4.3 `control.rs`: continue/abort/skip per operation; UnresolvedPaths guard; tests for merge continue and rebase continue
 
 ## 5. Watching and IPC
 
