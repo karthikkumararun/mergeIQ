@@ -227,10 +227,12 @@ jobs:
         with:
           projectPath: apps/desktop
           releaseId: ${{ needs.verify.outputs.release_id }}
+          # No updater yet: without this the action adds updater archives and .sig files.
+          includeUpdaterJson: false
           args: ${{ matrix.args }} ${{ steps.winsign.outputs.args }}
 
-      # The universal build must really contain both architectures, in the .app and in the
-      # .dmg users download, and the CLI must be `mergeiq`.
+      # The universal build must really contain both architectures in the .dmg users download
+      # (Tauri removes the intermediate .app once the .dmg exists), and the CLI must be `mergeiq`.
       - name: Verify macOS universal binary
         if: runner.os == 'macOS'
         run: |
@@ -245,15 +247,15 @@ jobs:
               esac
             done
           }
-          check "$bundle/macos/MergeIQ.app/Contents/MacOS/mergeiq"
           dmg="$(ls "$bundle"/dmg/*.dmg)"
           mount="$(mktemp -d)"
           hdiutil attach -nobrowse -readonly -mountpoint "$mount" "$dmg"
           check "$mount/MergeIQ.app/Contents/MacOS/mergeiq"
+          archs="$(lipo -archs "$mount/MergeIQ.app/Contents/MacOS/mergeiq")"
           hdiutil detach "$mount"
           {
             echo "### macOS universal check"
-            echo "\`$(basename "$dmg")\`: \`$(lipo -archs "$bundle/macos/MergeIQ.app/Contents/MacOS/mergeiq")\`"
+            echo "\`$(basename "$dmg")\`: \`mergeiq\` has \`$archs\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: List installers
