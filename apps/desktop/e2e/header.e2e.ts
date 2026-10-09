@@ -1,9 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { open } from "./helpers";
 
-test("Commit popover lists the right side's commits newest first", async ({
-  page,
-}) => {
+test("Popover lists the right side commits newest first", async ({ page }) => {
   await open(page, "mixed-changes");
   await page.locator("[data-header=right] button").first().click();
   const pop = page.getByRole("dialog", {
