@@ -16,12 +16,12 @@ describe("Navigation", () => {
 
   it("Next change walks every chunk in order", () => {
     expect(pickChunk(chunks, 0, 1, "change")?.chunk.id).toBe(0);
-    expect(pickChunk(chunks, chunks[0].from, 1, "change")?.chunk.id).toBe(1);
-    expect(pickChunk(chunks, chunks[1].from, 1, "change")?.chunk.id).toBe(2);
+    expect(pickChunk(chunks, chunks[0].from, 1, "change", 0)?.chunk.id).toBe(1);
+    expect(pickChunk(chunks, chunks[1].from, 1, "change", 1)?.chunk.id).toBe(2);
   });
 
   it("Navigation wraps with a hint", () => {
-    const t = pickChunk(chunks, chunks[2].from, 1, "change");
+    const t = pickChunk(chunks, chunks[2].from, 1, "change", 2);
     expect(t).toMatchObject({ wrapped: true });
     expect(t?.chunk.id).toBe(0);
     const p = pickChunk(chunks, 0, -1, "change");
@@ -37,5 +37,15 @@ describe("Navigation", () => {
     expect(pickChunk([], 0, 1, "change")).toBeNull();
     const none = chunks.filter((c) => c.kind !== "Conflict");
     expect(pickChunk(none, 0, 1, "conflict")).toBeNull();
+  });
+});
+
+describe("Navigation at the chunk under the cursor", () => {
+  it("Next conflict at the document start", () => {
+    const a = fixture("multi-conflict-file");
+    const cs = chunksOf(createResultState(a));
+    // cursor at 0 where the first conflict starts: it is still ahead until navigated to
+    expect(pickChunk(cs, 0, 1, "conflict", null)?.chunk.id).toBe(0);
+    expect(pickChunk(cs, 0, 1, "conflict", 0)?.chunk.id).toBe(1);
   });
 });

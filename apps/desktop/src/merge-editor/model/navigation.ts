@@ -11,20 +11,24 @@ export interface NavTarget {
 
 /**
  * Next/previous change (any chunk) or unresolved conflict relative to `head`, the
- * Result cursor offset. Wraps around when nothing lies beyond the cursor.
+ * Result cursor offset. A chunk starting exactly at the cursor counts as ahead unless it
+ * is the `currentId` the user already navigated to. Wraps around when nothing lies beyond.
  */
 export function pickChunk(
   chunks: readonly ChunkState[],
   head: number,
   dir: 1 | -1,
   kind: NavKind,
+  currentId: number | null = null,
 ): NavTarget | null {
   const pool = chunks.filter((c) =>
     kind === "change" ? true : c.kind === "Conflict" && !isResolved(c),
   );
   if (pool.length === 0) return null;
   if (dir === 1) {
-    const hit = pool.find((c) => c.from > head);
+    const hit = pool.find(
+      (c) => c.from > head || (c.from === head && c.id !== currentId),
+    );
     return hit
       ? { chunk: hit, wrapped: false }
       : { chunk: pool[0], wrapped: true };

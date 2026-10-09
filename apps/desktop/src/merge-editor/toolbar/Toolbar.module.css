@@ -1,0 +1,169 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.btn {
+  font: 500 13px/1 var(--font-ui);
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn[aria-pressed="true"] {
+  background: var(--surface-2);
+  border-color: var(--border-3);
+  color: var(--text);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.ib {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.ib:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.ib:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.conflictNav {
+  color: var(--con-fg);
+}
+
+.insIcon {
+  color: var(--ins-fg);
+  font-weight: 700;
+}
+
+.kbd {
+  font: 500 11px var(--font-code);
+  padding: 1px 5px;
+  border: 1px solid var(--border-3);
+  border-radius: 4px;
+  color: var(--text-2);
+}
+
+.sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border-2);
+  margin: 0 4px;
+}
+
+.select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.select select {
+  font: 13px var(--font-ui);
+  height: 30px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  padding: 0 8px;
+}
+
+.select select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.hint {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.menuRoot {
+  position: relative;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 30;
+  min-width: 200px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 32px var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.menuItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font: 13px var(--font-ui);
+  padding: 7px 10px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuItem:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.menuItem:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.menuItem:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.menuHint {
+  color: var(--muted);
+  font: 11px var(--font-code);
+}

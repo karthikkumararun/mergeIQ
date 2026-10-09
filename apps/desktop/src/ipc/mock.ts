@@ -1,4 +1,5 @@
 import { fixture } from "../merge-editor/__fixtures__";
+import { syntheticAnalysis } from "../merge-editor/__fixtures__/synthetic";
 import type { MergeDocument, SaveResult } from "../merge-editor/model/types";
 
 /** True when the app runs against fixtures instead of the Tauri backend (`VITE_IPC_MOCK=1`). */
@@ -18,9 +19,17 @@ const LANGUAGE_BY_FIXTURE: Record<string, string> = {
   "python-sample": "main.py",
 };
 
+/** `synthetic-<lines>-<every>[-shift]` builds a large generated file; anything else is an exported fixture. */
+function analysisFor(name: string) {
+  const m = name.match(/^synthetic-(\d+)-(\d+)(-shift)?$/);
+  return m
+    ? syntheticAnalysis(Number(m[1]), Number(m[2]), !!m[3])
+    : fixture(name);
+}
+
 /** Builds a `MergeDocument` from an engine-exported fixture, with placeholder labels. */
 export function mockMergeDocument(name: string): MergeDocument {
-  const analysis = fixture(name);
+  const analysis = analysisFor(name);
   const displayPath = LANGUAGE_BY_FIXTURE[name] ?? `${name}.txt`;
   return {
     pathToken: `mock:${name}`,
