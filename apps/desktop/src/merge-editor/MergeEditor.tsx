@@ -57,6 +57,10 @@ export interface MergeEditorProps {
   /** Re-runs the engine for a whitespace policy; the selector is disabled without it. */
   reanalyze?: (policy: WhitespacePolicy) => Promise<Analysis>;
   extensions?: MergeEditorExtension[];
+  /** Called when the Result differs from (or returns to) its initial content. */
+  onDirtyChange?: (dirty: boolean) => void;
+  /** Increment to open the Apply flow (e.g. from a host's "save first" prompt). */
+  saveRequest?: number;
 }
 
 type Dialog =
@@ -131,6 +135,8 @@ function Inner({
   reanalyze,
   extensions = [],
   onReanalysed,
+  onDirtyChange,
+  saveRequest = 0,
 }: InnerProps) {
   const [views, setViews] = useState<Views>({});
   const viewsRef = useRef<Views>({});
@@ -205,8 +211,16 @@ function Inner({
     }
   }, [settings.showBase, sync]);
 
+  const dirtyCallback = useRef(onDirtyChange);
+  dirtyCallback.current = onDirtyChange;
+  const lastDirty = useRef(false);
   const onResultState = useCallback((state: EditorState) => {
     if (initialDoc.current === null) initialDoc.current = state.doc.toString();
+    const dirty = state.doc.toString() !== initialDoc.current;
+    if (dirty !== lastDirty.current) {
+      lastDirty.current = dirty;
+      dirtyCallback.current?.(dirty);
+    }
     setResultState(state);
     setVersion((v) => v + 1);
   }, []);
@@ -289,6 +303,14 @@ function Inner({
     else setDialog({ kind: "save" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const lastSaveRequest = useRef(saveRequest);
+  useEffect(() => {
+    if (saveRequest !== lastSaveRequest.current) {
+      lastSaveRequest.current = saveRequest;
+      startSave();
+    }
+  }, [saveRequest, startSave]);
 
   async function doSave(mode: SaveMode) {
     const v = viewsRef.current.result;

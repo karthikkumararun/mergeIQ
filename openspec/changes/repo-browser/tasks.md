@@ -11,17 +11,17 @@
 
 ## 3. Repository window
 
-- [ ] 3.1 `repoStore` with status/conflicts/tabs/resolved log; refresh on `repo-changed` preserving selection; Vitest
-- [ ] 3.2 OperationBanner with labels, progress, Continue/Abort/Skip, confirmations, stderr panel
-- [ ] 3.3 ConflictsPanel: virtualized list, type + per-side description, filter, group-by-folder, multi-select, row actions, batch confirm
-- [ ] 3.4 Minimal non-text conflict panel (Accept Left / Accept Right / Delete)
-- [ ] 3.5 ResolvedSection with method and Reopen conflict
+- [x] 3.1 `repoStore` with status/conflicts/tabs/resolved log; refresh on `repo-changed` preserving selection; Vitest
+- [x] 3.2 OperationBanner with labels, progress, Continue/Abort/Skip, confirmations, stderr panel
+- [x] 3.3 ConflictsPanel: virtualized list, type + per-side description, filter, group-by-folder, multi-select, row actions, batch confirm
+- [x] 3.4 Minimal non-text conflict panel (Accept Left / Accept Right / Delete)
+- [x] 3.5 ResolvedSection with method and Reopen conflict
 
 ## 4. Editor tabs
 
-- [ ] 4.1 EditorTabs hosting `<MergeEditor>`; focus existing; dirty dot; cap 10 with LRU of clean tabs
-- [ ] 4.2 Auto-advance after resolved save; external-change notice on tab
-- [ ] 4.3 Unsaved-work guards for tab close, window close, abort, continue
+- [x] 4.1 EditorTabs hosting `<MergeEditor>`; focus existing; dirty dot; cap 10 with LRU of clean tabs
+- [x] 4.2 Auto-advance after resolved save; external-change notice on tab
+- [x] 4.3 Unsaved-work guards for tab close, window close, abort, continue
 
 ## 5. End-to-end
 

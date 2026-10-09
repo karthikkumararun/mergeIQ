@@ -82,6 +82,29 @@ async function root() {
       </div>
     );
   }
+  // Dev/test-only route: the repository window against a scripted in-memory repository.
+  if (
+    import.meta.env.VITE_IPC_MOCK === "1" &&
+    window.location.pathname.startsWith("/dev/repo")
+  ) {
+    const params = new URLSearchParams(window.location.search);
+    document.documentElement.dataset.theme = params.get("theme") ?? "dark";
+    document.body.style.margin = "0";
+    const [{ RepoWindow }, { createMockRepoApi }] = await Promise.all([
+      import("./repo/RepoWindow"),
+      import("./repo/mockRepoApi"),
+    ]);
+    const api = createMockRepoApi({
+      scenario: (params.get("scenario") ?? "merge3") as never,
+      failContinue: params.get("failContinue") ?? undefined,
+    });
+    return <RepoWindow api={api} />;
+  }
+  const repo = window.location.pathname.match(/^\/repo\/(\d+)$/);
+  if (repo) {
+    const { RepoWindowRoute } = await import("./repo/RepoWindowRoute");
+    return <RepoWindowRoute id={Number(repo[1])} />;
+  }
   const merge = window.location.pathname.match(/^\/merge\/(\d+)$/);
   if (merge) {
     const { MergeRequestView } = await import("./requests/MergeRequestView");

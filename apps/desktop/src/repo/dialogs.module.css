@@ -1,0 +1,22 @@
+.files {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  list-style: none;
+  max-height: 200px;
+  overflow: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: 12px/1.7 var(--font-code);
+}
+
+.more {
+  color: var(--muted);
+  font-family: var(--font-ui);
+}
+
+.danger {
+  background: var(--danger-bg);
+  border-color: var(--danger-border);
+  color: var(--danger-fg);
+}

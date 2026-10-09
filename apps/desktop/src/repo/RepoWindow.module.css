@@ -1,0 +1,95 @@
+.shell {
+  height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fatal {
+  margin: 0;
+  padding: 24px;
+  color: var(--muted);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+
+.name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.path {
+  font: 12px var(--font-code);
+  color: var(--muted);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--danger-bg);
+  border-bottom: 1px solid var(--danger-border);
+  font-size: 13px;
+}
+
+.errorText {
+  flex: 1;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.error button {
+  font: 500 12px var(--font-ui);
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--danger-border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.split {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.side {
+  flex: none;
+  min-width: 0;
+  height: 100%;
+}
+
+.handle {
+  width: 5px;
+  flex: none;
+  cursor: col-resize;
+  background: transparent;
+  margin-left: -3px;
+  z-index: 1;
+}
+
+.handle:hover,
+.handle:focus-visible {
+  background: var(--accent);
+  outline: none;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
