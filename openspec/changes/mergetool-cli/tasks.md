@@ -5,7 +5,7 @@
 
 ## 2. Instance routing
 
-- [ ] 2.1 `cli/ipc_socket.rs`: length-prefixed JSON protocol v1, client + listener using `interprocess`, per-user path, 0600/0700 perms (unix), DACL (windows); tests for round-trip, version mismatch, stale socket
+- [x] 2.1 `cli/ipc_socket.rs`: length-prefixed JSON protocol v1, client + listener using `interprocess`, per-user path, 0600/0700 perms (unix), DACL (windows); tests for round-trip, version mismatch, stale socket
 - [ ] 2.2 Primary/secondary startup flow in `main.rs` with 2 s connect timeout
 - [ ] 2.3 `cli/requests.rs`: request registry, window per request, exit-code oneshot, `launchedForCli` lifecycle
 
