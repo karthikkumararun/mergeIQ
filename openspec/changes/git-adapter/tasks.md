@@ -6,9 +6,9 @@
 
 ## 2. Repository and operation state
 
-- [ ] 2.1 `repo.rs`: open from nested path, worktrees, submodules; reject bare; tests
-- [ ] 2.2 `operation.rs`: detect Merge/Rebase(step,total,onto)/CherryPick/Revert/Am/Unknown/None; tests per scenario
-- [ ] 2.3 Side labels per operation incl. rebase swap; tests for merge and rebase label scenarios
+- [x] 2.1 `repo.rs`: open from nested path, worktrees, submodules; reject bare; tests
+- [x] 2.2 `operation.rs`: detect Merge/Rebase(step,total,onto)/CherryPick/Revert/Am/Unknown/None; tests per scenario
+- [x] 2.3 Side labels per operation incl. rebase swap; tests for merge and rebase label scenarios
 
 ## 3. Conflicts and content
 
