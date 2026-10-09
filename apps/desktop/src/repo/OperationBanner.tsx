@@ -54,6 +54,24 @@ export function OperationBanner({
 
   return (
     <section aria-label="Operation in progress" className={styles.banner}>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className={styles.icon}
+      >
+        <circle cx="6" cy="6" r="2.5" />
+        <circle cx="6" cy="18" r="2.5" />
+        <circle cx="18" cy="12" r="2.5" />
+        <path d="M6 8.5v7" />
+        <path d="M8.5 6c5 0 7 2 7 4.2" />
+      </svg>
       <span className={styles.sentence}>
         {operationSentence(status).map((part, i) =>
           part.mono ? (

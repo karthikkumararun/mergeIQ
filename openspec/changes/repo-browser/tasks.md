@@ -25,9 +25,9 @@
 
 ## 5. End-to-end
 
-- [ ] 5.1 tauri-driver E2E (Linux CI): scripted merge with 3 conflicts → resolve via editor + batch accept → Continue → merge commit exists
-- [ ] 5.2 E2E rebase with 2 conflicting steps → banner progresses → rebase completes
+- [x] 5.1 tauri-driver E2E (Linux CI): scripted merge with 3 conflicts → resolve via editor + batch accept → Continue → merge commit exists
+- [x] 5.2 E2E rebase with 2 conflicting steps → banner progresses → rebase completes
 
 ## 6. UI fidelity
 
-- [ ] 6.1 Match `../archive/2026-10-08-bootstrap-app/ui/Main.dc.html` (home body) and `ui/RepoSplit.dc.html` (see design.md › UI reference): slim banner and its states, resizable side panel with two-line rows and selection actions, collapsible resolved section, empty editor state, external-change toast with Close tab + Reload; Playwright screenshots for conflicts-remaining and all-resolved states in dark + light
+- [x] 6.1 Match `../archive/2026-10-08-bootstrap-app/ui/Main.dc.html` (home body) and `ui/RepoSplit.dc.html` (see design.md › UI reference): slim banner and its states, resizable side panel with two-line rows and selection actions, collapsible resolved section, empty editor state, external-change toast with Close tab + Reload; Playwright screenshots for conflicts-remaining and all-resolved states in dark + light
