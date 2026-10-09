@@ -13,6 +13,8 @@ Implement changes **in order**. Each depends on the ones above it. Archive each 
 | 7 | `structural-merge` | v0.3 | 2, 4 | 8 |
 | 8 | `special-conflicts` | v0.3 | 3, 4, 6 | 7 |
 | 9 | `ai-assist` | v0.4 | 2, 3, 4, 7 | — |
+| 10 | `release-pipeline` | v0.5 | 1, 5 | — |
+| 11 | `homebrew-distribution` | v0.5 | 5, 10 | — |
 
 ## Handoff instructions for the implementing agent
 
