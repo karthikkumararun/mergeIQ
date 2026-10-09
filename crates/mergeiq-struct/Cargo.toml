@@ -6,7 +6,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-mergeiq-core = { version = "0.1.0", path = "../mergeiq-core" }
+mergeiq-core = { path = "../mergeiq-core" }
 streaming-iterator = "0.1.9"
 thiserror.workspace = true
 serde = { workspace = true, features = ["derive"] }
