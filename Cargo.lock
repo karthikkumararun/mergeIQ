@@ -2943,7 +2943,7 @@ dependencies = [
 
 [[package]]
 name = "mergeiq-ai"
-version = "0.1.1-rc.1"
+version = "0.1.1-1"
 dependencies = [
  "async-trait",
  "futures-util",
@@ -2966,7 +2966,7 @@ dependencies = [
 
 [[package]]
 name = "mergeiq-core"
-version = "0.1.1-rc.1"
+version = "0.1.1-1"
 dependencies = [
  "criterion",
  "encoding_rs",
@@ -2982,7 +2982,7 @@ dependencies = [
 
 [[package]]
 name = "mergeiq-desktop"
-version = "0.1.1-rc.1"
+version = "0.1.1-1"
 dependencies = [
  "clap",
  "directories",
@@ -3014,7 +3014,7 @@ dependencies = [
 
 [[package]]
 name = "mergeiq-git"
-version = "0.1.1-rc.1"
+version = "0.1.1-1"
 dependencies = [
  "base64 0.22.1",
  "dunce",
@@ -3031,7 +3031,7 @@ dependencies = [
 
 [[package]]
 name = "mergeiq-struct"
-version = "0.1.1-rc.1"
+version = "0.1.1-1"
 dependencies = [
  "mergeiq-core",
  "serde",
