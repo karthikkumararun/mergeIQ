@@ -2385,6 +2385,8 @@ name = "mergeiq-desktop"
 version = "0.1.0"
 dependencies = [
  "directories",
+ "mergeiq-core",
+ "mergeiq-git",
  "serde",
  "serde_json",
  "specta",

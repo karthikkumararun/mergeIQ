@@ -24,6 +24,6 @@
 
 ## 5. Watching and IPC
 
-- [ ] 5.1 `watch.rs`: notify watcher on index + state files, 250 ms debounce, self-write suppression; test with external `git add`
-- [ ] 5.2 Tauri commands in `src-tauri/src/commands/git.rs` + `repo-changed` event; regenerate TS bindings
-- [ ] 5.3 `conflict_load` returns Analysis (via mergeiq-core) + labels + context; integration test over a scripted repo
+- [x] 5.1 `watch.rs`: notify watcher on index + state files, 250 ms debounce, self-write suppression; test with external `git add`
+- [x] 5.2 Tauri commands in `src-tauri/src/commands/git.rs` + `repo-changed` event; regenerate TS bindings
+- [x] 5.3 `conflict_load` returns Analysis (via mergeiq-core) + labels + context; integration test over a scripted repo

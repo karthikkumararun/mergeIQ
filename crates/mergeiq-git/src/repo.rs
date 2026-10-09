@@ -100,16 +100,7 @@ impl Repo {
         self.exec.run_ok(&self.root, args)
     }
 
-    /// Like [`Repo::git`] but returns trimmed UTF-8 text.
-    pub(crate) fn git_text<I, S>(&self, args: I) -> Result<String>
-    where
-        I: IntoIterator<Item = S>,
-        S: AsRef<OsStr>,
-    {
-        Ok(String::from_utf8_lossy(&self.git(args)?).trim().to_string())
-    }
-
-    /// Like [`Repo::git_text`] but `None` when git exits non-zero or prints nothing.
+    /// Runs git and returns trimmed UTF-8 stdout, or `None` when git exits non-zero or prints nothing.
     pub(crate) fn git_text_opt<I, S>(&self, args: I) -> Option<String>
     where
         I: IntoIterator<Item = S>,

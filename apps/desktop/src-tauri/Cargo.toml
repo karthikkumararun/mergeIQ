@@ -31,6 +31,8 @@ tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 tracing-appender = "0.2.5"
 thiserror.workspace = true
+mergeiq-core = { path = "../../../crates/mergeiq-core", features = ["specta"] }
+mergeiq-git = { path = "../../../crates/mergeiq-git", features = ["specta"] }
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration

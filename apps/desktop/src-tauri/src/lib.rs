@@ -1,3 +1,4 @@
+mod commands;
 mod ipc;
 mod logging;
 mod settings;
@@ -18,6 +19,7 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .manage(commands::git::GitState::default())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             let guard = logging::init();
