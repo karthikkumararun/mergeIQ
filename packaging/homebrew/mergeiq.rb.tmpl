@@ -16,6 +16,7 @@ cask "mergeiq" do
 
   app "MergeIQ.app"
   binary "#{appdir}/MergeIQ.app/Contents/MacOS/mergeiq"
+{{postflight}}
 
   zap trash: [
     "~/Library/Application Support/dev.mergeiq.app",

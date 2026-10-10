@@ -424,9 +424,10 @@ jobs:
           brew style --cask local/mergeiq-test/mergeiq
           brew audit --cask --online --strict local/mergeiq-test/mergeiq
           brew install --cask local/mergeiq-test/mergeiq
-          # An unsigned app needs the quarantine attribute cleared once, as the cask's caveat says.
-          if [ "$SIGNED_MACOS" != "true" ]; then
-            xattr -dr com.apple.quarantine /Applications/MergeIQ.app
+          # The cask's postflight clears quarantine for an unsigned app: no manual step needed.
+          if xattr -p com.apple.quarantine /Applications/MergeIQ.app 2>/dev/null; then
+            echo "::error::the app is still quarantined after install"
+            exit 1
           fi
           bin="$(brew --prefix)/bin/mergeiq"
           test -L "$bin"
