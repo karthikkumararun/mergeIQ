@@ -26,7 +26,7 @@ cask "mergeiq" do
   name "MergeIQ"
   desc "Merge conflict resolver with a three-pane editor"
   homepage "https://github.com/karthikkumararun/mergeIQ"
-  depends_on macos: ">= :high_sierra"
+  depends_on :macos
   app "MergeIQ.app"
   binary "#{appdir}/MergeIQ.app/Contents/MacOS/mergeiq"
   zap trash: ["~/Library/Application Support/dev.mergeiq.app", "~/Library/Caches/dev.mergeiq.app"]
@@ -52,3 +52,12 @@ Exact asset file name and `zap` paths are confirmed against a real build in task
 
 - Cask name collision: check `brew search mergeiq` before the first publish; fall back to `mergeiq-app` if taken.
 - Add `auto_updates`/livecheck stanza now or when the in-app updater exists? Use `livecheck` against GitHub releases now; revisit with the updater.
+
+## Implementation notes (resolved during apply)
+
+- **No macOS version floor in the cask.** The design's `depends_on macos: ">= :high_sierra"` is wrong twice: the bundle's minimum is 10.15 (`bundle.macOS.minimumSystemVersion`), and Homebrew 7's audit rejects `depends_on macos: :catalina` as disabled ("There is no replacement"), while `brew style` asks for a bare `depends_on :macos` on macOS-only casks. The template uses `depends_on :macos`; older systems are stopped by the app's own `LSMinimumSystemVersion`.
+- **Asset and bundle facts confirmed against the real release v0.1.1-1:** the asset is `MergeIQ_<version>_universal.dmg`, it contains `MergeIQ.app/Contents/MacOS/mergeiq`, `mergeiq --version` prints `mergeiq <version>`, and `SHA256SUMS.txt` lines are `<sha256>  <name>`. The bundle id is `dev.mergeiq.app`.
+- **`zap`** removes `~/Library/Application Support/dev.mergeiq.app` and `…/MergeIQ` (the settings file is under the latter: `directories` config dir + `MergeIQ`), `~/Library/Logs/MergeIQ` (the log directory in `logging.rs`), and the bundle-id caches/prefs/saved state/WebKit data. Repositories are never touched.
+- **`livecheck`** uses `strategy :github_latest`: `release-pipeline` marks only stable releases as latest, so pre-releases are invisible to it. (A repository with no stable release yet makes `brew audit --online` raise a GitHub 404 for that lookup; it clears with the first stable release.)
+- **Renderer refuses anything but `MAJOR.MINOR.PATCH`.** That includes the numeric pre-release tags the project uses (`0.1.1-1`). `fillTemplate` is exported without validation only so a local audit experiment can render a cask from the real pre-release's checksums.
+- **Local validation (Homebrew 7.0.9, cask rendered from the real v0.1.1-1 checksums into a throwaway local tap):** `brew style --cask` reports no offenses for the signed and unsigned renderings; `brew audit --cask --online --strict` reports only "v0.1.1-1 is a GitHub pre-release" (expected for this experiment) and the GitHub 404 above; `brew install --cask` (with `--appdir` in a temp directory) linked `mergeiq`, `mergeiq --version` printed `mergeiq 0.1.1-1`, and `brew uninstall --cask` removed the app and the link. The throwaway tap was removed afterwards.

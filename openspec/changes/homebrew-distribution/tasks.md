@@ -1,7 +1,7 @@
 ## 1. Cask template and renderer
 
-- [ ] 1.1 `packaging/homebrew/mergeiq.rb.tmpl` with version/sha256/url placeholders, `app`, `binary`, `zap`, `livecheck`, optional unsigned caveat; confirm asset name and zap paths against a real `release-pipeline` build
-- [ ] 1.2 `scripts/release/render-cask.mjs`: inputs version, checksums file, signed flag; fails on pre-release version, missing `.dmg` entry, bad digest; tests for each scenario (render, pre-release refused, missing checksum, signed vs unsigned caveat)
+- [x] 1.1 `packaging/homebrew/mergeiq.rb.tmpl` with version/sha256/url placeholders, `app`, `binary`, `zap`, `livecheck`, optional unsigned caveat; confirm asset name and zap paths against a real `release-pipeline` build
+- [x] 1.2 `scripts/release/render-cask.mjs`: inputs version, checksums file, signed flag; fails on pre-release version, missing `.dmg` entry, bad digest; tests for each scenario (render, pre-release refused, missing checksum, signed vs unsigned caveat)
 
 ## 2. Workflow integration
 
