@@ -126,15 +126,17 @@ test("A timeout or an unsupported file shows nothing", async ({ page }) => {
   ).toHaveCount(0);
 });
 
-test("Proposals are keyboard reachable", async ({ page }) => {
+test("Proposals are keyboard reachable", async ({ page, browserName }) => {
+  // WebKit only tabs to buttons with Option+Tab unless the OS "Keyboard navigation" setting is on.
+  const next = browserName === "webkit" ? "Alt+Tab" : "Tab";
   await open(page, "structural-package-json");
   await indicators(page).first().focus();
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeFocused();
-  await page.keyboard.press("Tab");
+  await page.keyboard.press(next);
   await expect(dialog.getByRole("button", { name: "Dismiss" })).toBeFocused();
-  await page.keyboard.press("Tab");
+  await page.keyboard.press(next);
   await page.keyboard.press("Enter");
   await expect(dialog).toHaveCount(0);
   await expect(counter(page)).toHaveText("2 changes · 2 conflicts left");
