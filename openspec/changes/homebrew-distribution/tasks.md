@@ -5,12 +5,12 @@
 
 ## 2. Workflow integration
 
-- [ ] 2.1 `release.yml` `homebrew` job (needs `publish`, macOS runner): skip on pre-release or missing `HOMEBREW_TAP_TOKEN`; render cask
-- [ ] 2.2 Gate: `brew style`, `brew audit --cask --online --strict`, and `brew install --cask` / `mergeiq --version` / `brew uninstall` from a temporary local tap
-- [ ] 2.3 Push one commit `mergeiq <version>` to the tap touching only `Casks/mergeiq.rb`; job is independently re-runnable and never unpublishes the release
+- [x] 2.1 `release.yml` `homebrew` job (needs `publish`, macOS runner): skip on pre-release or missing `HOMEBREW_TAP_TOKEN`; render cask
+- [x] 2.2 Gate: `brew style`, `brew audit --cask --online --strict`, and `brew install --cask` / `mergeiq --version` / `brew uninstall` from a temporary local tap
+- [x] 2.3 Push one commit `mergeiq <version>` to the tap touching only `Casks/mergeiq.rb`; job is independently re-runnable and never unpublishes the release
 
 ## 3. Docs and first publish
 
-- [ ] 3.1 `docs/homebrew.md`: tap layout, creating the token, manual cask update, local testing with `brew install --cask ./Casks/mergeiq.rb`; README install line
-- [ ] 3.2 Owner steps (checklist in the doc): create `karthikkumararun/homebrew-tap`, add `HOMEBREW_TAP_TOKEN`, check `brew search mergeiq` for name collision
+- [x] 3.1 `docs/homebrew.md`: tap layout, creating the token, manual cask update, local testing with `brew install --cask ./Casks/mergeiq.rb`; README install line
+- [x] 3.2 Owner steps (checklist in the doc): create `karthikkumararun/homebrew-tap`, add `HOMEBREW_TAP_TOKEN`, check `brew search mergeiq` for name collision
 - [ ] 3.3 First end-to-end run on a stable tag; verify `brew install --cask karthikkumararun/tap/mergeiq`, `mergeiq --version`, uninstall and zap on a clean Mac
