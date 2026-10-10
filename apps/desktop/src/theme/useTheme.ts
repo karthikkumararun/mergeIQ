@@ -1,3 +1,4 @@
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect } from "react";
 import { commands } from "../ipc/bindings";
 import { isIpcMock } from "../ipc/mock";
@@ -10,6 +11,25 @@ function resolveTheme(mode: ThemeMode): "light" | "dark" {
       : "light";
   }
   return mode;
+}
+
+/**
+ * Title bar, frame and window background are native: follow the chosen mode (null = follow the
+ * OS) and paint the window with the theme's `--bg` so no white rim shows around dark content.
+ */
+function applyNativeChrome(mode: ThemeMode) {
+  try {
+    const win = getCurrentWindow();
+    const report = (error: unknown) =>
+      console.warn("native theme not applied", error);
+    win.setTheme(mode === "system" ? null : mode).catch(report);
+    const bg = getComputedStyle(document.documentElement)
+      .getPropertyValue("--bg")
+      .trim();
+    if (bg) win.setBackgroundColor(bg).catch(report);
+  } catch {
+    // No Tauri runtime (plain browser, unit tests): nothing native to theme.
+  }
 }
 
 /**
@@ -32,6 +52,7 @@ export function useTheme() {
     if (isIpcMock) return;
     const apply = () => {
       document.documentElement.setAttribute("data-theme", resolveTheme(theme));
+      applyNativeChrome(theme);
     };
     apply();
 
