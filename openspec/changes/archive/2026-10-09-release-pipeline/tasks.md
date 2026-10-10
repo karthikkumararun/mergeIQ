@@ -19,5 +19,5 @@
 ## 4. Verification and docs
 
 - [x] 4.1 Dry-run the workflow on a branch and record the result (artifact names, universal arch check via `lipo -archs`) in the PR
-- [ ] 4.2 Cut `v0.1.1-rc.1` as the first pre-release; verify downloads and `sha256sum --check` on macOS and Linux
+- [x] 4.2 Cut `v0.1.1-rc.1` as the first pre-release; verify downloads and `sha256sum --check` on macOS and Linux
 - [x] 4.3 `docs/releasing.md` runbook (bump, tag, what the workflow does, unsigned caveats, recovering from a failed run) and README Install section
