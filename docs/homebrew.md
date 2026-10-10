@@ -16,13 +16,11 @@ Linux and Windows use the installers on the [releases page](https://github.com/k
 | `brew uninstall --cask mergeiq`       | Removes the app and the `mergeiq` link.                                         |
 | `brew uninstall --zap --cask mergeiq` | Also removes MergeIQ's settings, logs and caches (never your git repositories). |
 
-While the macOS build is not notarized, the cask prints a caveat: clear the quarantine attribute once with
-
-```sh
-xattr -dr com.apple.quarantine "/Applications/MergeIQ.app"
-```
-
-or right-click the app and choose **Open**. The caveat disappears from the cask once releases are notarized.
+While the macOS build is not notarized, the cask clears the quarantine attribute itself in a `postflight_steps`
+block (`xattr -dr com.apple.quarantine`; Homebrew 7's declarative form, so keep Homebrew up to date), so a Homebrew install opens without the Gatekeeper warning, and
+prints a short caveat saying so. This is fine in our own tap; the main `homebrew-cask` repository would not
+accept it. A `.dmg` downloaded by hand is still quarantined: right-click the app and choose **Open** once.
+Both the postflight and the caveat disappear from the cask once releases are notarized.
 
 ## How the tap is kept up to date
 

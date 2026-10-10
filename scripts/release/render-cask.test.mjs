@@ -66,22 +66,29 @@ describe("rendering", () => {
     expect(template).not.toContain("depends_on macos:");
   });
 
-  it("adds the Gatekeeper caveat only for an unsigned release (Unsigned caveat)", () => {
+  it("clears quarantine in a postflight and explains it only for an unsigned release (Unsigned postflight)", () => {
     const unsigned = renderCask({
       template,
       version: "0.2.0",
       checksums: sums("0.2.0"),
       signed: false,
     });
-    expect(unsigned).toContain("caveats <<~EOS");
+    // Homebrew 7 requires the declarative `postflight_steps` form (the legacy `postflight do`
+    // fails `brew style`); `{{appdir}}` is its path token.
+    expect(unsigned).toContain("postflight_steps do");
+    expect(unsigned).not.toContain("postflight do");
     expect(unsigned).toContain(
-      'xattr -dr com.apple.quarantine "#{appdir}/MergeIQ.app"',
+      'run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/MergeIQ.app"]',
+    );
+    // Stanza order (brew style): app, binary, postflight_steps, zap, caveats.
+    expect(unsigned).toMatch(
+      /binary [^\n]+\n\n {2}postflight_steps do\n[\s\S]+?\n {2}end\n\n {2}zap trash: \[/,
     );
     expect(unsigned).toMatch(/\]\n\n {2}caveats <<~EOS\n/);
     expect(unsigned.trimEnd().endsWith("EOS\nend")).toBe(true);
   });
 
-  it("has no caveat for a notarized release (Notarized)", () => {
+  it("has no postflight or caveat for a notarized release (Notarized)", () => {
     const signed = renderCask({
       template,
       version: "0.2.0",
@@ -89,8 +96,10 @@ describe("rendering", () => {
       signed: true,
     });
     expect(signed).not.toContain("caveats");
+    expect(signed).not.toContain("postflight_steps");
     expect(signed).not.toContain("xattr");
-    // Removing the placeholder leaves no stray blank line before `end`.
+    // Removing the placeholders leaves no stray blank lines.
+    expect(signed).toMatch(/mergeiq"\n\n {2}zap trash: \[/);
     expect(signed).toMatch(/\]\nend\n$/);
   });
 

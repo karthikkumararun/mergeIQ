@@ -33,16 +33,23 @@ export function parseChecksums(text) {
   return entries;
 }
 
-/** The Gatekeeper caveat for an app that is not signed and notarized. */
+/**
+ * Until the app is signed and notarized the cask clears macOS's quarantine attribute itself, so a
+ * Homebrew install opens without the Gatekeeper warning. (Acceptable in our own tap only.)
+ */
+export const UNSIGNED_POSTFLIGHT = `
+
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/MergeIQ.app"]
+  end`;
+
+/** Explains the postflight and what to do for a manually downloaded copy. */
 export const UNSIGNED_CAVEATS = `
 
   caveats <<~EOS
-    MergeIQ is not signed or notarized yet, so macOS Gatekeeper may refuse to open it.
-    After installing, clear the quarantine attribute once:
-
-      xattr -dr com.apple.quarantine "#{appdir}/MergeIQ.app"
-
-    Or right-click the app in Applications and choose Open.
+    MergeIQ is not signed or notarized yet. This cask clears macOS's quarantine attribute for you,
+    so it opens normally after installing. If you downloaded the .dmg yourself instead, right-click
+    the app and choose Open the first time.
   EOS`;
 
 /** Fills the template without validating its inputs (callers validate; see {@link renderCask}). */
@@ -50,6 +57,7 @@ export function fillTemplate(template, { version, sha256, signed }) {
   return template
     .replaceAll("{{version}}", version)
     .replaceAll("{{sha256}}", sha256)
+    .replace("\n{{postflight}}", signed ? "" : UNSIGNED_POSTFLIGHT)
     .replace("\n{{caveats}}", signed ? "" : UNSIGNED_CAVEATS);
 }
 
