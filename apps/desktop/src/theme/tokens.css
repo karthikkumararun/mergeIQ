@@ -158,3 +158,25 @@
 
   --shadow: rgba(20, 30, 50, 0.18);
 }
+
+/*
+ * Page base: the browser default is an 8px white margin around <body>, which showed as a white
+ * rim around the app in dark mode. The page itself is painted with the theme background and
+ * fills the window; `color-scheme` themes scrollbars and native form controls to match.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
