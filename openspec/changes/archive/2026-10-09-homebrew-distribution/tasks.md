@@ -13,4 +13,4 @@
 
 - [x] 3.1 `docs/homebrew.md`: tap layout, creating the token, manual cask update, local testing with `brew install --cask ./Casks/mergeiq.rb`; README install line
 - [x] 3.2 Owner steps (checklist in the doc): create `karthikkumararun/homebrew-tap`, add `HOMEBREW_TAP_TOKEN`, check `brew search mergeiq` for name collision
-- [ ] 3.3 First end-to-end run on a stable tag; verify `brew install --cask karthikkumararun/tap/mergeiq`, `mergeiq --version`, uninstall and zap on a clean Mac
+- [x] 3.3 First end-to-end run on a stable tag; verify `brew install --cask karthikkumararun/tap/mergeiq`, `mergeiq --version`, uninstall and zap on a clean Mac
