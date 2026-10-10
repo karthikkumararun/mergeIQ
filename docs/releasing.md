@@ -34,11 +34,12 @@ release appears.
 
 `.github/workflows/release.yml`:
 
-| Job       | What it does                                                                                                                                                                                                                                               |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `verify`  | Fails if the tag version differs from `tauri.conf.json`, `apps/desktop/package.json` or `Cargo.toml` (it names each file and the version it contains), detects which signing secrets exist, and creates the **draft** release. Costs seconds.              |
-| `build`   | Matrix of macOS (universal arm64 + x86_64), Windows and Linux (`ubuntu-22.04`). Each job uploads its installers to the draft. The macOS job mounts the `.dmg` and runs `lipo -archs` on the `mergeiq` binary inside, failing unless both `arm64` and `x86_64` are present. |
-| `publish` | Only after every build job succeeded: checks the asset set, generates `SHA256SUMS.txt` from the files that were uploaded, writes the notes, uploads the checksums, and publishes the draft.                                                                |
+| Job        | What it does                                                                                                                                                                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `verify`   | Fails if the tag version differs from `tauri.conf.json`, `apps/desktop/package.json` or `Cargo.toml` (it names each file and the version it contains), detects which signing secrets exist, and creates the **draft** release. Costs seconds.                                                                                              |
+| `build`    | Matrix of macOS (universal arm64 + x86_64), Windows and Linux (`ubuntu-22.04`). Each job uploads its installers to the draft. The macOS job mounts the `.dmg` and runs `lipo -archs` on the `mergeiq` binary inside, failing unless both `arm64` and `x86_64` are present.                                                                 |
+| `publish`  | Only after every build job succeeded: checks the asset set, generates `SHA256SUMS.txt` from the files that were uploaded, writes the notes, uploads the checksums, and publishes the draft.                                                                                                                                                |
+| `homebrew` | After `publish`, stable releases only and only if `HOMEBREW_TAP_TOKEN` exists: renders the cask, gates it with `brew style`, `brew audit` and a real install/uninstall, and pushes one `mergeiq <version>` commit to the tap. A failure here leaves the published release untouched; re-run just this job. See [homebrew.md](homebrew.md). |
 
 Assets for version `X.Y.Z` (names come from Tauri's bundler):
 

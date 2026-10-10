@@ -359,3 +359,117 @@ jobs:
           gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
             -F body=@notes.md -F draft=false -F prerelease="$PRERELEASE" -f make_latest="$latest" > /dev/null
           echo "Published $TAG (prerelease: $PRERELEASE)"
+
+  # After a stable release is published: render the cask from the release's own SHA256SUMS.txt,
+  # gate it with Homebrew's style/audit/install checks, and push one commit to the tap. It is
+  # its own job so "Re-run failed jobs" repeats only this, and it runs after `publish`, so a
+  # failure here never touches the published release. Pre-releases never update the tap.
+  homebrew:
+    name: Update Homebrew tap
+    if: github.event_name == 'push' && needs.verify.outputs.prerelease == 'false'
+    needs: [verify, publish]
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ needs.verify.outputs.tag }}
+      VERSION: ${{ needs.verify.outputs.version }}
+      SIGNED_MACOS: ${{ needs.verify.outputs.signed_macos }}
+      TAP_REPO: ${{ github.repository_owner }}/homebrew-tap
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ANALYTICS: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: ".nvmrc"
+
+      # Secrets cannot gate a job, so the later steps check this output instead.
+      - name: Check the tap token
+        id: token
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          if [ -n "$HOMEBREW_TAP_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Homebrew tap not updated::HOMEBREW_TAP_TOKEN is not configured; skipping the tap update. The release stays published."
+          fi
+
+      - name: Download SHA256SUMS.txt
+        if: steps.token.outputs.enabled == 'true'
+        run: gh release download "$TAG" --pattern SHA256SUMS.txt --dir .
+
+      - name: Render the cask
+        if: steps.token.outputs.enabled == 'true'
+        run: |
+          args=(--version "$VERSION" --checksums SHA256SUMS.txt --out out/Casks/mergeiq.rb)
+          [ "$SIGNED_MACOS" = "true" ] && args+=(--signed)
+          node scripts/release/render-cask.mjs "${args[@]}"
+          cat out/Casks/mergeiq.rb
+
+      # The cask must pass Homebrew's own checks and really install before it reaches the tap.
+      - name: Gate the cask (style, audit, install, uninstall)
+        if: steps.token.outputs.enabled == 'true'
+        run: |
+          brew tap-new --no-git local/mergeiq-test
+          tap="$(brew --repository local/mergeiq-test)"
+          mkdir -p "$tap/Casks"
+          cp out/Casks/mergeiq.rb "$tap/Casks/mergeiq.rb"
+          brew style --cask local/mergeiq-test/mergeiq
+          brew audit --cask --online --strict local/mergeiq-test/mergeiq
+          brew install --cask local/mergeiq-test/mergeiq
+          # An unsigned app needs the quarantine attribute cleared once, as the cask's caveat says.
+          if [ "$SIGNED_MACOS" != "true" ]; then
+            xattr -dr com.apple.quarantine /Applications/MergeIQ.app
+          fi
+          bin="$(brew --prefix)/bin/mergeiq"
+          test -L "$bin"
+          reported="$("$bin" --version)"
+          echo "mergeiq --version: $reported"
+          [ "$reported" = "mergeiq $VERSION" ] || { echo "::error::expected 'mergeiq $VERSION', got '$reported'"; exit 1; }
+          brew uninstall --cask local/mergeiq-test/mergeiq
+          if [ -e "$bin" ] || [ -e /Applications/MergeIQ.app ]; then
+            echo "::error::uninstall left the app or the mergeiq link behind"
+            exit 1
+          fi
+          brew untap local/mergeiq-test
+
+      # One commit, `mergeiq <version>`, touching only Casks/mergeiq.rb. An empty tap (no commits
+      # yet) gets its first commit on `main`; re-running with an unchanged cask pushes nothing.
+      - name: Push the cask to the tap
+        if: steps.token.outputs.enabled == 'true'
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          auth="$(printf 'x-access-token:%s' "$HOMEBREW_TAP_TOKEN" | base64)"
+          echo "::add-mask::$auth"
+          git -c "http.extraheader=AUTHORIZATION: basic $auth" clone "https://github.com/$TAP_REPO.git" tap
+          cd tap
+          if git rev-parse --verify --quiet HEAD > /dev/null; then
+            branch="$(git symbolic-ref --short HEAD)"
+          else
+            branch=main
+            git checkout -q -b "$branch"
+          fi
+          mkdir -p Casks
+          cp ../out/Casks/mergeiq.rb Casks/mergeiq.rb
+          git add Casks/mergeiq.rb
+          changed="$(git diff --cached --name-only)"
+          if [ -z "$changed" ]; then
+            echo "::notice::The tap already has the cask for $VERSION; nothing to push."
+            exit 0
+          fi
+          if [ "$changed" != "Casks/mergeiq.rb" ]; then
+            echo "::error::unexpected changes staged: $changed"
+            exit 1
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "mergeiq $VERSION"
+          git -c "http.extraheader=AUTHORIZATION: basic $auth" push origin "HEAD:$branch"
+          echo "Pushed mergeiq $VERSION to $TAP_REPO ($branch)"

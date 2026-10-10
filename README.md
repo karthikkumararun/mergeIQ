@@ -13,7 +13,13 @@ the merge engine and editor UI are being built next — see `openspec/ROADMAP.md
 
 ## Install
 
-Download the installer for your system from the [latest release](https://github.com/karthikkumararun/mergeIQ/releases/latest):
+On macOS with Homebrew:
+
+```sh
+brew install --cask karthikkumararun/tap/mergeiq
+```
+
+Or download the installer for your system from the [latest release](https://github.com/karthikkumararun/mergeIQ/releases/latest):
 
 | System                                 | File                                                                   |
 | -------------------------------------- | ---------------------------------------------------------------------- |
