@@ -201,6 +201,9 @@ fn start(launch: Launch) -> ! {
             }
             tracing::info!(version = env!("CARGO_PKG_VERSION"), "MergeIQ starting");
             builder.mount_events(app);
+            // Title bar and frame follow the saved theme, not only the OS appearance.
+            app.handle()
+                .set_theme(ipc::native_theme(&settings::load().theme));
 
             let dispatcher = Arc::new(Dispatcher {
                 registry: Arc::clone(&setup_requests),

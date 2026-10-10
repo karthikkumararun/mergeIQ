@@ -54,12 +54,25 @@ pub fn get_settings() -> SettingsDto {
     settings::load().into()
 }
 
+/// Native window chrome (title bar, frame) theme for a saved theme mode; `None` follows the OS.
+pub fn native_theme(mode: &str) -> Option<tauri::Theme> {
+    match mode {
+        "light" => Some(tauri::Theme::Light),
+        "dark" => Some(tauri::Theme::Dark),
+        _ => None,
+    }
+}
+
 #[tauri::command]
 #[specta::specta]
-pub fn update_settings(settings: SettingsDto) -> Result<SettingsDto, IpcError> {
+pub fn update_settings(
+    app: tauri::AppHandle,
+    settings: SettingsDto,
+) -> Result<SettingsDto, IpcError> {
     let mut current = settings::load();
     current.theme = settings.theme;
     settings::save(&current).map_err(|err| IpcError::Settings(err.to_string()))?;
+    app.set_theme(native_theme(&current.theme));
     Ok(current.into())
 }
 
@@ -186,5 +199,23 @@ mod tests {
             generated, committed,
             "apps/desktop/src/ipc/bindings.ts is stale; regenerate it in debug mode"
         );
+    }
+}
+
+#[cfg(test)]
+mod native_theme_tests {
+    use super::native_theme;
+    use tauri::Theme;
+
+    #[test]
+    fn dark_and_light_modes_force_the_native_chrome() {
+        assert_eq!(native_theme("dark"), Some(Theme::Dark));
+        assert_eq!(native_theme("light"), Some(Theme::Light));
+    }
+
+    #[test]
+    fn system_and_unknown_modes_follow_the_os() {
+        assert_eq!(native_theme("system"), None);
+        assert_eq!(native_theme("anything-else"), None);
     }
 }
