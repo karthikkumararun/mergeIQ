@@ -305,21 +305,25 @@ jobs:
 
       - name: Download the release assets
         run: |
-          mkdir assets
+          # Outside the checkout: a repository folder named `assets` (the icon master lives in one)
+          # made `mkdir assets` fail in v0.2.3.
+          ASSETS_DIR="$RUNNER_TEMP/release-assets"
+          echo "ASSETS_DIR=$ASSETS_DIR" >> "$GITHUB_ENV"
+          mkdir -p "$ASSETS_DIR"
           gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
             --jq '.assets[] | "\(.id)\t\(.name)"' | while IFS=$'\t' read -r asset_id name; do
             echo "Downloading $name"
             gh api -H "Accept: application/octet-stream" \
-              "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" > "assets/$name"
+              "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" > "$ASSETS_DIR/$name"
           done
-          ls -l assets
+          ls -l "$ASSETS_DIR"
 
       - name: Check the asset set
-        run: node scripts/release/check-assets.mjs "$VERSION" assets
+        run: node scripts/release/check-assets.mjs "$VERSION" "$ASSETS_DIR"
 
       # Generated from the files that were uploaded, not from build outputs.
       - name: Generate SHA256SUMS.txt
-        working-directory: assets
+        working-directory: ${{ runner.temp }}/release-assets
         run: |
           shopt -s nullglob
           files=(*.dmg *.msi *.exe *.AppImage *.deb)
@@ -338,7 +342,7 @@ jobs:
           [ "$SIGNED_MACOS" = "true" ] || flags+=(--unsigned-macos)
           [ "$SIGNED_WINDOWS" = "true" ] || flags+=(--unsigned-windows)
           node scripts/release/render-notes.mjs --tag "$TAG" --repo "$GITHUB_REPOSITORY" \
-            --assets assets --generated generated.md "${flags[@]}" > notes.md
+            --assets "$ASSETS_DIR" --generated generated.md "${flags[@]}" > notes.md
           cat notes.md
 
       - name: Upload SHA256SUMS.txt
@@ -350,7 +354,7 @@ jobs:
           fi
           gh api --method POST \
             "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=SHA256SUMS.txt" \
-            -H "Content-Type: text/plain" --input assets/SHA256SUMS.txt > /dev/null
+            -H "Content-Type: text/plain" --input "$ASSETS_DIR/SHA256SUMS.txt" > /dev/null
 
       # Pre-release tags publish as pre-releases and are never marked "latest".
       - name: Publish
