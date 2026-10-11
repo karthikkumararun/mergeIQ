@@ -148,7 +148,8 @@ openspec/               specs, designs and approved UI boards driving developmen
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Please also read our
+See [CONTRIBUTING.md](CONTRIBUTING.md). To change the app icon, see
+[docs/changing-the-icon.md](docs/changing-the-icon.md). Please also read our
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
